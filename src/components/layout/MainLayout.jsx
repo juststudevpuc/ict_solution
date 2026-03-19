@@ -12,7 +12,7 @@ import {
   MapPin,
   Contact,
 } from "lucide-react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { href, Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import {
@@ -40,48 +40,49 @@ export default function MainLayout() {
 
   const nav_item = [
     { label: "About Us", href: "/about" },
-    {
-      label: "Services",
-      // Adding the components array as "children"
-      children: [
-        {
-          title: "Software Engineering",
-          href: "/services/software-engineering",
-          description:
-            "Custom web and mobile app development tailored to scale your business operations.",
-        },
-        {
-          title: "Retail & E-Commerce",
-          href: "/services/ecommerce",
-          description:
-            "Robust POS systems and high-converting e-commerce platforms for modern retail.",
-        },
-        {
-          title: "Maintenance & QA",
-          href: "/services/qa-support",
-          description:
-            "Ongoing technical support, rigorous testing, and quality assurance to keep your systems flawless.",
-        },
-        {
-          title: "Digital Media & Design",
-          href: "/services/design",
-          description:
-            "Engaging graphic design and professional video editing to elevate your brand identity.",
-        },
-        {
-          title: "Digital Marketing",
-          href: "/services/marketing",
-          description:
-            "Data-driven digital marketing campaigns designed to expand your reach and drive conversions.",
-        },
-        {
-          title: "Licensing & Hardware",
-          href: "/services/hardware",
-          description:
-            "Reliable enterprise software licensing and premium hardware equipment for your IT infrastructure.",
-        },
-      ],
-    },
+    // {
+    //   label: "Services", href: "/services",
+    //   // Adding the components array as "children"
+    //   children: [
+    //     {
+    //       title: "Software Engineering",
+    //       href: "/services/software-engineering",
+    //       description:
+    //         "Custom web and mobile app development tailored to scale your business operations.",
+    //     },
+    //     {
+    //       title: "Retail & E-Commerce",
+    //       href: "/services/ecommerce",
+    //       description:
+    //         "Robust POS systems and high-converting e-commerce platforms for modern retail.",
+    //     },
+    //     {
+    //       title: "Maintenance & QA",
+    //       href: "/services/qa-support",
+    //       description:
+    //         "Ongoing technical support, rigorous testing, and quality assurance to keep your systems flawless.",
+    //     },
+    //     {
+    //       title: "Digital Media & Design",
+    //       href: "/services/design",
+    //       description:
+    //         "Engaging graphic design and professional video editing to elevate your brand identity.",
+    //     },
+    //     {
+    //       title: "Digital Marketing",
+    //       href: "/services/marketing",
+    //       description:
+    //         "Data-driven digital marketing campaigns designed to expand your reach and drive conversions.",
+    //     },
+    //     {
+    //       title: "Licensing & Hardware",
+    //       href: "/services/hardware",
+    //       description:
+    //         "Reliable enterprise software licensing and premium hardware equipment for your IT infrastructure.",
+    //     },
+    //   ],
+    // },
+    { label: "Services", href: "/service" },
     { label: "Industries", href: "/industries" },
     { label: "Clients", href: "/clients" },
   ];
@@ -102,10 +103,15 @@ export default function MainLayout() {
           {/* 1. Brand Logo Area */}
           <div className="flex lg:flex-1">
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
-                <div className="relative w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-xl">
-                  ICT
+              <div className="relative inline-block group">
+                {/* The Container (Ensures a perfect circle) */}
+                <div className="w-13 h-13 rounded-full border border-slate-100 shadow-sm overflow-hidden bg-white hover:border-slate-200 transition-colors duration-300">
+                  {/* The Image (object-cover prevents squishing) */}
+                  <img
+                    src="image.png"
+                    alt="User Avatar"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
               </div>
               <div className="flex flex-col leading-none">
