@@ -24,7 +24,7 @@ export default function ContactPage() {
       {/* ======================================= */}
       {/* 1. PAGE HEADER                          */}
       {/* ======================================= */}
-      <section className="relative bg-slate-500 pt-32 pb-20 md:pt-48 md:pb-24 px-6 lg:px-12  mx-auto text-center">
+      <section className="relative bg-slate-300 shadow-2xl pt-32 pb-20 md:pt-48 md:pb-24 px-6 lg:px-12  mx-auto text-center">
         {/* Modern Decorative Background Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-400/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
 
