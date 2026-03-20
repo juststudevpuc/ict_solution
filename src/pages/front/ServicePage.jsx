@@ -37,7 +37,7 @@ export default function ServicePage() {
         <img
           src="img/programming.jpg"
           alt="ICT Center Campus"
-          className="absolute inset-0 w-full h-120 object-cover scale-105 group-hover:scale-100 transition-transform duration-[3000ms] ease-out"
+          className="absolute inset-0 w-full h-100 object-cover scale-105 group-hover:scale-100 transition-transform duration-[3000ms] ease-out"
         />
 
         {/* Deep Bottom Gradient to make text pop against the image */}
@@ -101,10 +101,10 @@ export default function ServicePage() {
           <div className="flex flex-col max-w-xl order-1 lg:order-2">
             {/* Eyebrow / Kicker */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-px w-8 bg-blue-600"></div>
-              <span className="text-blue-600 font-bold tracking-[0.2em] uppercase text-xs">
+              {/* <div className="h-px w-8 bg-blue-600"></div> */}
+              {/* <span className="text-blue-600 font-bold tracking-[0.2em] uppercase text-xs">
                 Custom Solutions
-              </span>
+              </span> */}
             </div>
 
             <h2 className="text-4xl md:text-5xl font-medium text-slate-900 tracking-tight leading-[1.1] mb-6">
@@ -119,11 +119,226 @@ export default function ServicePage() {
 
             {/* Premium Bullet List (Replacing the basic "- pos") */}
             <ul className="space-y-5 mb-12 border-l-2 border-slate-100 pl-6">
-              {[
+              { [
                 "Point of Sale (POS) Systems",
-                "High-Converting E-Commerce",
-                "Secure API Development",
-                "Legacy System Modernization",
+                "Systems Development",
+                "E-Commerce Development",
+                "Web developmetn",
+                "Mobile App development",
+                "API Development",
+                // "Legacy System Modernization",
+                // "Legacy System Modernization",
+              ].map((item, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-4 text-slate-700 font-medium group cursor-default"
+                >
+                  {/* Custom Checkmark Circle */}
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                    <Check size={12} strokeWidth={3} />
+                  </div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            {/* Call to Action */}
+            <div>
+              <Link
+                to="/contact"
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Discuss Your Project
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center py-5">
+            {/* ======================================= */}
+            {/* LEFT SIDE: The Framed Image             */}
+            {/* ======================================= */}
+            <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3]  overflow-hidden bg-slate-100 border border-slate-200 group order-2 lg:order-2">
+              <img
+                src="img/vdo.jpg"
+                alt="Software Development"
+                className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+              />
+              {/* Subtle inner shadow to make it look like a physical frame */}
+              <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] pointer-events-none"></div>
+            </div>
+
+            {/* ======================================= */}
+            {/* RIGHT SIDE: Typography & Features       */}
+            {/* ======================================= */}
+            <div className="flex flex-col max-w-xl order-1 lg:order-1">
+              {/* Eyebrow / Kicker */}
+
+              <h2 className="text-4xl md:text-5xl font-medium text-slate-900 tracking-tight leading-[1.1] mb-6">
+                Digital Media & Marketing.
+              </h2>
+
+              <p className="text-lg text-slate-500 font-light leading-relaxed mb-10">
+                We craft compelling visual narratives, intuitive user
+                experiences, and data-driven campaigns to elevate your brand
+                identity and engage your target audience.
+              </p>
+
+              {/* Premium Bullet List */}
+              <ul className="space-y-5 mb-12 border-l-2 border-slate-100 pl-6">
+                {[
+                  "Professional Video Editing",
+                  "Creative Graphic Design",
+                  "Intuitive UI/UX Design",
+                  "Performance Marketing Campaigns",
+
+                  // "Legacy System Modernization",
+                  // "Legacy System Modernization",
+                ].map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-4 text-slate-700 font-medium group cursor-default"
+                  >
+                    {/* Custom Checkmark Circle */}
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                      <Check size={12} strokeWidth={3} />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Call to Action */}
+              <div>
+                <Link
+                  to="/contact"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Discuss Your Project
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center py-5">
+          {/* ======================================= */}
+          {/* LEFT SIDE: The Framed Image             */}
+          {/* ======================================= */}
+          <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3]  overflow-hidden bg-slate-100 border border-slate-200 group order-2 lg:order-1">
+            <img
+              src="img/licen2.jpg"
+              alt="Software Development"
+              className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+            />
+            {/* Subtle inner shadow to make it look like a physical frame */}
+            <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] pointer-events-none"></div>
+          </div>
+
+          {/* ======================================= */}
+          {/* RIGHT SIDE: Typography & Features       */}
+          {/* ======================================= */}
+          <div className="flex flex-col max-w-xl order-1 lg:order-2">
+            {/* Eyebrow / Kicker */}
+
+            <h2 className="text-4xl md:text-5xl font-medium text-slate-900 tracking-tight leading-[1.1] mb-6">
+              Software Licensing.
+            </h2>
+
+            <p className="text-lg text-slate-500 font-light leading-relaxed mb-10">
+              We simplify enterprise software procurement. From essential
+              productivity suites to advanced AI platforms, we provide
+              centralized licensing solutions to keep your team equipped,
+              secure, and fully compliant.
+            </p>
+
+            {/* Premium Bullet List */}
+            <ul className="space-y-5 mb-12 border-l-2 border-slate-100 pl-6">
+              {[
+                "Enterprise Productivity (Microsoft 365, Workspace)",
+                "Advanced AI Tools (ChatGPT Enterprise, Copilot)",
+                "Creative & Media Suites (Adobe CC, Canva Pro)",
+                "Cloud Infrastructure & Security Subscriptions",
+
+                // "Legacy System Modernization",
+                // "Legacy System Modernization",
+              ].map((item, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-4 text-slate-700 font-medium group cursor-default"
+                >
+                  {/* Custom Checkmark Circle */}
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                    <Check size={12} strokeWidth={3} />
+                  </div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            {/* Call to Action */}
+            <div>
+              <Link
+                to="/contact"
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Discuss Your Project
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center py-5">
+          {/* ======================================= */}
+          {/* LEFT SIDE: The Framed Image             */}
+          {/* ======================================= */}
+          <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3]  overflow-hidden bg-slate-100 border border-slate-200 group order-2 lg:order-2">
+            <img
+              src="img/hardware.jpg"
+              alt="Software Development"
+              className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+            />
+            {/* Subtle inner shadow to make it look like a physical frame */}
+            <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] pointer-events-none"></div>
+          </div>
+
+          {/* ======================================= */}
+          {/* RIGHT SIDE: Typography & Features       */}
+          {/* ======================================= */}
+          <div className="flex flex-col max-w-xl order-1 lg:order-1">
+            {/* Eyebrow / Kicker */}
+
+            <h2 className="text-4xl md:text-5xl font-medium text-slate-900 tracking-tight leading-[1.1] mb-6">
+              Hardware & Infrastructure.
+            </h2>
+
+            <p className="text-lg text-slate-500 font-light leading-relaxed mb-10">
+              We architect and deploy enterprise-grade IT environments. From
+              high-performance workstations to secure server networks, we
+              provide the reliable physical hardware your team needs to operate
+              at peak efficiency.
+            </p>
+
+            {/* Premium Bullet List */}
+            <ul className="space-y-5 mb-12 border-l-2 border-slate-100 pl-6">
+              {[
+                "Enterprise Laptops & High-Performance Workstations",
+                "Secure Networking (Routers, Switches & Firewalls)",
+                "On-Premise Servers & Scalable Storage Solutions",
+                "Integrated POS Hardware & Retail Terminals",
+
+                // "Legacy System Modernization",
+                // "Legacy System Modernization",
               ].map((item, i) => (
                 <li
                   key={i}

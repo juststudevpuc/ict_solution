@@ -39,6 +39,7 @@ export default function MainLayout() {
   }, []);
 
   const nav_item = [
+    { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
     // {
     //   label: "Services", href: "/services",
@@ -83,8 +84,8 @@ export default function MainLayout() {
     //   ],
     // },
     { label: "Services", href: "/service" },
-    { label: "Industries", href: "/industries" },
-    { label: "Clients", href: "/clients" },
+    // { label: "Industries", href: "/industries" },
+    { label: "Clients", href: "/client" },
   ];
 
   return (
