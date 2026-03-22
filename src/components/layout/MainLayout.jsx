@@ -318,7 +318,7 @@ export default function MainLayout() {
               <ul className="flex flex-col gap-4 text-sm font-medium">
                 <li>
                   <Link
-                    to="#"
+                    to="service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Software Engineering
@@ -326,23 +326,23 @@ export default function MainLayout() {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Mobile App Development
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     to="#"
                     className="hover:text-blue-400 transition-colors"
                   >
                     AI & Machine Learning
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
-                    to="#"
+                    to="service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Digital Marketing
@@ -350,7 +350,7 @@ export default function MainLayout() {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     IT Consulting

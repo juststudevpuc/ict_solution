@@ -1,5 +1,14 @@
-import { ArrowRight, Check, Cpu, Key, PenTool, Rocket } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Cpu,
+  Key,
+  PenTool,
+  Rocket,
+  Send,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function ServicePage() {
   const specializedServices = [
@@ -31,25 +40,54 @@ export default function ServicePage() {
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* Added 'h-[90vh] min-h-[600px]' to force the section to be large like a real image banner */}
-      <section className="relative w-full h-100 flex flex-col justify-end pb-24 md:pb-32 overflow-hidden group">
-        {/* Full Screen Background Image */}
-        {/* Added 'h-full' so the image actually fills the container */}
-        <img
+      <section className="relative w-full h-[40vh] min-h-[400px] md:h-[50vh] flex flex-col justify-end pb-12 md:pb-16 overflow-hidden group bg-slate-900">
+        {/* Background Image with slow cinematic entrance */}
+        <motion.img
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
           src="img/programming.jpg"
-          alt="ICT Center Campus"
-          className="absolute inset-0 w-full h-100 object-cover scale-105 group-hover:scale-100 transition-transform duration-[3000ms] ease-out"
+          alt="Our Services"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out"
         />
 
-        {/* Deep Bottom Gradient to make text pop against the image */}
-        <div className="absolute inset-0 bg-gradient-to-t to-transparent z-10 " />
+        {/* FIXED Gradient: Added 'from-black/80' so the text pops perfectly! */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
 
-        {/* Minimal Text Content floating at the bottom of the image */}
-        <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 lg:px-12   ">
-          <div className="max-w-4xl">
-            <h1 className="text-white font-medium tracking-tight leading-[1.05] text-5xl sm:text-xl md:text-7xl lg:text-[3.5rem]">
-              Our Service <br />
-              <span className="text-white/70">Engineered for scale.</span>
-            </h1>
+        {/* Text Content */}
+        <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="max-w-3xl">
+            {/* Premium "Eyebrow" Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.1,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
+              className="flex items-center gap-4 mb-6"
+            >
+              <div className="h-px w-8 bg-blue-500"></div>
+              <span className="text-blue-400 font-bold tracking-[0.2em] uppercase text-xs">
+                What We Do
+              </span>
+            </motion.div>
+
+            {/* Fixed Typography Scaling (Smoothly goes from 4xl to 6xl) */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
+              className="text-white font-medium tracking-tight leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem]"
+            >
+              Our Services. <br />
+              <span className="text-white/60">Engineered for scale.</span>
+            </motion.h1>
           </div>
         </div>
       </section>
@@ -119,7 +157,7 @@ export default function ServicePage() {
 
             {/* Premium Bullet List (Replacing the basic "- pos") */}
             <ul className="space-y-5 mb-12 border-l-2 border-slate-100 pl-6">
-              { [
+              {[
                 "Point of Sale (POS) Systems",
                 "Systems Development",
                 "E-Commerce Development",
@@ -144,16 +182,19 @@ export default function ServicePage() {
 
             {/* Call to Action */}
             <div>
-              <Link
-                to="/contact"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              <a
+                href="https://t.me/ictinfo1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
-                Discuss Your Project
-                <ArrowRight
+                Discuss your project
+                {/* The paper plane tilts slightly when hovered! */}
+                <Send
                   size={18}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="group-hover:rotate-12 transition-transform duration-300"
                 />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -214,16 +255,19 @@ export default function ServicePage() {
 
               {/* Call to Action */}
               <div>
-                <Link
-                  to="/contact"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+                <a
+                  href="https://t.me/ictinfo1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
-                  Discuss Your Project
-                  <ArrowRight
+                  Discuss your project
+                  {/* The paper plane tilts slightly when hovered! */}
+                  <Send
                     size={18}
-                    className="group-hover:translate-x-1 transition-transform"
+                    className="group-hover:rotate-12 transition-transform duration-300"
                   />
-                </Link>
+                </a>
               </div>
             </div>
           </div>
@@ -285,16 +329,19 @@ export default function ServicePage() {
 
             {/* Call to Action */}
             <div>
-              <Link
-                to="/contact"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              <a
+                href="https://t.me/ictinfo1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
-                Discuss Your Project
-                <ArrowRight
+                Discuss your project
+                {/* The paper plane tilts slightly when hovered! */}
+                <Send
                   size={18}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="group-hover:rotate-12 transition-transform duration-300"
                 />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -355,16 +402,19 @@ export default function ServicePage() {
 
             {/* Call to Action */}
             <div>
-              <Link
-                to="/contact"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              <a
+                href="https://t.me/ictinfo1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
-                Discuss Your Project
-                <ArrowRight
+                Discuss your project
+                {/* The paper plane tilts slightly when hovered! */}
+                <Send
                   size={18}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="group-hover:rotate-12 transition-transform duration-300"
                 />
-              </Link>
+              </a>
             </div>
           </div>
         </div>

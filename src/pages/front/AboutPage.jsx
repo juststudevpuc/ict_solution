@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -9,30 +10,52 @@ export default function AboutPage() {
       {/* ======================================= */}
       {/* 1. HERO SECTION (Text on Full Image)    */}
       {/* ======================================= */}
-      <section className="relative w-full h-screen flex flex-col justify-end pb-24 md:pb-32 overflow-hidden group">
-        {/* Full Screen Background Image */}
-        <img
+      <section className="relative w-full h-screen flex flex-col justify-end pb-24 md:pb-32 overflow-hidden group bg-black">
+        {/* Full Screen Background Image with slow zoom-out on load */}
+        <motion.img
+          initial={{ scale: 1.15, opacity: 0 }}
+          animate={{ scale: 1.05, opacity: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
           src="img/ict03.jpg"
           alt="ICT Center Campus"
-          className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-[3000ms] ease-out"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-100 transition-transform duration-[3000ms] ease-out"
         />
 
         {/* Deep Bottom Gradient to make text pop */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10" />
 
         {/* Minimal Text Content at the bottom */}
         <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="max-w-4xl">
-            <h1 className="text-white font-medium tracking-tight leading-[1.05] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] mb-8">
+            {/* Animated Heading (Slides up and fades in) */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
+              className="text-white font-medium tracking-tight leading-[1.05] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] mb-8"
+            >
               ICT Solution. <br />
               <span className="text-white/60">Engineered for scale.</span>
-            </h1>
+            </motion.h1>
 
-            {/* Frosty Glass Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            {/* Animated Frosty Glass Buttons (Delayed slightly after heading) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.4,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
               <button
                 onClick={() => navigate("/services")}
-                className="group flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-slate-100 text-black font-bold rounded-full transition-all duration-300"
+                className="group flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-slate-100 text-black font-bold rounded-full transition-all duration-300 shadow-xl"
               >
                 Explore Services
                 <ArrowRight
@@ -41,10 +64,10 @@ export default function AboutPage() {
                 />
               </button>
 
-              <button className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium rounded-full backdrop-blur-md transition-all duration-300">
+              <button className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-full backdrop-blur-md transition-all duration-300">
                 Our Mission
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

@@ -15,40 +15,74 @@ let DefaultIcon = L.icon({
   popupAnchor: [1, -34],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
+import { motion } from "framer-motion";
 
 export default function ContactPage() {
-  const position = [11.5144, 104.7456];
+  const position = [11.565485376357492, 104.89150611833514];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-200 selection:text-blue-900 pb-24">
       {/* ======================================= */}
       {/* 1. PAGE HEADER                          */}
       {/* ======================================= */}
-      <section className="relative bg-slate-300 shadow-2xl pt-32 pb-20 md:pt-48 md:pb-24 px-6 lg:px-12  mx-auto text-center">
-        {/* Modern Decorative Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-400/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+      <section className="relative bg-gradient-to-b from-blue-950 to-slate-100/80 border-b border-slate-200 pt-32 pb-20 md:pt-48 md:pb-24 px-6 lg:px-12 mx-auto text-center overflow-hidden">
+        {/* 1. Animated Background Glow (Slowly blooms outward on load) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-400/10 blur-[100px] rounded-full pointer-events-none -z-10"
+        />
 
         <div className="max-w-3xl mx-auto relative z-10">
-          {/* Premium Pill Badge (Replaces the basic plain text) */}
-          <div className="inline-flex items-center justify-center mb-8 px-5 py-2 rounded-full bg-blue-50 border border-blue-100 shadow-sm">
+          {/* 2. Animated Pill Badge (Slides up first) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.1,
+              ease: [0.21, 0.47, 0.32, 0.98],
+            }}
+            className="inline-flex items-center justify-center mb-8 px-5 py-2 rounded-full bg-white border border-blue-100 shadow-sm"
+          >
             <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mr-3 animate-pulse"></div>
             <span className="text-blue-600 font-bold tracking-[0.2em] uppercase text-xs">
               Let's Connect
             </span>
-          </div>
+          </motion.div>
 
-          {/* Enlarged Heading with Gradient Accent */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-medium text-slate-900 tracking-tight leading-[1.05] mb-8">
+          {/* 3. Animated Heading (Slides up second) */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.2,
+              ease: [0.21, 0.47, 0.32, 0.98],
+            }}
+            className="text-5xl md:text-6xl lg:text-7xl font-medium text-slate-900 tracking-tight leading-[1.05] mb-8"
+          >
             Ready to scale your <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
               business?
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg md:text-xl text-slate-900 font-light leading-relaxed max-w-2xl mx-auto">
+          {/* 4. Animated Subtitle (Slides up last) */}
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.3,
+              ease: [0.21, 0.47, 0.32, 0.98],
+            }}
+            className="text-lg md:text-xl text-slate-600 font-light leading-relaxed max-w-2xl mx-auto"
+          >
             Reach out to our engineering team to discuss your next project,
             request a quote, or learn more about our enterprise solutions.
-          </p>
+          </motion.p>
         </div>
       </section>
 
