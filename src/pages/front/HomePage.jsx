@@ -113,7 +113,7 @@ export default function HomePage() {
               </h2>
               <div className="flex flex-col md:items-start items-center">
                 <p className="text-xl font-bold text-slate-900">
-                  Mr. Nhem Nhim
+                  Mr. Nhanh Nhim
                 </p>
                 <p className="text-blue-600 font-medium tracking-wide text-sm uppercase mt-1">
                   Founder & CEO, ICT Center
