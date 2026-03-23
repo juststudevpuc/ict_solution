@@ -271,10 +271,14 @@ export default function MainLayout() {
             {/* Column 1: Company Info */}
             <div className="flex flex-col gap-6">
               <Link to="/" className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl">
-                  ICT
+                <div className="w-13 h-13  rounded-3xl flex items-center justify-center text-white font-black text-xl">
+                  <img
+                    src="image.png"
+                    alt="User Avatar"
+                    className="w-full h-full object-cover rounded-4xl group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
-                <h1 className="text-white font-bold tracking-[0.15em] text-sm uppercase">
+                <h1 className="text-white font-bold tracking-[0.15em] text-2xl uppercase">
                   Solution
                 </h1>
               </Link>
