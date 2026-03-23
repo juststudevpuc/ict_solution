@@ -1,33 +1,27 @@
-import {
-  Cpu,
-  Key,
-  LifeBuoy,
-  LineChart,
-  PenTool,
-  Rocket,
-  ShieldCheck,
-  Users,
-} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ClientPage() {
+  // Loaded your actual client data!
   const clients = [
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
-    { name: "Global Finance Corp", img: "image.png" },
+    { name: "CamboTech", img: "client/cambotech.png" },
+    { name: "Camintel", img: "client/camintel.png" },
+    { name: "Emerald HUB", img: "client/emeraldhub.jpg" },
+    { name: "Ezecom", img: "client/ezecom.webp" },
+    { name: "Khmer24", img: "client/khmer24.png" },
+    { name: "Loma", img: "client/loma.jpg" },
+    { name: "Naki", img: "client/naki.jpg" },
+    { name: "Sabay", img: "client/saby.png" },
+    { name: "TechnoKhmer", img: "client/technokhmer.jpg" },
   ];
 
   return (
-    <div className="py-24 bg-slate-700">
-      <section className="relative w-full h-[40vh] min-h-[400px] md:h-[50vh] flex flex-col justify-end pb-12 md:pb-16 overflow-hidden group bg-slate-900">
-        {/* Background Image with slow cinematic entrance */}
-        {/* Fixed: Replaced h-120 with h-full so it actually fills the container */}
+    // Changed to bg-slate-900 so the whole page feels like one seamless, premium dark-mode experience
+    <div className="bg-slate-900 min-h-screen pb-24">
+      
+      {/* ======================================= */}
+      {/* 1. ANIMATED BANNER                      */}
+      {/* ======================================= */}
+      <section className="relative w-full h-[40vh] min-h-[400px] md:h-[50vh] flex flex-col justify-end pb-12 md:pb-16 overflow-hidden group bg-black">
         <motion.img
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -37,21 +31,14 @@ export default function ClientPage() {
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms] ease-out"
         />
 
-        {/* FIXED Gradient: Added 'from-black/80' so your white text is actually readable! */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-10" />
 
-        {/* Text Content */}
         <div className="relative z-20 w-full max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="max-w-3xl">
-            {/* Premium "Eyebrow" Text */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.1,
-                ease: [0.21, 0.47, 0.32, 0.98],
-              }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="flex items-center gap-4 mb-6"
             >
               <div className="h-px w-8 bg-blue-500"></div>
@@ -60,15 +47,10 @@ export default function ClientPage() {
               </span>
             </motion.div>
 
-            {/* Fixed Typography Scaling (Removed the weird sm:text-xl shrink bug) */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.2,
-                ease: [0.21, 0.47, 0.32, 0.98],
-              }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="text-white font-medium tracking-tight leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem]"
             >
               Our Clients. <br />
@@ -77,8 +59,12 @@ export default function ClientPage() {
           </div>
         </div>
       </section>
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-20 py-15">
-        {/* Header - Fixed text colors for Dark Mode */}
+
+      {/* ======================================= */}
+      {/* 2. MINIMALIST GRID                      */}
+      {/* ======================================= */}
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-20">
+        
         <div className="mb-16 md:text-center max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-medium text-white tracking-tight mb-4">
             Trusted by industry leaders.
@@ -89,24 +75,32 @@ export default function ClientPage() {
           </p>
         </div>
 
-        {/* The Minimalist Client Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 md:gap-9 w-full">
+        {/* Changed to grid-cols-4 for big, spacious logos */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 w-full">
           {clients.map((client, index) => (
             <div
               key={index}
-              // Changed px-8 to p-4 md:p-6 to give an even, small border of breathing room all the way around
-              className="flex items-center justify-center  rounded-sm bg-slate-800/30 border border-slate-700/50 hover:bg-slate-800 hover:border-slate-600 hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-500 group cursor-pointer"
+              // Ultra-clean card: No shadow, no translate-y hover effects. Just a crisp border change.
+              className="flex flex-col items-center justify-center p-8 rounded-sm bg-slate-800/40 border border-slate-700/50 hover:bg-slate-800 hover:border-slate-500 transition-colors duration-300 group cursor-default"
             >
-              {/* The Logo Image */}
-              <img
-                src={client.img}
-                alt={client.name}
-                // w-full h-full forces it to take up the whole box. object-contain stops it from stretching weirdly!
-                className="w-full h-full object-contain group-hover:grayscale-0 transition-all duration-500"
-              />
+              {/* Big Logo Wrapper */}
+              <div className="relative w-full h-20 mb-6 flex items-center justify-center">
+                <img
+                  src={client.img}
+                  alt={client.name}
+                  // Original image: No grayscale, 100% opacity
+                  className="max-w-full max-h-full object-contain opacity-100"
+                />
+              </div>
+
+              {/* Client Name Centered */}
+              <h3 className="text-base font-semibold text-slate-300 tracking-tight text-center group-hover:text-white transition-colors duration-300">
+                {client.name}
+              </h3>
             </div>
           ))}
         </div>
+
       </div>
     </div>
   );

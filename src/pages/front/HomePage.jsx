@@ -469,7 +469,7 @@ export default function HomePage() {
                   Our Tech Stack
                 </span> */}
                 <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
-                  Our Client
+                  Our Clients and Partnerships
                 </h2>
                 <p className="text-slate-600">
                   We help our clients optimize business spend and maximize their

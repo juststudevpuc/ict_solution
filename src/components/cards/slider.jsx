@@ -1,15 +1,13 @@
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { Slider } from "radix-ui";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 
-export default function slider() {
-  // 1. Reference for our scroll container
+export default function ClientSlider() {
   const sliderRef = useRef(null);
 
-  // 2. Scroll function for the custom buttons
   const scroll = (direction) => {
     if (sliderRef.current) {
-      const scrollAmount = 320; // Width of card + gap
+      // Adjusted scroll amount to match the new, sleeker card width
+      const scrollAmount = 280; 
       sliderRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -17,117 +15,79 @@ export default function slider() {
     }
   };
 
-  // 3. Your Data Array
+  // 1. Removed all descriptions, keeping only name and image
   const slider = [
-    {
-      name: "Kell Dawx",
-      description:
-        "Passionate about development and design, I carry out projects at the request of users.",
-      img: "assets/img/avatar-1.png", // Update these paths to your actual images
-    },
-    {
-      name: "Lotw Fox",
-      description:
-        "Passionate about development and design, I carry out projects at the request of users.",
-      img: "assets/img/avatar-2.png",
-    },
-    {
-      name: "Sara Mit",
-      description:
-        "Passionate about development and design, I carry out projects at the request of users.",
-      img: "assets/img/avatar-3.png",
-    },
-    {
-      name: "Jenny Wert",
-      description:
-        "Passionate about development and design, I carry out projects at the request of users.",
-      img: "assets/img/avatar-4.png",
-    },
-    {
-      name: "Lexa Kin",
-      description:
-        "Passionate about development and design, I carry out projects at the request of users.",
-      img: "assets/img/avatar-5.png",
-    },
+    { name: "CamboTech", img: "client/cambotech.png" },
+    { name: "Camintel", img: "client/camintel.png" },
+    { name: "Emerald HUB", img: "client/emeraldhub.jpg" },
+    { name: "Ezecom", img: "client/ezecom.webp" },
+    { name: "Khmer24", img: "client/khmer24.png" },
+    { name: "Loma", img: "client/loma.jpg" },
+    { name: "Naki", img: "client/naki.jpg" },
+    { name: "Sabay", img: "client/saby.png" },
+    { name: "TechnoKhmer", img: "client/technokhmer.jpg" },
   ];
 
   return (
-    <section className="relative overflow-hidden ">
-      <div className="max-w-[1400px] mx-auto px-7 relative">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div>
-            {/* <span className="text-blue-600 font-semibold tracking-widest uppercase text-xs mb-4 block">
-              Meet The Experts
-            </span> */}
-            {/* <h2 className="text-3xl text-center md:text-4xl font-bold text-slate-900 tracking-tight">
-              Our Dedicated Team
-            </h2> */}
-          </div>
-        </div>
-
+    <section className="relative overflow-hidden bg-white py-24">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative">
+        
         {/* Carousel Container */}
-        {/* OUTER WRAPPER: Keeps everything contained and relative for absolute buttons */}
-        <div className="relative w-full max-w-[1400px] mx-auto group ">
-          {/* LEFT NAVIGATION BUTTON (Floating) */}
+        <div className="relative w-full group">
+          
+          {/* Left Navigation Button (Removed shadow-sm) */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 hidden md:flex"
+            className="absolute -left-4 md:-left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-colors duration-300 opacity-0 group-hover:opacity-100 hidden md:flex rounded-full"
             aria-label="Scroll Left"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={24} strokeWidth={1.5} />
           </button>
 
-          {/* RIGHT NAVIGATION BUTTON (Floating) */}
+          {/* Right Navigation Button (Removed shadow-sm) */}
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 hidden md:flex"
+            className="absolute -right-4 md:-right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-colors duration-300 opacity-0 group-hover:opacity-100 hidden md:flex rounded-full"
             aria-label="Scroll Right"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={24} strokeWidth={1.5} />
           </button>
 
-          {/* FADE GRADIENTS: Makes it look like cards are fading off-screen */}
-          <div className="absolute top-0 bottom-0 left-0 w-8 md:w-24 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute top-0 bottom-0 right-0 w-8 md:w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
+          {/* FADE GRADIENTS */}
+          <div className="absolute top-0 bottom-0 left-0 w-12 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 bottom-0 right-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
           {/* SCROLLING TRACK */}
           <div
             ref={sliderRef}
-            className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory px-8 md:px-12 pb-12 pt-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
-            {slider.map((member, index) => (
-              /* INDIVIDUAL CARD (Clean White) */
+            {slider.map((client, index) => (
+              
+              /* MINIMALIST CARD DESIGN (No shadows, centered content) */
               <article
                 key={index}
-                className="relative flex flex-col p-8 bg-slate-100 rounded-[2rem] transition-all duration-500 shrink-0 snap-center w-[280px] md:w-[320px] border border-slate-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 cursor-grab active:cursor-grabbing group/card"
+                className="relative flex flex-col items-center justify-center p-8 bg-white transition-all duration-300 shrink-0 snap-center w-[240px] md:w-[260px] border border-slate-200 hover:border-slate-300 cursor-grab active:cursor-grabbing group/card"
               >
-                {/* Image Wrapper */}
-                <div className="relative w-24 h-24 mx-auto mb-6">
-                  {/* Subtle decorative glow behind image */}
-                  <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-0 group-hover/card:opacity-20 transition-opacity duration-500"></div>
-
+                {/* Logo Wrapper - Big and centered */}
+                <div className="relative w-full h-24 mb-6 flex items-center justify-center">
                   <img
-                    src={member.img}
-                    alt={member.name}
-                    className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-md z-10 bg-slate-50"
+                    src={client.img}
+                    alt={client.name}
+                    className="max-w-full max-h-full object-contain opacity-100"
                   />
                 </div>
 
-                {/* Text Data */}
-                <div className="text-center flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">
-                    {member.name}
-                  </h3>
-
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-4 flex-grow">
-                    {member.description}
-                  </p>
-                </div>
+                {/* Client Name */}
+                <h3 className="text-lg font-semibold text-slate-900 tracking-tight text-center">
+                  {client.name}
+                </h3>
               </article>
+              
             ))}
           </div>
         </div>
+        
       </div>
     </section>
   );

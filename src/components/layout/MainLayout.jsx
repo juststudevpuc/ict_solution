@@ -417,7 +417,8 @@ export default function MainLayout() {
                 <li className="flex items-start gap-3">
                   <MapPin size={18} className="text-blue-500 shrink-0 mt-0.5" />
                   <span className="leading-relaxed">
-                    123 Tech Avenue, Innovation District
+                    Address: St240B, Road 132, Khum 06, Boeng Kak Ti Mouy, Tuol
+                    Kok
                     <br />
                     Phnom Penh, Cambodia
                   </span>
@@ -428,7 +429,7 @@ export default function MainLayout() {
                     href="tel:+85512345678"
                     className="hover:text-blue-400 transition-colors"
                   >
-                    +855 12 345 678
+                    092 702 175 / 096 287 5270
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
@@ -437,7 +438,7 @@ export default function MainLayout() {
                     href="mailto:hello@ictsolution.com"
                     className="hover:text-blue-400 transition-colors"
                   >
-                    hello@ictsolution.com
+                    ictsolution3@gmail.com
                   </a>
                 </li>
               </ul>
