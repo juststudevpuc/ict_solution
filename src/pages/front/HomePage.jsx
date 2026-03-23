@@ -36,20 +36,32 @@ export default function HomePage() {
       {/* ======================================= */}
       {/* 1. The Header: w-screen and h-screen makes it follow the browser size perfectly */}
       <header className="relative w-screen h-screen overflow-hidden">
-        {/* 2. The Image: Removed negative z-index. Added z-0 */}
-        <img
-          src="/img/phnompenh.jpg"
-          alt="Phnom Penh City"
+        {/* 2. The Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover z-0"
-        />
+        >
+          {/* Replace this src with the actual path to your .mp4 file */}
+          <source src="/ppct2.mp4" type="video/mp4" />
 
-        {/* 3. The Overlay: z-10 to sit on top of the image */}
-        <div className="absolute inset-0 bg-slate-900/60 z-10"></div>
+          {/* Optional fallback image just in case the video fails to load */}
+          <img
+            src="/img/phnompenh.jpg"
+            alt="Phnom Penh City"
+            className="absolute inset-0 w-full h-full object-cover z-0"
+          />
+        </video>
+
+        {/* 3. The Overlay: z-10 to sit on top of the video */}
+        <div className="absolute inset-0 bg-slate-70 z-10"></div>
 
         {/* 4. The Content: z-20 to sit on top of everything */}
         <div className="relative z-20 flex flex-col items-center justify-center text-center w-full h-full px-6">
           <div className="max-w-4xl mx-auto flex flex-col items-center">
-            {/* Headline: Fades in first */}
+            {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -62,7 +74,7 @@ export default function HomePage() {
               </span>
             </motion.h1>
 
-            {/* Paragraph: Fades in slightly after the headline (delay: 0.2s) */}
+            {/* Paragraph */}
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -74,7 +86,7 @@ export default function HomePage() {
               accelerate your revenue growth.
             </motion.p>
 
-            {/* Button: Fades in last, landing the user's focus (delay: 0.4s) */}
+            {/* Button */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
