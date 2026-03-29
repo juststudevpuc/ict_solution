@@ -11,6 +11,7 @@ import {
   Phone,
   MapPin,
   Contact,
+  Send,
 } from "lucide-react";
 import { href, Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -84,6 +85,7 @@ export default function MainLayout() {
     //   ],
     // },
     { label: "Services", href: "/service" },
+    // { label: "Services2", href: "/service2" },
     // { label: "Industries", href: "/industries" },
     { label: "Clients", href: "/client" },
   ];
@@ -109,7 +111,7 @@ export default function MainLayout() {
                 <div className="w-13 h-13 rounded-full border border-slate-100 shadow-sm overflow-hidden bg-white hover:border-slate-200 transition-colors duration-300">
                   {/* The Image (object-cover prevents squishing) */}
                   <img
-                    src="image.png"
+                    src="/image.png"
                     alt="User Avatar"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -273,7 +275,7 @@ export default function MainLayout() {
               <Link to="/" className="flex items-center gap-3">
                 <div className="w-13 h-13  rounded-3xl flex items-center justify-center text-white font-black text-xl">
                   <img
-                    src="image.png"
+                    src="/image.png"
                     alt="User Avatar"
                     className="w-full h-full object-cover rounded-4xl group-hover:scale-105 transition-transform duration-300"
                   />
@@ -297,9 +299,9 @@ export default function MainLayout() {
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
                 >
-                  <Twitter size={18} />
+                  <Send size={18} />
                 </a>
-                <a
+                {/* <a
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
                 >
@@ -310,7 +312,7 @@ export default function MainLayout() {
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
                 >
                   <Instagram size={18} />
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -377,30 +379,30 @@ export default function MainLayout() {
                     About Us
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     to="#"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Careers
                   </Link>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <Link
                     to="#"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Case Studies
                   </Link>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <Link
                     to="#"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Blog
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/contact"

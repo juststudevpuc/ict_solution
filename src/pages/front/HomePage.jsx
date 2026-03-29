@@ -27,8 +27,10 @@ import {
   Image, // Added this as a placeholder icon
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
+  
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* ======================================= */}
@@ -191,10 +193,10 @@ export default function HomePage() {
                 </ul>
 
                 {/* Frosted Glass Button */}
-                <button className="flex items-center justify-between w-full py-4 px-6 bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 hover:border-blue-500 rounded-2xl font-semibold transition-all duration-300 group/btn focus:ring-4 focus:ring-blue-600/30 shadow-lg">
+                <Link to="/category/softwarePage"  className="flex items-center justify-between w-full py-4 px-6 bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 hover:border-blue-500 rounded-2xl font-semibold transition-all duration-300 group/btn focus:ring-4 focus:ring-blue-600/30 shadow-lg">
                   Explore Services{" "}
                   <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                </Link>
               </div>
             </Card>
 

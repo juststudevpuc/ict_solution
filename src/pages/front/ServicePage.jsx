@@ -17,24 +17,28 @@ export default function ServicePage() {
       description:
         "Seamless CI/CD pipelines and secure cloud-native application hosting.",
       icon: Rocket,
+      link: "/category/softwarePage", // 👈 Added link
     },
     {
       title: "Video Editing & Design",
       description:
         "Professional motion graphics, branding, and high-end digital media.",
       icon: PenTool,
+      link: "/services/video-editing", // 👈 Added link
     },
     {
       title: "Software Licensing",
       description:
         "Enterprise-grade software procurement and centralized license management.",
       icon: Key,
+      link: "/services/software-licensing", // 👈 Added link
     },
     {
       title: "Hardware Solutions",
       description:
         "High-performance workstations, secure servers, and IT infrastructure.",
       icon: Cpu,
+      link: "/services/hardware-solutions", // 👈 Added link
     },
   ];
   return (
@@ -91,31 +95,57 @@ export default function ServicePage() {
           </div>
         </div>
       </section>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-[1400px] mx-auto p-6">
-        {specializedServices.map((service, index) => (
-          <div
-            key={index}
-            className="flex flex-col p-8 rounded-[1rem] bg-slate-50/80 border border-slate-100 hover:bg-white hover:border-slate-200 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-500 group cursor-pointer"
-          >
-            {/* Icon Container */}
-            <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:scale-110 group-hover:border-slate-900 transition-all duration-500 shadow-sm">
-              <service.icon
-                className="w-6 h-6 text-slate-700 group-hover:text-white transition-colors duration-300"
-                strokeWidth={1.5}
-              />
-            </div>
-
-            {/* Text Content */}
-            <h3 className="text-xl font-semibold text-slate-900 mb-3 tracking-tight">
-              {service.title}
-            </h3>
-            <p className="text-sm text-slate-500 font-medium leading-relaxed mb-8 flex-grow">
-              {service.description}
+      <section className="bg-white py-18">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          {/* Premium Section Header */}
+          <div className="mb-16 max-w-2xl">
+            <div className="h-px w-8 bg-blue-600 mb-6"></div>
+            <h2 className="text-3xl md:text-4xl font-medium text-slate-900 tracking-tight mb-4">
+              Categories
+            </h2>
+            <p className="text-slate-500 font-light text-lg">
+              Targeted expertise to solve your most complex technical
+              challenges.
             </p>
           </div>
-        ))}
-      </div>
-      <section className="py-24 max-w-[1400px] mx-auto px-6 lg:px-5 bg-white font-sans">
+
+          {/* The Clean & Classic Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
+            {specializedServices.map((service, index) => (
+              <Link
+                key={index}
+                to={service.link}
+                // Flat design: No shadows, no floating. Just a crisp border transition.
+                className="group flex flex-col items-start p-8 bg-white border border-slate-200 hover:border-blue-600 transition-colors duration-300"
+              >
+                {/* Minimalist Icon: Removed the heavy background box. The icon itself changes color on hover. */}
+                <div className="mb-8 text-slate-400 group-hover:text-blue-600 transition-colors duration-300">
+                  <service.icon size={40} strokeWidth={1.2} />
+                </div>
+
+                {/* Typography */}
+                <h3 className="text-xl font-semibold text-slate-900 tracking-tight mb-3">
+                  {service.title}
+                </h3>
+
+                {/* <p className="text-slate-500 font-light leading-relaxed mb-8 flex-grow">
+                  {service.description}
+                </p> */}
+
+                {/* Consistent Call-to-Action Link */}
+                <div className="mt-auto flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-800 transition-colors">
+                  Explore category
+                  <ArrowRight
+                    size={16}
+                    className="ml-2 group-hover:translate-x-1 transition-transform"
+                  />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="py-10 max-w-[1400px] mx-auto px-6 lg:px-5 bg-white font-sans">
         {/* Using items-center ensures the text is perfectly vertically aligned 
         with the center of the image, no matter how tall the image gets! 
       */}

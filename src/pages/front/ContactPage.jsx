@@ -121,7 +121,7 @@ export default function ContactPage() {
                   href="tel:0976765045"
                   className="text-slate-500 hover:text-blue-600 transition-colors"
                 >
-                  (+855) 12345678
+                  092 702 175 / 096 287 5270
                 </a>
               </div>
             </div>

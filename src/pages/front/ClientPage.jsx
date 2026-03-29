@@ -53,7 +53,7 @@ export default function ClientPage() {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
               className="text-white font-medium tracking-tight leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem]"
             >
-              Our Clients. <br />
+              Our Clients, <br />
               <span className="text-white/60">Built on trust.</span>
             </motion.h1>
           </div>
