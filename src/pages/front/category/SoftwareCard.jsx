@@ -36,9 +36,30 @@ export default function SoftwareCard() {
     },
   ];
   return (
-    <div className="px-24 py-18 bg-slate-900">
-      <div className="text-2xl py-14 text-slate-100">
-        <h1>Software Categories : </h1>
+
+    <div className="px-28 py-18 bg-slate-900">
+      <div className="max-w-[1400px] mx-auto py-20">
+        <div className="max-w-3xl">
+          {/* 1. The Eyebrow & Accent Line */}
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-[2px] w-8 bg-blue-500 rounded-full"></div>
+            <span className="text-blue-400 font-semibold tracking-widest uppercase text-sm">
+              Ready-to-Deploy Systems
+            </span>
+          </div>
+
+          {/* 2. The Main Title */}
+          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
+            Software Categories
+          </h2>
+
+          {/* 3. The Supporting Description */}
+          <p className="text-lg md:text-xl text-slate-400 font-light leading-relaxed">
+            Explore our suite of enterprise-grade applications. From Point of
+            Sale to E-Commerce, we have the tools to streamline your operations
+            and scale your growth.
+          </p>
+        </div>
       </div>
       <div className="">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full">

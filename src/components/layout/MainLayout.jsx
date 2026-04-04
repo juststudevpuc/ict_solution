@@ -12,6 +12,8 @@ import {
   MapPin,
   Contact,
   Send,
+  ShoppingBag,
+  ShoppingCart,
 } from "lucide-react";
 import { href, Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -123,10 +125,11 @@ export default function MainLayout() {
                     scrolled ? "text-slate-900" : "text-white"
                   }`}
                 >
-                  Solution
+                  ICT Solution 
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.2em] text-blue-500 font-bold">
-                  Systems
+                  {/* Systems */}
+                  Co., Ltd.
                 </span>
               </div>
             </Link>
@@ -200,6 +203,11 @@ export default function MainLayout() {
                 className="group-hover:translate-x-1 transition-transform relative z-10"
               />
             </Button>
+            <div className="w-14 h-14 rounded-2xl shadow-sm flex items-center justify-center group hover:shadow-md transition-all duration-300 cursor-pointer">
+              <Link to="/payment">
+                <ShoppingCart className="w-6 h-6 text-amber-500 group-hover:text-amber-600 transition-colors" />
+              </Link>
+            </div>
 
             {/* Mobile Menu Trigger */}
             <button

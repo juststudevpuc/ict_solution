@@ -29,7 +29,7 @@ export default function ClientSlider() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-white py-24">
+    <section className="relative overflow-hidden bg-white py-8">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative">
         
         {/* Carousel Container */}
