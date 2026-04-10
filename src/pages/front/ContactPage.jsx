@@ -136,7 +136,7 @@ export default function ContactPage() {
                 </div>
                 <p className="text-slate-500">Phnom Penh, Kampuchea Krom</p>
               </div>
-              <p className="text-slate-900 font-medium">Nhaem Nhim</p>
+              <p className="text-slate-900 font-medium">Mr.NHANH NHIM </p>
             </div>
 
             {/* Leaflet Map Container */}
