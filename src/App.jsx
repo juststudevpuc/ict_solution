@@ -8,23 +8,35 @@ import ContactPage from "./pages/front/ContactPage";
 import ServicePage2 from "./pages/front/ServicePage2";
 import SoftwareCard from "./pages/front/category/SoftwareCard";
 import PaymentPage from "./pages/front/PaymentPage";
+import AdminLayout from "./components/layout/AdminLayout";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { ProductAdmin } from "./pages/admin/ProductAdmin";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="service" element={<ServicePage />} />
-          <Route path="service2" element={<ServicePage2 />} />
-          <Route path="client" element={<ClientPage />} />
-          <Route path="contact" element={<ContactPage />} />
-          <Route path="payment" element={<PaymentPage />} />
+      <TooltipProvider>
+        <Routes>
+          {/* MAIN FRONT-END LAYOUT */}
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="service" element={<ServicePage />} />
+            <Route path="service2" element={<ServicePage2 />} />
+            <Route path="client" element={<ClientPage />} />
+            <Route path="contact" element={<ContactPage />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="category/softwarePage" element={<SoftwareCard />} />
+          </Route>
 
-          <Route path="category/softwarePage" element={<SoftwareCard />} />
-        </Route>
-      </Routes>
+          {/* ADMIN LAYOUT */}
+          <Route path="/admin" element={<AdminLayout />}>
+            {/* Add your admin sub-routes here, e.g.: */}
+            {/* <Route index element={<AdminLayout />} /> */}
+            <Route path="product" element={<ProductAdmin />} />
+          </Route>
+        </Routes>
+      </TooltipProvider>
     </BrowserRouter>
   );
 }
