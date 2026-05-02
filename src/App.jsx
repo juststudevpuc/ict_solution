@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import HomePage from "./pages/front/HomePage";
 import AboutPage from "./pages/front/AboutPage";
@@ -10,7 +10,12 @@ import SoftwareCard from "./pages/front/category/SoftwareCard";
 import PaymentPage from "./pages/front/PaymentPage";
 import AdminLayout from "./components/layout/AdminLayout";
 import { TooltipProvider } from "./components/ui/tooltip";
-import { ProductAdmin } from "./pages/admin/ProductAdmin";
+import ProductAdmin from "./pages/admin/ProductAdmin";
+import OrderPage from "./pages/admin/OrderPage";
+import SignupPage from "./pages/authPage/signup/SignupPage";
+import LoginPage from "./pages/authPage/login/LoginPage";
+import SignUpAdmin from "./pages/adminAuth/signup/SignUpAdmin";
+import LoginAdmin from "./pages/adminAuth/login/LoginAdmin";
 
 export default function App() {
   return (
@@ -27,13 +32,27 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="payment" element={<PaymentPage />} />
             <Route path="category/softwarePage" element={<SoftwareCard />} />
+
+            {/* Added a fallback user dashboard route so it doesn't crash */}
+            <Route path="user" element={<HomePage />} />
           </Route>
 
-          {/* ADMIN LAYOUT */}
+          {/* AUTHENTICATION ROUTES (Fixed Path) */}
+          <Route path="/auth">
+            <Route index element={<Navigate to="login" replace />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<SignupPage />} />
+          </Route>
+
+          {/* ADMIN AUTH ROUTES (Stand-alone) */}
+          <Route path="/admin/login" element={<LoginAdmin />} />
+          <Route path="/admin/signup" element={<SignUpAdmin />} />
+
+          {/* ADMIN DASHBOARD ROUTES (Protected by AdminLayout) */}
           <Route path="/admin" element={<AdminLayout />}>
-            {/* Add your admin sub-routes here, e.g.: */}
-            {/* <Route index element={<AdminLayout />} /> */}
-            <Route path="product" element={<ProductAdmin />} />
+            <Route index element={<Navigate to="productPage" replace />} />
+            <Route path="productPage" element={<ProductAdmin />} />
+            <Route path="orderPage" element={<OrderPage />} />
           </Route>
         </Routes>
       </TooltipProvider>

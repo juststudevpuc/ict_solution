@@ -1,7 +1,10 @@
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 // FIX 1: Capitalized 'S' in ServiceCard
 export default function ServiceCard() {
+
+ 
   
   // FIX 2: Removed the { serviceSell } prop from the function brackets so this array works perfectly
   const serviceSell = [

@@ -26,20 +26,20 @@ export default function ServicePage() {
       icon: PenTool,
       link: "/services/video-editing", // 👈 Added link
     },
-    {
-      title: "Software Licensing",
-      description:
-        "Enterprise-grade software procurement and centralized license management.",
-      icon: Key,
-      link: "/services/software-licensing", // 👈 Added link
-    },
-    {
-      title: "Hardware Solutions",
-      description:
-        "High-performance workstations, secure servers, and IT infrastructure.",
-      icon: Cpu,
-      link: "/services/hardware-solutions", // 👈 Added link
-    },
+    // {
+    //   title: "Software Licensing",
+    //   description:
+    //     "Enterprise-grade software procurement and centralized license management.",
+    //   icon: Key,
+    //   link: "/services/software-licensing", // 👈 Added link
+    // },
+    // {
+    //   title: "Hardware Solutions",
+    //   description:
+    //     "High-performance workstations, secure servers, and IT infrastructure.",
+    //   icon: Cpu,
+    //   link: "/services/hardware-solutions", // 👈 Added link
+    // },
   ];
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900">
@@ -110,7 +110,7 @@ export default function ServicePage() {
           </div>
 
           {/* The Clean & Classic Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8 w-full">
             {specializedServices.map((service, index) => (
               <Link
                 key={index}

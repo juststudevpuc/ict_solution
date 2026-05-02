@@ -10,56 +10,67 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom"; 
+import { useSelector } from "react-redux";
 
 export default function AdminLayout() {
+  const user = useSelector((state) => state.user);
+
+  // 1. If they are NOT logged in at all -> Send to Admin Login
+  if (!user) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  // 2. If they ARE logged in, but they are a normal user -> Kick to Homepage
+  if (user?.role?.toLowerCase() !== "admin") {
+    // This instantly redirects them to your front-end MainLayout
+    return <Navigate to="/" replace />; 
+  }
+
+  // 3. If they pass both checks, let them in!
   return (
     <SidebarProvider>
-      {/* 1. The Sidebar Navigation */}
       <AppSidebar />
-
-      {/* 2. The Main Content Area */}
-      <SidebarInset>
-        {/* Header Section */}
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+      <SidebarInset className="bg-slate-50/50">
+        
+        {/* Professional Sticky Header */}
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-white/80 backdrop-blur-md px-6 transition-[width,height] ease-linear">
+          <div className="flex items-center gap-2 w-full">
+            <SidebarTrigger className="-ml-1 text-slate-500 hover:text-[#006039] transition-colors" />
+            <Separator orientation="vertical" className="mr-2 h-4 bg-slate-200" />
+            
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/">
-                    Build Your Application
+                  <BreadcrumbLink 
+                    href="/admin" 
+                    className="text-slate-500 hover:text-slate-800 transition-colors font-medium text-sm"
+                  >
+                    Dashboard
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbSeparator className="hidden md:block text-slate-300" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbPage className="text-slate-900 font-semibold text-sm">
+                    Management
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
+
+            <div className="ml-auto flex items-center gap-4">
+               {/* Space for Notification or Profile icons */}
+            </div>
           </div>
         </header>
 
-        {/* Content Body */}
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {/* Top Grid: Often used for Stats or Cards */}
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
+        {/* Main Body */}
+        <main className="flex flex-1 flex-col p-6">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
           </div>
+        </main>
 
-          {/* Main Large Content Area */}
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
-        {/* Content Body */}
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {/* This is where your nested routes will render.
-              The Outlet acts as a placeholder for child components.
-          */}
-          <Outlet />
-        </div>
       </SidebarInset>
     </SidebarProvider>
   );

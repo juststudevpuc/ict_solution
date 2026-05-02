@@ -28,11 +28,11 @@ import { Link } from "react-router-dom";
 
 export default function HomePage() {
   return (
-    <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900">
+    <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden no-scrollbar">
       {/* ======================================= */}
       {/* 1. HERO SECTION                         */}
       {/* ======================================= */}
-      <header className="relative w-screen h-screen overflow-hidden">
+      <header className="relative w-screen h-screen overflow-hidden ">
         <video
           autoPlay
           loop
@@ -341,94 +341,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* =======================================
-        {/* 5. TECHNOLOGY STACK                     */}
-        {/* ======================================= */}
-        {/* <section className="py-24 bg-slate-50 relative overflow-hidden">
-          <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-            <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
-                Technology Behind the Modern Software
-              </h2>
-              <p className="text-lg md:text-xl text-slate-500 font-light leading-relaxed">
-                Our teams work with modern software architectures, cloud
-                platforms, and applied AI technologies to build secure, scalable
-                systems designed for real-world production use.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  name: "Cloud Infrastructure",
-                  tool: "AWS & Google Cloud",
-                  icon: Cloud,
-                  imageUrl: "/img/cloud.jpg",
-                },
-                {
-                  name: "Programming Languages",
-                  tool: "React & Next.js",
-                  icon: Layout,
-                  imageUrl: "/img/code.jpeg",
-                },
-                {
-                  name: "Database Systems",
-                  tool: "MySQL & MongoDB",
-                  icon: Database,
-                  imageUrl: "/img/db.webp",
-                },
-                {
-                  name: "Mobile Development",
-                  tool: "React Native & Flutter",
-                  icon: Smartphone,
-                  imageUrl: "/img/app.png",
-                },
-                {
-                  name: "Version Control",
-                  tool: "GitHub & CI/CD",
-                  icon: Github,
-                  imageUrl: "/img/github.jpg",
-                },
-                {
-                  name: "Security & Auth",
-                  tool: "OAuth & JWT",
-                  icon: ShieldCheck,
-                  imageUrl: "/img/jwt.webp",
-                },
-              ].map((tech, index) => {
-                // FIXED BUG: You must assign the icon to a capitalized variable before rendering it in React!
-                const TechIcon = tech.icon;
-
-                return (
-                  <div
-                    key={index}
-                    className="relative flex flex-col items-center justify-center p-8 bg-slate-900 rounded-3xl hover:-translate-y-1 transition-all duration-300 group overflow-hidden border border-slate-700 hover:border-blue-500 shadow-lg hover:shadow-blue-500/20 h-[250px]"
-                    style={{
-                      backgroundImage: `url(${tech.imageUrl})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-slate-950/70 group-hover:bg-slate-950/85 transition-colors z-10"></div>
-
-                    <div className="relative z-20 flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 flex items-center justify-center mb-4">
-                        <TechIcon className="w-10 h-10 text-blue-300 group-hover:text-white transition-colors" />
-                      </div>
-                      <h3 className="text-white font-bold text-center mb-2 drop-shadow-sm text-lg">
-                        {tech.name}
-                      </h3>
-                      <p className="text-blue-400 text-sm font-medium text-center drop-shadow-sm">
-                        {tech.tool}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>  */}
       </main>
     </div>
   );
