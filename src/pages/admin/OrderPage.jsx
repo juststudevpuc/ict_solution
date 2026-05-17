@@ -30,13 +30,12 @@ import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
 import { Edit, Image, Plus, Search, SearchSlash, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../../hooks/useAuth";
 
 export default function OrderPage() {
   const [product, setProduct] = useState([]);
-  // const [category, setCategory] = useState([]);
-  // const [user, setUser] = useState([]);
   const [order, SetOrder] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -48,31 +47,33 @@ export default function OrderPage() {
   // const { user } = useAuth();
   const [form, setForm] = useState({
     total_amount: 0,
-    total_paid: 0,
+    total_paid: "",
     remark: "",
     payment_method: "Cash", // Defaulting to Cash, but could be "Bakong" or "Card"
     detail: [], // This will hold your array of purchased products
   });
 
- 
-
   const fetchingData = async () => {
     setLoading(true);
-    const res = await request("product", "get");
-    const order = await request("order", "get");
-    // const category = await request("category", "get");
-    // if (category) {
-    //   setCategory(category?.data);
-    // }
-    if (res) {
-      console.log("Response Product : ", res);
-      setProduct(res?.data);
-      setForm({ id: "", name: "", description: "", status: true });
-      setLoading(false);
-    }
-    if (order) {
-      console.log("Order :", order);
-      SetOrder(order?.data);
+    try {
+      const res = await request("product", "get");
+      const order = await request("order", "get");
+
+      if (res) {
+        console.log("Response Product : ", res);
+        setProduct(res?.data || res); // Safe fallback
+        setForm({ id: "", name: "", description: "", status: true });
+      }
+      if (order) {
+        console.log("Order :", order);
+        // ✅ FIXED: Fallback to 'order' if 'order.data' doesn't exist
+        // Also ensure this is lowercase 'setOrder' (matching your useState)
+        SetOrder(order?.data || order);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // ✅ Moved this to a finally block so it always turns off the spinner!
       setLoading(false);
     }
   };
@@ -92,6 +93,8 @@ export default function OrderPage() {
     "Total Qty", // Sum of qty from 'order_details'
     "Total ($)",
     "Paid",
+    "PayWay",
+    "Note",
     "Method",
     "Action",
   ];
@@ -126,9 +129,9 @@ export default function OrderPage() {
     try {
       let res;
       if (isEdit) {
-        res = await request(`order/${form?.id}`, "put", payload);
+        res = await request(`admin/order/${form?.id}`, "put", payload);
       } else {
-        res = await request("order", "post", payload);
+        res = await request("admin/order", "post", payload);
       }
 
       if (res) {
@@ -138,7 +141,7 @@ export default function OrderPage() {
         setForm({
           id: "",
           total_amount: 0,
-          total_paid: 0,
+          total_paid: "",
           remark: "",
           payment_method: "Cash",
           detail: [],
@@ -154,6 +157,32 @@ export default function OrderPage() {
     setIsOpen(true);
     setIsEdit(true);
     setForm(itemEdit);
+
+    const mappedDetails =
+      itemEdit?.order_details?.map((d) => {
+        return {
+          product_id: d.product_id,
+          name: d.product?.name || "Unknown item",
+          price: Number(d.price || 0),
+          qty: Number(d.qty || 1),
+          discount: Number(d.discount || 0),
+          total: Number(d.price || 0) * Number(d.qty || 1),
+        };
+      }) || [];
+
+    setForm({
+      id: itemEdit?.id,
+      customer_name: itemEdit?.customer_name || "",
+      phone: itemEdit?.phone || "",
+      total_amount: Number(itemEdit?.total_amount || 0),
+      total_paid: Number(itemEdit?.total_paid || 0),
+      payment_method: itemEdit?.payment_method || "",
+      remark: itemEdit?.remark || "",
+
+      // THIS IS THE CRUCIAL PART!
+      // This feeds the existing products into your UI list
+      detail: mappedDetails,
+    });
   };
 
   const onDelete = async (itemDelete) => {
@@ -207,42 +236,55 @@ export default function OrderPage() {
   };
 
   return (
-    <div>
-      <div className="flex justify-between">
-        <div className="flex items-center gap-3">
-          <h1>Order Product</h1>
+    <div className="">
+      <div className="flex justify-between w-5xl items-center">
+        <div className="flex items-center gap-3 mb-4">
+          {/* <h1 className="text-xl font-bold">Order</h1> */}
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search Product"
+            placeholder="Search order "
+            className="max-w-xs"
           />
           <Button
             onClick={async () => {
               setLoading(true);
-              const res = await request(`product/search/?q=${query}`, "get");
-              if (res) {
-                console.log("Response Product : ", res);
-                setProduct(res?.data);
+              try {
+                const res = await request(
+                  `admin/order/search/?q=${query}`,
+                  "get",
+                );
+                if (res) {
+                  // ✅ FIXED: Changed setProduct to setOrder
+                  SetOrder(res?.data || []);
+                }
+              } catch (error) {
+                console.error("Search failed", error);
+              } finally {
+                // ✅ Moved to finally so the spinner always turns off!
                 setLoading(false);
               }
             }}
+            className={"bg-green-400 text-white hover:bg-green-600"}
           >
-            <Search />
+            Search
           </Button>
           <Button
             onClick={() => {
               fetchingData();
               setQuery("");
             }}
+            variant="destructive"
           >
-            <SearchSlash />
+            <SearchSlash className="w-4 h-4 text-red-500 transition-colors" />
           </Button>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button variant="primary" className={"bg-blue-500 text-white hover:bg-blue-700"}>
               <Plus />
+              Add Order
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
@@ -376,8 +418,16 @@ export default function OrderPage() {
                     variant="outline"
                     onClick={() => {
                       setIsOpen(false);
+                      setIsEdit(false); // <--- Add this!
+
+                      // Also a good idea to clear these if you have them!
+                      setSelectedProduct("");
+                      setSelectedQty(1);
+
                       setForm({
                         id: "",
+                        customer_name: "", // Added missing fields so React doesn't complain
+                        phone: "",
                         detail: [],
                         total_amount: 0,
                         total_paid: 0,
@@ -439,91 +489,90 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="mt-7">
-        {/* <h1>{Product[0]?.name}</h1> */}
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {tbl_head?.map((item, index) => (
-                <TableHead key={index}>{item}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={tbl_head.length}>
-                  <div className="flex justify-center mt-10">
-                    <Spinner className={"size-7"} />
-                  </div>
-                </TableCell>
+      <div className="w-5xl">
+        <div className="w-full overflow-x-auto px-4 custom-scrollbar border border-border bg-card ">
+          <Table className="w-full border-collapse text-sm">
+            <TableHeader>
+              <TableRow className="bg-slate-50/50 dark:bg-white/5">
+                {tbl_head?.map((item, index) => (
+                  <TableHead key={index} className="whitespace-nowrap">
+                    {item}
+                  </TableHead>
+                ))}
               </TableRow>
-            ) : (
-              <>
-                {order?.map((item, index) => {
-                  // Helper to get all product names as a string
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={tbl_head.length}>
+                    <div className="flex justify-center py-10">
+                      <Spinner className={"size-7"} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                order?.map((item, index) => {
                   const productNames = item?.order_details
-                    ?.map((d) => {
-                      // Access the name through the product relation we just loaded
-                      return d.product?.name || "Unknown Item";
-                    })
+                    ?.map((d) => d.product?.name || "Unknown Item")
                     .join(", ");
-
                   const totalQty = item?.order_details?.reduce(
                     (acc, curr) => acc + Number(curr.qty || 0),
                     0,
                   );
+                  const paid = Number(item?.total_paid) || 0;
+                  const total = Number(item?.total_amount) || 0;
+                  const percentage =
+                    total > 0 ? ((paid / total) * 100).toFixed(2) : "0.00";
 
                   return (
                     <TableRow key={item?.id || index}>
-                      {/* 1. No */}
-                      <TableCell className="font-medium text-slate-500">
+                      <TableCell className="font-medium py-6 text-slate-500">
                         {index + 1}
                       </TableCell>
-                      {/* 2. Order No */}
                       <TableCell className="font-semibold">
                         {item?.order_no}
                       </TableCell>
-                      <TableCell> {formatDate(item?.created_at)}</TableCell>
-                      <TableCell> {formatDate(item?.updated_at)}</TableCell>
-                      {/* 3. Customer (Added) */}
+                      <TableCell>{formatDate(item?.created_at)}</TableCell>
+                      <TableCell>{formatDate(item?.updated_at)}</TableCell>
                       <TableCell>{item?.customer_name || "Guest"}</TableCell>
-                      {/* 4. Phone (Added) */}
                       <TableCell>{item?.phone || "N/A"}</TableCell>
-                      {/* 5. Products (Added) */}
                       <TableCell
                         className="max-w-[200px] truncate"
                         title={productNames}
                       >
                         {productNames || "—"}
                       </TableCell>
-                      {/* 6. Qty (Added) */}
                       <TableCell className="text-center font-bold">
                         {totalQty || 0}
                       </TableCell>
-                      {/* 7. Total Amount */}
                       <TableCell className="font-bold text-slate-900">
-                        ${Number(item?.total_amount).toFixed(2)}
+                        ${total.toFixed(2)}
                       </TableCell>
-                      {/*  */}
                       <TableCell className="font-bold text-slate-900">
-                        ${Number(item?.total_paid).toFixed(2)}
+                        ${paid.toFixed(2)}
                       </TableCell>
-                      {/* 8. Status */}
+                      <TableCell>{item?.payment_method || "-"}</TableCell>
+                      <TableCell>{item?.remark || "-"}</TableCell>
                       <TableCell>
-                        {Number(item?.total_paid) >=
-                        Number(item?.total_amount) ? (
-                          <Badge className="text-white bg-green-600 border-none">
-                            Paid
-                          </Badge>
-                        ) : (
-                          <Badge className="text-white bg-amber-500 border-none">
-                            Pending
-                          </Badge>
-                        )}
+                        <div className="flex flex-col gap-2 min-w-[120px]">
+                          <div className="flex items-center justify-between gap-2">
+                            <Badge
+                              className={`text-[10px] border-none px-2 py-0 h-5 text-white ${paid >= total ? "bg-green-600" : "bg-amber-500"}`}
+                            >
+                              {paid >= total ? "Paid" : "Pending"}
+                            </Badge>
+                            <span className="text-[10px] font-bold text-slate-600">
+                              {percentage}%
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/50">
+                            <div
+                              className={`h-full transition-all duration-1000 ${paid >= total ? "bg-green-500" : "bg-blue-500"}`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
                       </TableCell>
-                      {/* 9. Actions */}
                       <TableCell>
                         <div className="flex gap-2">
                           <Button
@@ -544,11 +593,54 @@ export default function OrderPage() {
                       </TableCell>
                     </TableRow>
                   );
-                })}
-              </>
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* 2. FIXED FOOTER AREA */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-t border-border rounded-b-xl bg-card">
+          <span className="text-sm font-medium text-slate-500">
+            Total:{" "}
+            <span className="text-slate-900 dark:text-white font-bold">
+              {order?.length}
+            </span>{" "}
+            records
+          </span>
+
+          <div className="flex items-center gap-1">
+            {/* Always show page 1 */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              1
+            </Button>
+
+            {/* Only show page 2 if there are more than 10 records */}
+            {order?.length > 10 && (
+              <Button variant="outline" size="sm">
+                2
+              </Button>
             )}
-          </TableBody>
-        </Table>
+
+            {/* Only show page 3 if there are more than 20 records */}
+            {order?.length > 20 && (
+              <Button variant="outline" size="sm">
+                3
+              </Button>
+            )}
+
+            {/* Show the next arrow if there are more than 10 records */}
+            {order?.length > 10 && (
+              <Button variant="outline" size="sm" className="px-2">
+                {">"}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

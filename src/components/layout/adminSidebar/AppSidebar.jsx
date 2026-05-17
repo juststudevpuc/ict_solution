@@ -31,8 +31,8 @@ import { NavUser } from "./NavUser";
 // Sample data localized to the component or moved to a config file
 const sidebarData = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin",
+    email: "admin@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [{ name: "Admin ",  plan: "ICT Solution " }],
@@ -54,9 +54,9 @@ const sidebarData = {
       // ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      // title: "Documentation",
+      // url: "#",
+      // icon: BookOpen,
       // items: [
       //   { title: "Introduction", url: "#" },
       //   { title: "Get Started", url: "#" },

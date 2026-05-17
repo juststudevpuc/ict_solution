@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/store/userSlice";
 import { clearToken } from "@/store/tokenSlice";
+import { clearAllCart } from "@/store/cartSlice";
 
 export default function MainLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,11 +47,18 @@ export default function MainLayout() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const handleLogout = () => {
-    // 1. Clear Redux
+    // 1. Clear Redux Auth & Cart
     dispatch(logout());
     dispatch(clearToken());
-    // 2. Clear Local Storage
+    dispatch(clearAllCart()); // <-- Kills the cart in Redux memory
+
+    // 2. Kill the browser storage completely
     localStorage.removeItem("token");
+    localStorage.removeItem("persist:root"); // <-- Default redux-persist key (if you use it)
+
+    // Optional: If you explicitly exported your persistor, run this:
+    // persistor.purge();
+
     // 3. Redirect
     navigate("/", { replace: true });
   };
@@ -66,7 +74,7 @@ export default function MainLayout() {
 
   const nav_item = [
     { label: "Home", href: "/" },
-    { label: "About Us", href: "/about" },
+    // { label: "About Us", href: "/about" },
     { label: "Services", href: "/service" },
     // { label: "Services2", href: "/service2" },
     // { label: "Industries", href: "/industries" },
@@ -157,7 +165,7 @@ export default function MainLayout() {
           <div className="flex items-center gap-3">
             {/* Search or Cart - Classic Style */}
             <Link
-              to="/payment"
+              to={user ? "/payment" : "/auth"}
               className="relative p-2 text-slate-500 hover:text-slate-900 transition-colors"
             >
               <ShoppingCart className="w-5 h-5" />
@@ -210,13 +218,18 @@ export default function MainLayout() {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
+
                     <DropdownMenuItem
                       onClick={() =>
-                        navigate(user.role === "admin" ? "/admin" : "/user")
+                        navigate(
+                          user?.role === "admin" ? "/admin" : "/userProfile",
+                        )
                       }
                     >
-                      Dashboard
+                      {/* Show "Dashboard" for admins, "Profile" for everyone else */}
+                      {user?.role === "admin" ? "Dashboard" : "Profile"}
                     </DropdownMenuItem>
+
                     <DropdownMenuItem
                       onClick={handleLogout}
                       className="text-red-600 font-medium"

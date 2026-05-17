@@ -14,6 +14,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { clearAllCart } from "@/store/cartSlice";
 
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
@@ -39,13 +40,18 @@ export function LoginForm({ className, ...props }) {
         return;
       }
 
+      // Inside your onSubmit function, right after a successful login (if res is true):
       if (res) {
+        // 1. Wipe the slate clean BEFORE saving the new user
+        dispatch(clearAllCart());
+        localStorage.removeItem("persist:root");
+
+        // 2. Set the new user data
         dispatch(setUser(res?.user));
         dispatch(setToken(res?.token));
-
-        // ADD THIS LINE: Save the token to the browser so it survives a refresh!
         localStorage.setItem("token", res?.token);
-        // Role-based navigation logic
+
+        // 3. Navigate
         if (res?.user?.role === "admin") {
           navigate("/admin", { replace: true });
         } else {

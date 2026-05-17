@@ -16,6 +16,7 @@ import SignupPage from "./pages/authPage/signup/SignupPage";
 import LoginPage from "./pages/authPage/login/LoginPage";
 import SignUpAdmin from "./pages/adminAuth/signup/SignUpAdmin";
 import LoginAdmin from "./pages/adminAuth/login/LoginAdmin";
+import UserProfile from "./pages/front/profile/UserProfile";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="payment" element={<PaymentPage />} />
             <Route path="category/softwarePage" element={<SoftwareCard />} />
+            <Route path="userProfile" element={<UserProfile />} />
 
             {/* Added a fallback user dashboard route so it doesn't crash */}
             <Route path="user" element={<HomePage />} />

@@ -10,7 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import { Outlet, Navigate } from "react-router-dom"; 
+import { Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function AdminLayout() {
@@ -24,26 +24,32 @@ export default function AdminLayout() {
   // 2. If they ARE logged in, but they are a normal user -> Kick to Homepage
   if (user?.role?.toLowerCase() !== "admin") {
     // This instantly redirects them to your front-end MainLayout
-    return <Navigate to="/" replace />; 
+    return <Navigate to="/" replace />;
   }
 
   // 3. If they pass both checks, let them in!
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-slate-50/50">
-        
-        {/* Professional Sticky Header */}
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-white/80 backdrop-blur-md px-6 transition-[width,height] ease-linear">
+      <SidebarInset className="bg-slate-50/50 flex flex-col min-h-screen">
+        {/* 
+    1. Changed 'fixed' to 'sticky'. 
+    2. Removed 'left-0' and 'w-full' (sticky inside a flex-col parent handles width automatically).
+    3. Added 'top-0' and 'z-10'.
+  */}
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-white/80 backdrop-blur-md px-6 transition-all ease-linear">
           <div className="flex items-center gap-2 w-full">
-            <SidebarTrigger className="-ml-1 text-slate-500 hover:text-[#006039] transition-colors" />
-            <Separator orientation="vertical" className="mr-2 h-4 bg-slate-200" />
-            
+            {/* <SidebarTrigger className="-ml-1 text-slate-500 hover:text-[#006039] transition-colors" /> */}
+            {/* <Separator
+              orientation="vertical"
+              className="mr-2 h-4 bg-slate-200"
+            /> */}
+
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink 
-                    href="/admin" 
+                  <BreadcrumbLink
+                    href="/admin"
                     className="text-slate-500 hover:text-slate-800 transition-colors font-medium text-sm"
                   >
                     Dashboard
@@ -59,18 +65,21 @@ export default function AdminLayout() {
             </Breadcrumb>
 
             <div className="ml-auto flex items-center gap-4">
-               {/* Space for Notification or Profile icons */}
+              {/* Profile/Notification icons go here */}
             </div>
           </div>
         </header>
 
-        {/* Main Body */}
-        <main className="flex flex-1 flex-col p-6">
+        {/* 
+    Main Body 
+    Removed 'flex-1' from the inner div and kept it on the main tag 
+    to ensure the footer/pagination stays at the bottom.
+  */}
+        <main className="flex-1 p-6">
           <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>
-
       </SidebarInset>
     </SidebarProvider>
   );

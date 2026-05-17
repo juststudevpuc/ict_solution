@@ -6,15 +6,33 @@
 @custom-variant dark (&:is(.dark *));
 
 @layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  /* 1. Keep your existing no-scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* 2. Move the custom-scrollbar HERE for better priority */
+  .custom-scrollbar::-webkit-scrollbar {
+    display: block !important;
+    height: 6px; /* Slightly thinner looks more "Apple-style" */
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); 
+  }
+
+  /* For Firefox Support */
+  .custom-scrollbar {
+    scrollbar-width: thin !important;
+    scrollbar-color: #cbd5e1 transparent !important;
   }
 }
 
@@ -139,13 +157,51 @@
   html {
     @apply font-sans;
     }
-  html, body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+ html, body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
 }
 
-  html::-webkit-scrollbar, 
-  body::-webkit-scrollbar {
-    display: none;
-  }
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari */
+}
+
+/* This forces the scrollbar to show back up for the table only */
+.custom-scrollbar::-webkit-scrollbar {
+  display: block !important;
+  height: 8px; /* Height for horizontal scroll */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 10px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); /* subtle white for dark mode */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: auto !important;
+}
+  .custom-scrollbar::-webkit-scrollbar {
+  display: block !important;
+  height: 12px; /* Thicker like your image */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888; /* Darker grey */
+  border-radius: 10px;
+  border: 3px solid #f1f1f1; /* Creates the padding around the bar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light track background */
+}
 }

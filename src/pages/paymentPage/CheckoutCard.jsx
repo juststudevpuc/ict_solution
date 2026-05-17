@@ -37,6 +37,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import InvoiceCard from "./InvoiceCard";
 import CartCard from "./CartCard";
+import RemarkInput from "@/components/cards/RemarkInput";
 
 export default function CheckoutCard({ formData }) {
   const dispatch = useDispatch();
@@ -216,12 +217,7 @@ export default function CheckoutCard({ formData }) {
         </Select>
       </div>
 
-      <Textarea
-        value={remark}
-        onChange={(e) => setRemark(e.target.value)}
-        placeholder="Add a note (Optional)"
-        className="rounded-xl mb-6 min-h-[80px]"
-      />
+     <RemarkInput/>
 
       {/* Action Buttons */}
       <div className="flex gap-3">

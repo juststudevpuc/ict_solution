@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { configs } from "@/utils/config/configs";
 import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
@@ -50,13 +52,12 @@ export default function ProductAdmin() {
     name: "",
     description: "",
     category_id: "",
+    qty: 0,
     price: 0,
     discount: 0,
     image: null,
     status: true,
   });
-
- 
 
   const fetchingData = async () => {
     setLoading(true);
@@ -100,7 +101,7 @@ export default function ProductAdmin() {
     formData.append("name", form?.name);
     formData.append("description", form?.description);
     formData.append("category_id", form?.category_id);
-    formData.append("qty", form?.qty);
+    formData.append("qty", form?.qty || 0);
     formData.append("price", form?.price);
     formData.append("discount", form?.discount);
     formData.append("status", form?.status ? 1 : 0);
@@ -112,7 +113,11 @@ export default function ProductAdmin() {
     try {
       if (isEdit) {
         formData.append("_method", "put");
-        const res = await request(`product/${form?.id}`, "post", formData);
+        const res = await request(
+          `admin/product/${form?.id}`,
+          "post",
+          formData,
+        );
         if (res) {
           console.log("Updated Product : ", res);
           fetchingData();
@@ -149,6 +154,20 @@ export default function ProductAdmin() {
     setIsOpen(true);
     setIsEdit(true);
     setForm(itemEdit);
+
+    setForm({
+      id: itemEdit?.id,
+      name: itemEdit?.name || "",
+      description: itemEdit?.description || "",
+      category_id: itemEdit?.category_id || "",
+      qty: itemEdit?.qty || 0,
+      price: itemEdit?.price || 0,
+      discount: itemEdit?.discount || 0,
+      // Force status to be a strict boolean (true/false) for your UI
+      status: itemEdit?.status == 1 || itemEdit?.status === true,
+      // Keep image null so we don't crash your file input with a URL string!
+      image: null,
+    });
   };
 
   const onDelete = async (itemDelete) => {
@@ -165,35 +184,48 @@ export default function ProductAdmin() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search Product"
+            placeholder="Search order "
+            className="max-w-xs"
           />
           <Button
             onClick={async () => {
               setLoading(true);
-              const res = await request(`product/search/?q=${query}`, "get");
-              if (res) {
-                console.log("Response Product : ", res);
-                setProduct(res?.data);
+              try {
+                const res = await request(
+                  `admin/order/search/?q=${query}`,
+                  "get",
+                );
+                if (res) {
+                  // ✅ FIXED: Changed setProduct to setOrder
+                  SetOrder(res?.data || []);
+                }
+              } catch (error) {
+                console.error("Search failed", error);
+              } finally {
+                // ✅ Moved to finally so the spinner always turns off!
                 setLoading(false);
               }
             }}
+            className={"bg-green-400 text-white hover:bg-green-600"}
           >
-            <Search />
+            Search
           </Button>
           <Button
             onClick={() => {
               fetchingData();
               setQuery("");
             }}
+            variant="destructive"
           >
-            <SearchSlash />
+            <SearchSlash className="w-4 h-4 text-red-500 transition-colors" />
           </Button>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger>
-            <Button>
+            <Button variant="primary" className={"bg-blue-500 text-white hover:bg-blue-700"}>
               <Plus />
+              Add New
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -218,13 +250,14 @@ export default function ProductAdmin() {
                   </div>
                   <div className="flex flex-col gap-3 w-full">
                     <Label>Description</Label>
-                    <Input
+                    <Textarea
                       value={form?.description}
                       onChange={(e) =>
                         setForm({ ...form, description: e.target.value })
                       }
-                      placeholder="Description"
+                      placeholder="Enter description... (You can use Enters and bullet points here)"
                       required
+                      className="min-h-[150px] leading-relaxed"
                     />
                   </div>
                 </div>
@@ -241,18 +274,6 @@ export default function ProductAdmin() {
                       required
                     />
                   </div>
-                  {/* <div className="flex flex-col gap-3 w-full">
-                    <Label>Quantity</Label>
-                    <Input
-                      type={"number"}
-                      value={form?.qty}
-                      onChange={(e) =>
-                        setForm({ ...form, qty: e.target.value })
-                      }
-                      placeholder="Quantity"
-                      required
-                    />
-                  </div> */}
                 </div>
                 <div className="flex flex-row gap-3">
                   <div className="flex flex-col gap-3 w-full">
@@ -277,18 +298,6 @@ export default function ProductAdmin() {
                   </div>
                 </div>
                 <div className="flex flex-row gap-3">
-                  {/* <div className="flex flex-col gap-3 w-full">
-                    <Label>Discount</Label>
-                    <Input
-                      type={"number"}
-                      value={form?.discount}
-                      onChange={(e) =>
-                        setForm({ ...form, discount: e.target.value })
-                      }
-                      placeholder="Discount"
-                      required
-                    />
-                  </div> */}
                   <div className="flex flex-col gap-3 w-full">
                     <Label>Status</Label>
                     <Select
@@ -318,16 +327,17 @@ export default function ProductAdmin() {
                   />
                 </div>
                 <div className="">
-                  {form?.image && (
-                    <div className="w-28 h-28 rounded-xl overflow-hidden">
+                  {/* ✅ FIXED: Show if there is a new image OR an existing image_url */}
+                  {(form?.image || form?.image_url) && (
+                    <div className="w-28 h-28 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                       <img
-                        className="w-full h-full"
+                        className="w-full h-full object-cover" // Added object-cover so it doesn't stretch weirdly
                         src={
                           form?.image instanceof File
                             ? URL.createObjectURL(form?.image)
                             : form?.image_url
                         }
-                        alt={`picture : ${form?.name}`}
+                        alt={`picture : ${form?.name || "preview"}`}
                       />
                     </div>
                   )}
@@ -338,15 +348,18 @@ export default function ProductAdmin() {
                       onClick={() => {
                         setIsOpen(false);
                         setForm({
-                          id: "",
-                          name: "",
-                          description: "",
-                          category_id: "",
-                          // qty: 0,
-                          price: 0,
-                          // discount: 0,
+                          id: itemEdit?.id,
+                          name: itemEdit?.name || "",
+                          description: itemEdit?.description || "",
+                          category_id: itemEdit?.category_id || "",
+                          qty: itemEdit?.qty || 0,
+                          price: itemEdit?.price || 0,
+                          discount: itemEdit?.discount || 0,
+                          // Force status to be a strict boolean (true/false) for your UI
+                          status:
+                            itemEdit?.status == 1 || itemEdit?.status === true,
+                          // Keep image null so we don't crash your file input with a URL string!
                           image: null,
-                          status: true,
                         });
                         setIsEdit(false);
                       }}
@@ -409,7 +422,7 @@ export default function ProductAdmin() {
       <div className="mt-7">
         {/* <h1>{Product[0]?.name}</h1> */}
 
-        <Table>
+        <Table className={"border border-4"}>
           <TableHeader>
             <TableRow>
               {tbl_head?.map((item, index) => (
@@ -432,7 +445,47 @@ export default function ProductAdmin() {
                   <TableRow>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{item?.name}</TableCell>
-                    <TableCell>{item?.description}</TableCell>
+                    <TableCell className="max-w-[250px]">
+                      {!item?.description ? (
+                        <span className="text-slate-500">-</span>
+                      ) : item.description.length <= 40 ? (
+                        <span className="text-sm text-slate-600">
+                          {item.description}
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          {/* Shows the first 40 characters and hides the rest */}
+                          <span className="text-sm text-slate-600 truncate">
+                            {item.description.substring(0, 40)}...
+                          </span>
+
+                          {/* The Pop-up Trigger */}
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <button className="text-xs font-bold text-blue-600 hover:underline shrink-0">
+                                View Details
+                              </button>
+                            </DialogTrigger>
+
+                            <DialogContent className="sm:max-w-[500px]">
+                              <DialogHeader>
+                                <DialogTitle>
+                                  {item?.name
+                                    ? `${item.name} Details`
+                                    : "Description Details"}
+                                </DialogTitle>
+                              </DialogHeader>
+                              <div className="mt-2">
+                                {/* whitespace-pre-wrap guarantees your bullet points and "Enters" show up perfectly! */}
+                                <DialogDescription className="text-sm text-slate-800 whitespace-pre-wrap leading-relaxed">
+                                  {item.description}
+                                </DialogDescription>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell>{item?.category?.name}</TableCell>
                     {/* <TableCell>{item?.qty}</TableCell> */}
                     <TableCell>${item?.price}</TableCell>
