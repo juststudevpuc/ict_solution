@@ -25,13 +25,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { configs } from "@/utils/config/configs";
 import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
 import { Edit, Image, Plus, Search, SearchSlash, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../../hooks/useAuth";
 
 export default function OrderPage() {
@@ -43,7 +42,7 @@ export default function OrderPage() {
   const [deleteData, setDeleteData] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // const { user } = useAuth();
   const [form, setForm] = useState({
     total_amount: 0,
@@ -57,7 +56,8 @@ export default function OrderPage() {
     setLoading(true);
     try {
       const res = await request("product", "get");
-      const order = await request("order", "get");
+      // Add ?status=approved to the URL!
+      const order = await request("order?status=approved", "get");
 
       if (res) {
         console.log("Response Product : ", res);
@@ -94,6 +94,7 @@ export default function OrderPage() {
     "Total ($)",
     "Paid",
     "PayWay",
+    "Status",
     "Note",
     "Method",
     "Action",
@@ -282,7 +283,10 @@ export default function OrderPage() {
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="primary" className={"bg-blue-500 text-white hover:bg-blue-700"}>
+            <Button
+              variant="primary"
+              className={"bg-blue-500 text-white hover:bg-blue-700"}
+            >
               <Plus />
               Add Order
             </Button>
@@ -467,7 +471,7 @@ export default function OrderPage() {
                 onClick={async () => {
                   try {
                     const res = await request(
-                      `order/${deleteData?.id}`,
+                      `admin/order/${deleteData?.id}`,
                       "delete",
                     );
                     if (res) {
@@ -493,7 +497,8 @@ export default function OrderPage() {
         <div className="w-full overflow-x-auto px-4 custom-scrollbar border border-border bg-card ">
           <Table className="w-full border-collapse text-sm">
             <TableHeader>
-              <TableRow className="bg-slate-50/50 dark:bg-white/5">
+              {/* The Colorful & Clean Row */}
+              <TableRow className="border-b-2 border-blue-200 bg-blue-50/80 hover:bg-blue-50/80 dark:border-blue-900/50 dark:bg-blue-950/30 dark:hover:bg-blue-950/30 backdrop-blur-sm transition-colors">
                 {tbl_head?.map((item, index) => (
                   <TableHead key={index} className="whitespace-nowrap">
                     {item}
@@ -552,6 +557,23 @@ export default function OrderPage() {
                         ${paid.toFixed(2)}
                       </TableCell>
                       <TableCell>{item?.payment_method || "-"}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                            item.status === "approved"
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
+                              : item.status === "rejected"
+                                ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
+                                : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
+                          }`}
+                        >
+                          {item.status
+                            ? item.status.charAt(0).toUpperCase() +
+                              item.status.slice(1)
+                            : "Pending"}
+                        </span>
+                      </TableCell>
+
                       <TableCell>{item?.remark || "-"}</TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-2 min-w-[120px]">

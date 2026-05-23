@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/userSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,10 +25,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { request } from "@/utils/request/request";
 import { Spinner } from "@/components/ui/spinner";
-// Make sure to import your request function!
-// import { request } from "@/your-api-file";
 
 const UserProfile = () => {
+  // 1. Redux Setup
+  const dispatch = useDispatch();
+
+  // 2. All States inside the component
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -39,29 +43,27 @@ const UserProfile = () => {
   const [order, setOrder] = useState([]);
   const [me, setMe] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // <--- State is safely inside
+  const [imageFile, setImageFile] = useState(null); // Holds the actual file to send to Laravel
+  const [imagePreview, setImagePreview] = useState(null); // Holds the preview to show the user
 
+  // 3. Fetch Data
   const fetchingData = async () => {
     setLoading(true);
 
-    // 1. Fetch Orders
-    // Change this part:
     try {
-      const orderRes = await request("order", "get");
+      const orderRes = await request("order?status=approved", "get");
       if (orderRes) {
-        // Check if Laravel put the array inside a "data" property!
-        // If orderRes.data exists, use that. Otherwise, try orderRes itself.
         setOrder(orderRes.data || orderRes);
       }
     } catch (error) {
       console.log("Error fetching orders:", error);
     }
 
-    // 2. Fetch User Profile
     try {
       const res = await request("me", "get");
       if (res?.user) {
         setMe(res.user);
-        // Sync the form so the inputs actually show the user's info!
         setFormData((prev) => ({
           ...prev,
           name: res.user.name || "",
@@ -73,27 +75,81 @@ const UserProfile = () => {
     } catch (error) {
       console.log("Error fetching user info:", error);
     } finally {
-      // Always stop loading, even if there is an error
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchingData();
   }, []);
 
+  // 4. Form Handlers
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    console.log("Saving profile data...", formData);
-    // Add your API call to Laravel here:
-    // await request("user/update", "post", formData);
+    setIsSaving(true);
+
+    // PACKAGING DATA FOR FILE UPLOAD
+    const submitData = new FormData();
+    submitData.append("name", formData.name);
+    submitData.append("phone", formData.phone);
+    submitData.append("address", formData.address);
+
+    if (formData.newPassword) {
+      submitData.append("currentPassword", formData.currentPassword);
+      submitData.append("newPassword", formData.newPassword);
+    }
+
+    // If they picked a new image, add it to the package!
+    if (imageFile) {
+      submitData.append("image", imageFile);
+    }
+
+    try {
+      // Send the FormData. Your request.js will handle the headers automatically!
+      const res = await request("user/update", "post", submitData);
+
+      if (res?.error) {
+        alert(res.message);
+        setIsSaving(false);
+        return;
+      }
+
+      if (res?.user) {
+        alert("Profile updated successfully!");
+        dispatch(setUser(res.user));
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+        }));
+        setImageFile(null); // Clear the temp file
+        fetchingData();
+      }
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      alert("Something went wrong updating your profile.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const tbl_head = ["Order No", "Product", "Date","Amount","Product Price" ,"Paid","PayWay","Remark", "Status"];
+  const tbl_head = [
+    "Order No",
+    "Product",
+    "Date",
+    "Qty",
+    "Total",
+    "Paid",
+    "PayWay",
+    "Remark",
+    "Status",
+  ];
 
+  // 5. Render
   return (
     <div className="w-full max-w-6xl mx-auto p-6 mt-10 md:p-10 space-y-10">
       {/* ===== PAGE HEADER ===== */}
@@ -111,12 +167,42 @@ const UserProfile = () => {
         <div className="md:col-span-4 space-y-6">
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
             <div className="relative mb-4">
-              <div className="w-32 h-32 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
-                <User className="w-16 h-16 text-slate-400" />
+              <div className="w-32 h-32 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden relative">
+                {/* Show the preview, or the database image, or the fallback icon */}
+                {imagePreview || me?.image ? (
+                  <img
+                    // If they just picked a new image, show it. Otherwise, show the one from Laravel (add your backend URL if needed!)
+                    src={imagePreview || `http://127.0.0.1:8000${me.image}`}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-16 h-16 text-slate-400" />
+                )}
               </div>
-              <button className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors">
+
+              {/* Hidden file input */}
+              <input
+                type="file"
+                id="avatar-upload"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setImageFile(file); // Save file for the API
+                    setImagePreview(URL.createObjectURL(file)); // Show preview instantly
+                  }
+                }}
+              />
+
+              {/* The clickable button that triggers the hidden input */}
+              <label
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer"
+              >
                 <Camera className="w-4 h-4" />
-              </button>
+              </label>
             </div>
 
             <h2 className="text-xl font-bold text-slate-900">
@@ -162,7 +248,7 @@ const UserProfile = () => {
                       id="name"
                       name="name"
                       className="pl-9"
-                      value={me?.name}
+                      value={formData.name}
                       onChange={handleChange}
                     />
                   </div>
@@ -195,7 +281,7 @@ const UserProfile = () => {
                       name="email"
                       type="email"
                       className="pl-9 bg-slate-50 text-slate-500"
-                      value={me?.email}
+                      value={formData.email}
                       disabled
                     />
                   </div>
@@ -260,8 +346,9 @@ const UserProfile = () => {
               <Button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={isSaving}
               >
-                Save Changes
+                {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
@@ -311,12 +398,10 @@ const UserProfile = () => {
                       key={item?.id || index}
                       className="hover:bg-slate-50/50"
                     >
-                      {/* 1. Order No */}
                       <TableCell className="font-semibold text-blue-600 py-4">
                         {item?.order_no || `#${item?.id}`}
                       </TableCell>
 
-                      {/* 2. Product */}
                       <TableCell
                         className="max-w-[200px] truncate text-slate-600"
                         title={productNames}
@@ -324,7 +409,6 @@ const UserProfile = () => {
                         {productNames || "—"}
                       </TableCell>
 
-                      {/* 3. Date */}
                       <TableCell className="text-slate-600">
                         {item?.created_at
                           ? new Date(item.created_at).toLocaleDateString()
@@ -361,8 +445,6 @@ const UserProfile = () => {
                           </div>
                         </div>
                       </TableCell>
-                      {/* 5. Status (Using the percentage logic you created!) */}
-                      
                     </TableRow>
                   );
                 })

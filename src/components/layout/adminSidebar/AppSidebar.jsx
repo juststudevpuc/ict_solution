@@ -7,6 +7,8 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  LucideLayoutDashboard,
+  Mail,
   Map,
   PackageCheck,
   PieChart,
@@ -35,8 +37,13 @@ const sidebarData = {
     email: "admin@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [{ name: "Admin ",  plan: "ICT Solution " }],
+  teams: [{ name: "Admin ", plan: "ICT Solution " }],
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: LucideLayoutDashboard,
+    },
     {
       title: "Product",
       url: "/admin/productPage",
@@ -52,6 +59,11 @@ const sidebarData = {
       //   { title: "Explorer", url: "#" },
       //   { title: "Quantum", url: "#" },
       // ],
+    },
+    {
+      title: "Request Checkout",
+      url: "/admin/request_order",
+      icon: Mail,
     },
     {
       // title: "Documentation",

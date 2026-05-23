@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+// import { useState } from "react";
 
 // FIX 1: Capitalized 'S' in ServiceCard
 export default function ServiceCard() {

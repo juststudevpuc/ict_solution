@@ -2,7 +2,7 @@ import React from "react";
 
 import { addItemCart, clearItemCart, decrementCart } from "@/store/cartSlice";
 import { Minus, Plus, X } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 

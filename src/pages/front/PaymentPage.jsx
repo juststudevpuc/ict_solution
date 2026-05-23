@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  Building,
-  CheckCircle2,
-  CreditCard,
-  Mail,
-  Phone,
-  QrCode,
   ShieldCheck,
-  User,
 } from "lucide-react";
 import CheckoutCard from "../paymentPage/CheckoutCard";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +8,21 @@ import { useSelector } from "react-redux";
 import InfoPayment from "@/components/cards/InfoPayment";
 
 export default function PaymentPage() {
-  // State to track which payment method the user selected
-  const [paymentMethod, setPaymentMethod] = useState("bakong");
   const navigate = useNavigate();
-  // grab login user from redux
-  const user = useSelector((state) => state.user.value);
+  
+  // Grab login user from redux
+  // Note: Depending on your slice setup, it might just be state.user instead of state.user.value!
+  const user = useSelector((state) => state.user?.value || state.user);
+
+  // 1. ADDED: We must create the state here in the Parent!
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+
+  // 2. ADDED: Package it up for the CheckoutCard
+  const formData = {
+    phone: phone,
+    address: address
+  };
 
   useEffect(() => {
     // 1. Check if we have a token saved in the browser's local storage
@@ -33,18 +36,6 @@ export default function PaymentPage() {
 
   // Prevent rendering the page while it redirects  
   if (!user && !localStorage.getItem("token")) return null;
-
-  // if (!user) return null;
-
-  // Dummy data for the cart (You would normally pass this in via props or context)
-  const orderSummary = {
-    product: "Point of Sale (POS) System",
-    plan: "Enterprise Monthly License",
-    price: 30.0,
-    setupFee: 0.0,
-  };
-
-  const total = orderSummary.price + orderSummary.setupFee;
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 md:py-24 font-sans text-slate-900">
@@ -62,13 +53,22 @@ export default function PaymentPage() {
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* LEFT COLUMN: Forms & Selection (Takes up 7 out of 12 columns) */}
-          <InfoPayment/>
+          
+          {/* LEFT COLUMN: InfoPayment */}
+          {/* 3. ADDED: Pass the state and updater functions down! */}
+          <InfoPayment 
+            phone={phone} 
+            setPhone={setPhone} 
+            address={address} 
+            setAddress={setAddress} 
+          />
 
-          {/* RIGHT COLUMN: Order Summary (Takes up 5 out of 12 columns) */}
+          {/* RIGHT COLUMN: CheckoutCard */}
           <div className="lg:col-span-5">
-            <CheckoutCard />
+            {/* 4. ADDED: Pass the packaged formData down! */}
+            <CheckoutCard formData={formData} />
           </div>
+          
         </div>
       </div>
     </div>

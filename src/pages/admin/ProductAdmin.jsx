@@ -27,12 +27,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { configs } from "@/utils/config/configs";
+// import { configs } from "@/utils/config/configs";
 import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
 import { Edit, Image, Plus, Search, SearchSlash, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../../hooks/useAuth";
 
 export default function ProductAdmin() {
@@ -45,7 +45,7 @@ export default function ProductAdmin() {
   const [deleteData, setDeleteData] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // const { user } = useAuth();
   const [form, setForm] = useState({
     id: "",
@@ -124,7 +124,7 @@ export default function ProductAdmin() {
         }
         setIsEdit(false);
       } else {
-        const res = await request("product", "post", formData);
+        const res = await request("admin/product", "post", formData);
         if (res) {
           console.log("Created Product : ", res);
           fetchingData();
@@ -397,7 +397,7 @@ export default function ProductAdmin() {
                 onClick={async () => {
                   try {
                     const res = await request(
-                      `product/${deleteData?.id}`,
+                      `admin/product/${deleteData?.id}`,
                       "delete",
                     );
                     if (res) {
@@ -422,7 +422,7 @@ export default function ProductAdmin() {
       <div className="mt-7">
         {/* <h1>{Product[0]?.name}</h1> */}
 
-        <Table className={"border border-4"}>
+        <Table className={"border border-1"}>
           <TableHeader>
             <TableRow>
               {tbl_head?.map((item, index) => (

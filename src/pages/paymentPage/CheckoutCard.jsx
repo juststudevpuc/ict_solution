@@ -88,6 +88,7 @@ export default function CheckoutCard({ formData }) {
 
     // 1. Prepare Order Payload
     const payload = {
+      ...formData, // <--- FIX 1: Merge the phone and address into the order!
       total_amount: Number(total),
       total_paid: Number(paid_amount) || 0,
       remark: remark || "",
@@ -110,10 +111,11 @@ export default function CheckoutCard({ formData }) {
 
     try {
       // 2. Step 1: Create Order
-      const orderRes = await request("order", "post", payload);
-      const orderId = orderRes?.data?._id || orderRes?.data?.id;
+      await request("order", "post", payload);
 
-      // 4. Cleanup & Success UI
+      // FIX 2: Removed the unused 'orderId' variable to clear the error!
+
+      // 3. Cleanup & Success UI
       alert("Order successfully placed!");
       setPaidAmount("");
       setRemark("");
@@ -217,7 +219,7 @@ export default function CheckoutCard({ formData }) {
         </Select>
       </div>
 
-     <RemarkInput/>
+      <RemarkInput />
 
       {/* Action Buttons */}
       <div className="flex gap-3">

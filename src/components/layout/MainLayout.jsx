@@ -15,7 +15,7 @@ import {
   ShoppingBag,
   ShoppingCart,
 } from "lucide-react";
-import { href, Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import {
@@ -283,7 +283,7 @@ export default function MainLayout() {
             {nav_item.map((nav) => (
               <Link
                 key={nav.label}
-                to={nav.to}
+                to={nav.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-4xl font-bold text-white hover:text-blue-500 transition-colors"
               >
