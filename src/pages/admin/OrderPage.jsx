@@ -27,7 +27,15 @@ import {
 } from "@/components/ui/table";
 import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
-import { Edit, Image, Plus, Search, SearchSlash, Trash } from "lucide-react";
+import {
+  CheckCircle,
+  Edit,
+  Image,
+  Plus,
+  Search,
+  SearchSlash,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
 // import { useNavigate } from "react-router-dom";
@@ -42,6 +50,9 @@ export default function OrderPage() {
   const [deleteData, setDeleteData] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
   const [query, setQuery] = useState("");
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
+  const [approveData, setApproveData] = useState(null);
+  const [customDuration, setCustomDuration] = useState(30);
   // const navigate = useNavigate();
   // const { user } = useAuth();
   const [form, setForm] = useState({
@@ -57,6 +68,7 @@ export default function OrderPage() {
     try {
       const res = await request("product", "get");
       // Add ?status=approved to the URL!
+      // const order = await request("order?status=approved", "get");
       const order = await request("order?status=approved", "get");
 
       if (res) {
@@ -95,6 +107,9 @@ export default function OrderPage() {
     "Paid",
     "PayWay",
     "Status",
+    "duration_months", // Add this
+    "approved_at", // Add this
+    "deadline_at",
     "Note",
     "Method",
     "Action",
@@ -190,6 +205,26 @@ export default function OrderPage() {
     console.log("Item Delete", itemDelete);
     setDeleteData(itemDelete);
     setIsDelete(true);
+  };
+  const handleApprove = async () => {
+    try {
+      // Send the custom duration to Laravel
+      const res = await request(
+        `admin/order/${approveData.id}/approve`,
+        "patch",
+        {
+          duration_days: customDuration,
+        },
+      );
+
+      if (res) {
+        fetchingData(); // Refresh the table
+        setIsApproveOpen(false); // Close the popup
+        setApproveData(null);
+      }
+    } catch (error) {
+      console.log("Error approving order: ", error);
+    }
   };
   // form product
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -422,15 +457,14 @@ export default function OrderPage() {
                     variant="outline"
                     onClick={() => {
                       setIsOpen(false);
-                      setIsEdit(false); // <--- Add this!
+                      setIsEdit(false);
 
-                      // Also a good idea to clear these if you have them!
                       setSelectedProduct("");
                       setSelectedQty(1);
 
                       setForm({
                         id: "",
-                        customer_name: "", // Added missing fields so React doesn't complain
+                        customer_name: "",
                         phone: "",
                         detail: [],
                         total_amount: 0,
@@ -454,7 +488,9 @@ export default function OrderPage() {
       <Dialog open={isDelete} onOpenChange={setIsDelete}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Do you want to delete {deleteData?.name}?</DialogTitle>
+            <DialogTitle>
+              Do you want to delete {deleteData?.customer_name}?
+            </DialogTitle>
           </DialogHeader>
           <div className="flex justify-end">
             <div className="flex gap-3">
@@ -493,12 +529,52 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
 
+      {/* --- APPROVE ORDER DIALOG --- */}
+      <Dialog open={isApproveOpen} onOpenChange={setIsApproveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Order: {approveData?.order_no}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                How many days will this service take?
+              </Label>
+              {/* 🔥 FIXED: Wrapped in Math.max to prevent 0 or negative numbers */}
+              <Input
+                type="number"
+                value={customDuration}
+                onChange={(e) =>
+                  setCustomDuration(Math.max(1, Number(e.target.value)))
+                }
+                min="1"
+                className="font-bold text-lg"
+              />
+              <p className="text-xs text-slate-500">
+                The deadline will be calculated from today automatically.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button variant="outline" onClick={() => setIsApproveOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleApprove}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              Confirm & Start Timer
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="w-5xl">
         <div className="w-full overflow-x-auto px-4 custom-scrollbar border border-border bg-card ">
-          <Table className="w-full border-collapse text-sm">
-            <TableHeader>
+          <Table className="w-full border-collapse text-sm ">
+            <TableHeader className={""}>
               {/* The Colorful & Clean Row */}
-              <TableRow className="border-b-2 border-blue-200 bg-blue-50/80 hover:bg-blue-50/80 dark:border-blue-900/50 dark:bg-blue-950/30 dark:hover:bg-blue-950/30 backdrop-blur-sm transition-colors">
+              <TableRow className="border-b-2  dark:border-blue-900/50 dark:bg-blue-950/30 dark:hover:bg-blue-950/30 backdrop-blur-sm transition-colors">
                 {tbl_head?.map((item, index) => (
                   <TableHead key={index} className="whitespace-nowrap">
                     {item}
@@ -528,6 +604,43 @@ export default function OrderPage() {
                   const total = Number(item?.total_amount) || 0;
                   const percentage =
                     total > 0 ? ((paid / total) * 100).toFixed(2) : "0.00";
+
+                  // --- TIMELINE MATH ---
+                  // --- TIMELINE MATH ---
+                  let daysLeftText = "Pending Approval";
+                  let timePercent = 0;
+
+                  if (item.status === "approved") {
+                    // Check if it has dates (New Orders)
+                    if (item.approved_at && item.deadline_at) {
+                      const start = new Date(item.approved_at).getTime();
+                      const end = new Date(item.deadline_at).getTime();
+                      const now = new Date().getTime();
+
+                      if (now >= end) {
+                        daysLeftText = "Completed";
+                        timePercent = 100;
+                      } else {
+                        const totalDuration = end - start;
+                        const elapsed = now - start;
+                        timePercent = Math.max(
+                          0,
+                          Math.min(100, (elapsed / totalDuration) * 100),
+                        );
+
+                        const daysLeft = Math.ceil(
+                          (end - now) / (1000 * 60 * 60 * 24),
+                        );
+                        daysLeftText = `${daysLeft} days left`;
+                      }
+                    } else {
+                      // Fallback for Old Orders that were approved before we added the date logic
+                      daysLeftText = "Approved (No Timeline)";
+                      timePercent = 100;
+                    }
+                  } else if (item.status === "rejected") {
+                    daysLeftText = "Cancelled";
+                  }
 
                   return (
                     <TableRow key={item?.id || index}>
@@ -573,6 +686,54 @@ export default function OrderPage() {
                             : "Pending"}
                         </span>
                       </TableCell>
+                      {/* 🔥 NEW TIMELINE COLUMN */}
+                      <TableCell className="min-w-[140px]">
+                        {item.status === "approved" ? (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                                {daysLeftText}
+                              </span>
+                              <span className="text-[10px] font-bold text-slate-500">
+                                {timePercent.toFixed(0)}%
+                              </span>
+                            </div>
+                            {/* Progress Track */}
+                            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                              {/* Progress Fill */}
+                              <div
+                                className="h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-blue-400 to-indigo-500"
+                                style={{ width: `${timePercent}%` }}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400 italic">
+                            {daysLeftText}
+                          </span>
+                        )}
+                      </TableCell>
+                      {/* --- START OF NEW DATE CELLS --- */}
+                      <TableCell className="text-slate-600 whitespace-nowrap">
+                        {item.approved_at ? (
+                          <span className="font-medium">
+                            {formatDate(item.approved_at)}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400">—</span>
+                        )}
+                      </TableCell>
+
+                      <TableCell className="text-slate-600 whitespace-nowrap">
+                        {item.deadline_at ? (
+                          <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                            {formatDate(item.deadline_at)}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400">—</span>
+                        )}
+                      </TableCell>
+                      {/* --- END OF NEW DATE CELLS --- */}
 
                       <TableCell>{item?.remark || "-"}</TableCell>
                       <TableCell>
@@ -595,7 +756,7 @@ export default function OrderPage() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <div className="flex gap-2">
                           <Button
                             onClick={() => onEdit(item)}
@@ -604,6 +765,40 @@ export default function OrderPage() {
                           >
                             <Edit className="w-4 h-4 text-blue-600" />
                           </Button>
+                          <Button
+                            onClick={() => onDelete(item)}
+                            variant="destructive"
+                            size="icon"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell> */}
+                      <TableCell>
+                        <div className="flex gap-2">
+                          {/* 🔥 NEW APPROVE BUTTON */}
+                          {item.status !== "approved" && (
+                            <Button
+                              onClick={() => {
+                                setApproveData(item);
+                                setIsApproveOpen(true);
+                              }}
+                              variant="outline"
+                              size="icon"
+                              className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                          )}
+
+                          <Button
+                            onClick={() => onEdit(item)}
+                            variant="outline"
+                            size="icon"
+                          >
+                            <Edit className="w-4 h-4 text-blue-600" />
+                          </Button>
+
                           <Button
                             onClick={() => onDelete(item)}
                             variant="destructive"

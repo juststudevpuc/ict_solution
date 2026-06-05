@@ -21,6 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import FilterData from "@/components/cards/FilterData";
+import Graph from "./Graph";
 
 export default function Dashboard() {
   const [product, setProduct] = useState([]);
@@ -28,7 +29,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState();
   const [selectedDate, setSelectedDate] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("approved");
+
+  const [appliedDate, setAppliedDate] = useState("");
+
   // Calculate Paid and Pending based on your exact table logic
   const paidOrders =
     order?.filter(
@@ -66,9 +70,6 @@ export default function Dashboard() {
       if (statusParam !== "") {
         queryParams.push(`status=${statusParam}`);
       } else {
-        // THE APPROVAL GATE:
-        // If the admin hasn't clicked a specific filter,
-        // force the database to only return approved orders!
         queryParams.push(`status=approved`);
       }
 
@@ -98,6 +99,8 @@ export default function Dashboard() {
   const handleFilterClick = () => {
     // Pass both the date state and the status state!
     fetchingData(selectedDate, status);
+
+    setAppliedDate(selectedDate);
   };
 
   useEffect(() => {
@@ -130,7 +133,7 @@ export default function Dashboard() {
           <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
             <div className="flex items-center justify-between pb-2">
               <h3 className="text-sm font-medium text-muted-foreground">
-                Total Orders
+                Total Approve Orders 
               </h3>
               {/* Blue Icon Box */}
               <div className="rounded-md bg-blue-100 p-2 dark:bg-blue-900/20">
@@ -175,12 +178,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Bottom Row: Additional Data */}
-        {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="h-32 rounded-lg border bg-muted/50"></div>
-          <div className="h-32 rounded-lg border bg-muted/50"></div>
-          <div className="h-32 rounded-lg border bg-muted/50"></div>
-        </div> */}
         {/* Bottom Row: Order Status Breakdown */}
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
           {/* Paid Orders Card */}
@@ -213,6 +210,10 @@ export default function Dashboard() {
             </p>
           </div>
         </div>
+
+        <div className="">
+          <Graph selectedDate={appliedDate} />
+        </div>
         {/* filter */}
         <div className="flex w-[30%] min-w-[300px] items-center gap-4">
           {/* 2. Filter Button */}
@@ -239,6 +240,7 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
         <div className="w-5xl">
           <div className="w-full overflow-x-auto px-4 custom-scrollbar border border-border bg-card ">
             <Table className="w-full border-collapse text-sm">
@@ -299,18 +301,25 @@ export default function Dashboard() {
                           ${total.toFixed(2)}
                         </TableCell>
                         <TableCell>
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        item.status === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
-                        item.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400' :
-                        'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
-                      }`}>
-                        {item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending"}
-                      </span>
-                    </TableCell>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                              item.status === "approved"
+                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
+                                : item.status === "rejected"
+                                  ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
+                                  : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
+                            }`}
+                          >
+                            {item.status
+                              ? item.status.charAt(0).toUpperCase() +
+                                item.status.slice(1)
+                              : "Pending"}
+                          </span>
+                        </TableCell>
                         <TableCell className="font-bold text-slate-900">
                           ${paid.toFixed(2)}
                         </TableCell>
-                        
+
                         <TableCell>{item?.payment_method || "-"}</TableCell>
                         <TableCell>{item?.remark || "-"}</TableCell>
                         <TableCell>

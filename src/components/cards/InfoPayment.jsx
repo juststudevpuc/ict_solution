@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import { User, Mail, Phone, MapPin } from "lucide-react";
 import { useSelector } from "react-redux"; // <--- We use Redux now!
+import { useNavigate } from "react-router-dom";
 
 export default function InfoPayment({ phone, setPhone, address, setAddress }) {
   // 1. Grab the user instantly from Redux memory instead of the database!
   // (Make sure state.user matches how you named it in your store.js)
   const me = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
+ 
   // 2. Auto-fill the checkout fields the second the page loads
   useEffect(() => {
     if (me) {
@@ -21,6 +24,7 @@ export default function InfoPayment({ phone, setPhone, address, setAddress }) {
 
   return (
     <div className="lg:col-span-7 space-y-10">
+      {/* <button onClick={backClick} className="hover:font-extrabold ">🔙 Back to services</button> */}
       <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
         <h2 className="text-xl font-bold mb-6 pb-4 border-b border-slate-100">
           Contact & Shipping Information

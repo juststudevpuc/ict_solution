@@ -18,18 +18,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { request } from "@/utils/request/request";
 import { useEffect, useState } from "react";
+import { formatDate } from "@/utils/helper/format";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function RequestOrder() {
   // 1. Setup the state
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
+  const [approveData, setApproveData] = useState(null);
+  const [customDuration, setCustomDuration] = useState(30);
 
   // 2. The Fetch Function
   const fetchingData = async () => {
     setLoading(true);
     try {
       // Fetch all orders so we can calculate the metric cards
-      const orderRes = await request("order", "get");
+      const orderRes = await request("order?status=pending", "get");
       if (orderRes) setOrders(orderRes?.data || orderRes);
     } catch (error) {
       console.error("Failed to fetch requests:", error);
@@ -54,12 +66,23 @@ export default function RequestOrder() {
       .length || 0;
 
   // 5. Connect the Action Buttons
-  const handleApprove = async (id) => {
+  const handleApprove = async () => {
     try {
-      await request(`admin/order/${id}/approve`, "patch");
-      fetchingData(); // Refresh instantly
+      const res = await request(
+        `admin/order/${approveData.id}/approve`,
+        "patch",
+        {
+          duration_days: customDuration,
+        },
+      );
+
+      if (res) {
+        fetchingData(); // This will refresh the table and remove the approved order from this page!
+        setIsApproveOpen(false);
+        setApproveData(null);
+      }
     } catch (error) {
-      console.error(error);
+      console.log("Error approving order: ", error);
     }
   };
 
@@ -74,7 +97,7 @@ export default function RequestOrder() {
 
   const tbl_head = [
     "Order Info", // Combines NO and Date
-    "Customer", // Combines Customer Name and Phone Number
+    "Customer", // Combines Customer Name and Pho   ne Number
     "Order Summary", // Combines Product Checkout and Remark
     "Financials", // Combines Total Price and Paid
     "Status", // The Pending/Paid Badge
@@ -152,6 +175,51 @@ export default function RequestOrder() {
             </p>
           </div>
         </div>
+        <div className="">
+          <Dialog open={isApproveOpen} onOpenChange={setApproveData}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Approve Order: {approveData?.order_no}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>How many days will this service take?</Label>
+
+                  <Input
+                    type="number"
+                    value={customDuration}
+                    onChange={(e) =>
+                      setCustomDuration(Math.max(1, Number(e.target.value)))
+                    }
+                    min="1"
+                    className="font-bold text-lg"
+                  />
+
+                  <p>
+                    The deadline will be calculate from today automatically.
+                  </p>
+                </div>
+              </div>
+
+              <div className="">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsApproveOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleApprove}
+                  className={"bg-green-600 hover:bg-green-700 text-white"}
+                >
+                  Confirm & Start timer
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
         <div className="py-10">
           <Table className="border bg-sky-900 ">
@@ -173,9 +241,7 @@ export default function RequestOrder() {
                 // )
                 ?.map((item, index) => (
                   <TableRow key={index}>
-                    <TableCell>
-                      <p className="font-medium">#{item.id}</p>
-                    </TableCell>
+                    <TableCell>{formatDate(item?.created_at)}</TableCell>
 
                     <TableCell>
                       <p className="font-medium">
@@ -221,7 +287,11 @@ export default function RequestOrder() {
                           <Button
                             size="sm"
                             className="bg-emerald-500 hover:bg-emerald-600 text-white h-8 w-8 p-0 rounded-full"
-                            onClick={() => handleApprove(item.id)}
+                            onClick={() => {
+                              setApproveData(item);
+                              setIsApproveOpen(true)
+                            
+                            }}
                           >
                             <CheckCheck className="h-4 w-4" />
                           </Button>

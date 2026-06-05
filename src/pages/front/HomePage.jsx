@@ -24,9 +24,14 @@ import {
   Cloud,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
+  const navClick = () => {
+    navigate("service");
+  };
   return (
     <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden no-scrollbar">
       {/* ======================================= */}
@@ -48,7 +53,7 @@ export default function HomePage() {
           />
         </video>
 
-        <div className="absolute inset-0 bg-slate-900/60 z-10"></div>
+        <div className="absolute inset-0 bg-slate-900/30 z-10"></div>
 
         <div className="relative z-20 flex flex-col items-center justify-center text-center w-full h-full px-6">
           <div className="max-w-4xl mx-auto flex flex-col items-center">
@@ -80,7 +85,10 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.4 }}
             >
-              <button className="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-blue-600/30 hover:-translate-y-1 focus:ring-4 focus:ring-blue-600/20">
+              <button
+                onClick={navClick}
+                className="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-blue-600/30 hover:-translate-y-1 focus:ring-4 focus:ring-blue-600/20"
+              >
                 Start Your Transformation <ArrowRight className="w-5 h-6" />
               </button>
             </motion.div>
@@ -268,7 +276,7 @@ export default function HomePage() {
               </h2>
               <div className="flex flex-col md:items-start items-center">
                 <p className="text-xl font-bold text-slate-900">
-                 Mr.NHANH NHIM 
+                  Mr.NHANH NHIM
                 </p>
                 <p className="text-blue-600 font-medium tracking-wide text-sm uppercase mt-1">
                   CEO& Founder of ICT Solutions,Co,Ltd.

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import {
-  ShieldCheck,
-} from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import CheckoutCard from "../paymentPage/CheckoutCard";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import InfoPayment from "@/components/cards/InfoPayment";
 
 export default function PaymentPage() {
   const navigate = useNavigate();
-  
+  const backClick = () => {
+    navigate("/category/softwarePage");
+  };
+
   // Grab login user from redux
   // Note: Depending on your slice setup, it might just be state.user instead of state.user.value!
   const user = useSelector((state) => state.user?.value || state.user);
@@ -21,7 +22,7 @@ export default function PaymentPage() {
   // 2. ADDED: Package it up for the CheckoutCard
   const formData = {
     phone: phone,
-    address: address
+    address: address,
   };
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function PaymentPage() {
     }
   }, [user, navigate]);
 
-  // Prevent rendering the page while it redirects  
+  // Prevent rendering the page while it redirects
   if (!user && !localStorage.getItem("token")) return null;
 
   return (
@@ -45,22 +46,22 @@ export default function PaymentPage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Secure Checkout
           </h1>
-          <p className="text-slate-500 flex items-center justify-center md:justify-start gap-2">
-            <ShieldCheck size={18} className="text-green-600" />
-            256-bit encrypted secure payment
-          </p>
+        </div>
+        <button onClick={backClick} className="text-xl px-5 mb-5 hover:font-mono"> ↩ Back </button>
+
+        <div className="">
+          <Link></Link>
         </div>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
           {/* LEFT COLUMN: InfoPayment */}
           {/* 3. ADDED: Pass the state and updater functions down! */}
-          <InfoPayment 
-            phone={phone} 
-            setPhone={setPhone} 
-            address={address} 
-            setAddress={setAddress} 
+          <InfoPayment
+            phone={phone}
+            setPhone={setPhone}
+            address={address}
+            setAddress={setAddress}
           />
 
           {/* RIGHT COLUMN: CheckoutCard */}
@@ -68,7 +69,6 @@ export default function PaymentPage() {
             {/* 4. ADDED: Pass the packaged formData down! */}
             <CheckoutCard formData={formData} />
           </div>
-          
         </div>
       </div>
     </div>

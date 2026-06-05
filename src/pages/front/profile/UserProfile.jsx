@@ -52,7 +52,8 @@ const UserProfile = () => {
     setLoading(true);
 
     try {
-      const orderRes = await request("order?status=approved", "get");
+      // const orderRes = await request("order?status=approved || pending || reject", "get");
+      const orderRes = await request("order", "get");
       if (orderRes) {
         setOrder(orderRes.data || orderRes);
       }
@@ -139,14 +140,16 @@ const UserProfile = () => {
 
   const tbl_head = [
     "Order No",
+    "Status",
     "Product",
     "Date",
     "Qty",
     "Total",
     "Paid",
     "PayWay",
+    "Duration Month",
     "Remark",
-    "Status",
+    "Payment Process",
   ];
 
   // 5. Render
@@ -362,95 +365,239 @@ const UserProfile = () => {
           <h2 className="text-2xl font-bold text-slate-900">History</h2>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <Table>
-            <TableHeader className="bg-slate-50">
-              <TableRow>
-                {tbl_head?.map((item, index) => (
-                  <TableHead key={index}>{item}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={tbl_head.length}>
-                    <div className="flex justify-center py-10">
-                      <Spinner className={"size-7"} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                order?.map((item, index) => {
-                  const productNames = item?.order_details
-                    ?.map((d) => d.product?.name || "Unknown Item")
-                    .join(", ");
-                  const totalQty = item?.order_details?.reduce(
-                    (acc, curr) => acc + Number(curr.qty || 0),
-                    0,
-                  );
-                  const paid = Number(item?.total_paid) || 0;
-                  const total = Number(item?.total_amount) || 0;
-                  const percentage =
-                    total > 0 ? ((paid / total) * 100).toFixed(2) : "0.00";
-                  return (
-                    <TableRow
-                      key={item?.id || index}
-                      className="hover:bg-slate-50/50"
-                    >
-                      <TableCell className="font-semibold text-blue-600 py-4">
-                        {item?.order_no || `#${item?.id}`}
-                      </TableCell>
-
-                      <TableCell
-                        className="max-w-[200px] truncate text-slate-600"
-                        title={productNames}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-white border-2 border-indigo-100 rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden">
+            <div className="overflow-x-auto custom-scrollbar">
+              <Table className="w-full text-sm text-left">
+                {/* 🔴 VIBRANT GRADIENT HEADER */}
+                <TableHeader>
+                  <TableRow className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 border-none hover:from-blue-600 hover:to-purple-600">
+                    {tbl_head?.map((item, index) => (
+                      <TableHead
+                        key={index}
+                        className="py-5 px-4 font-black text-xs text-white/95 uppercase tracking-widest whitespace-nowrap"
                       >
-                        {productNames || "—"}
-                      </TableCell>
+                        {item}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
 
-                      <TableCell className="text-slate-600">
-                        {item?.created_at
-                          ? new Date(item.created_at).toLocaleDateString()
-                          : "—"}
-                      </TableCell>
-                      <TableCell className="text-center font-bold">
-                        {totalQty || 0}
-                      </TableCell>
-                      <TableCell className="font-bold text-slate-900">
-                        ${total.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="font-bold text-slate-900">
-                        ${paid.toFixed(2)}
-                      </TableCell>
-                      <TableCell>{item?.payment_method || "-"}</TableCell>
-                      <TableCell>{item?.remark || "-"}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-2 min-w-[120px]">
-                          <div className="flex items-center justify-between gap-2">
-                            <Badge
-                              className={`text-[10px] border-none px-2 py-0 h-5 text-white ${paid >= total ? "bg-green-600" : "bg-amber-500"}`}
-                            >
-                              {paid >= total ? "Paid" : "Pending"}
-                            </Badge>
-                            <span className="text-[10px] font-bold text-slate-600">
-                              {percentage}%
-                            </span>
-                          </div>
-                          <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/50">
-                            <div
-                              className={`h-full transition-all duration-1000 ${paid >= total ? "bg-green-500" : "bg-blue-500"}`}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
+                <TableBody className="divide-y divide-indigo-50/60">
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={tbl_head.length} className="h-40">
+                        <div className="flex flex-col items-center justify-center h-full text-indigo-400 gap-4">
+                          <Spinner className="size-10 text-purple-600 animate-spin" />
+                          <span className="text-sm font-bold tracking-widest uppercase animate-pulse">
+                            Loading Magic...
+                          </span>
                         </div>
                       </TableCell>
                     </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
+                  ) : (
+                    order?.map((item, index) => {
+                      // Data Calculations
+                      const productNames = item?.order_details
+                        ?.map((d) => d.product?.name || "Unknown Item")
+                        .join(", ");
+                      const totalQty = item?.order_details?.reduce(
+                        (acc, curr) => acc + Number(curr.qty || 0),
+                        0,
+                      );
+                      const paid = Number(item?.total_paid) || 0;
+                      const total = Number(item?.total_amount) || 0;
+                      const percentage =
+                        total > 0 ? ((paid / total) * 100).toFixed(0) : "0";
+                      const isFullyPaid = paid >= total;
+
+                      let daysLeftText = "Pending Approval";
+                      let timePercent = 0;
+
+                      if (item.status === "approved") {
+                        // Check if it has dates (New Orders)
+                        if (item.approved_at && item.deadline_at) {
+                          const start = new Date(item.approved_at).getTime();
+                          const end = new Date(item.deadline_at).getTime();
+                          const now = new Date().getTime();
+
+                          if (now >= end) {
+                            daysLeftText = "Completed";
+                            timePercent = 100;
+                          } else {
+                            const totalDuration = end - start;
+                            const elapsed = now - start;
+                            timePercent = Math.max(
+                              0,
+                              Math.min(100, (elapsed / totalDuration) * 100),
+                            );
+
+                            const daysLeft = Math.ceil(
+                              (end - now) / (1000 * 60 * 60 * 24),
+                            );
+                            daysLeftText = `${daysLeft} days left`;
+                          }
+                        } else {
+                          // Fallback for Old Orders that were approved before we added the date logic
+                          daysLeftText = "Approved (No Timeline)";
+                          timePercent = 100;
+                        }
+                      } else if (item.status === "rejected") {
+                        daysLeftText = "Cancelled";
+                      }
+
+                      return (
+                        <TableRow
+                          key={item?.id || index}
+                          className="group transition-all duration-300 bg-white hover:bg-indigo-50/80 hover:shadow-[inset_4px_0_0_0_#8b5cf6]"
+                        >
+                          {/* 1. Order Number (Bold Indigo Pill) */}
+                          <TableCell className="px-4 py-5 whitespace-nowrap">
+                            <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 font-mono text-xs font-black border border-indigo-200 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                              {item?.order_no || `#${item?.id}`}
+                            </span>
+                          </TableCell>
+
+                          {/* 2. Status Badge (Solid Colorful Gradients) */}
+                          <TableCell className="px-4 py-5 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black text-white shadow-sm ${
+                                item.status === "approved"
+                                  ? "bg-gradient-to-r from-emerald-400 to-teal-500 shadow-emerald-200"
+                                  : item.status === "rejected"
+                                    ? "bg-gradient-to-r from-rose-400 to-red-500 shadow-rose-200"
+                                    : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-amber-200"
+                              }`}
+                            >
+                              {item.status
+                                ? item.status.charAt(0).toUpperCase() +
+                                  item.status.slice(1)
+                                : "Pending"}
+                            </span>
+                          </TableCell>
+
+                          {/* 3. Products List (Deep Indigo Text) */}
+                          <TableCell
+                            className="px-4 py-5 max-w-[200px] truncate text-indigo-950 font-bold"
+                            title={productNames}
+                          >
+                            {productNames || (
+                              <span className="text-slate-300 italic">
+                                No items
+                              </span>
+                            )}
+                          </TableCell>
+
+                          {/* 4. Date (Soft Blue) */}
+                          <TableCell className="px-4 py-5 whitespace-nowrap text-blue-600/80 font-bold text-sm">
+                            {item?.created_at
+                              ? new Date(item.created_at).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  },
+                                )
+                              : "—"}
+                          </TableCell>
+
+                          {/* 5. Total Qty (Fuchsia Pill) */}
+                          <TableCell className="px-4 py-5 text-center whitespace-nowrap">
+                            <span className="bg-fuchsia-100 text-fuchsia-700 px-3 py-1.5 rounded-full font-black text-xs border border-fuchsia-200">
+                              {totalQty || 0}
+                            </span>
+                          </TableCell>
+
+                          {/* 6. Total Amount */}
+                          <TableCell className="px-4 py-5 whitespace-nowrap tabular-nums font-black text-indigo-950 text-base">
+                            ${total.toFixed(2)}
+                          </TableCell>
+
+                          {/* 7. Paid Amount (Bright Emerald) */}
+                          <TableCell
+                            className={`px-4 py-5 whitespace-nowrap tabular-nums font-black text-base ${isFullyPaid ? "text-emerald-500" : "text-amber-500"}`}
+                          >
+                            ${paid.toFixed(2)}
+                          </TableCell>
+
+                          {/* 8. Payment Method (Cyan Badge) */}
+                          <TableCell className="px-4 py-5 whitespace-nowrap">
+                            <span className="bg-cyan-50 text-cyan-700 border border-cyan-200 px-2.5 py-1 rounded-md font-bold text-xs uppercase tracking-wider">
+                              {item?.payment_method || "—"}
+                            </span>
+                          </TableCell>
+
+                          <TableCell className="min-w-[140px]">
+                            {item.status === "approved" ? (
+                              <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+                                    {daysLeftText}
+                                  </span>
+                                  <span className="text-[10px] font-bold text-slate-500">
+                                    {timePercent.toFixed(0)}%
+                                  </span>
+                                </div>
+                                {/* Progress Track */}
+                                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                                  {/* Progress Fill */}
+                                  <div
+                                    className="h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-blue-400 to-indigo-500"
+                                    style={{ width: `${timePercent}%` }}
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-400 italic">
+                                {daysLeftText}
+                              </span>
+                            )}
+                          </TableCell>
+
+                          {/* 9. Remark */}
+                          <TableCell
+                            className="px-4 py-5 text-slate-500 max-w-[150px] truncate font-medium text-sm"
+                            title={item?.remark}
+                          >
+                            {item?.remark || "—"}
+                          </TableCell>
+
+                          {/* 10. Progress Bar (Vibrant Gradients) */}
+                          <TableCell className="px-4 py-5 min-w-[160px]">
+                            <div className="flex flex-col gap-2">
+                              <div className="flex items-center justify-between">
+                                <span
+                                  className={`text-[10px] font-black uppercase tracking-widest ${isFullyPaid ? "text-emerald-500" : "text-violet-500"}`}
+                                >
+                                  {isFullyPaid ? "Completed" : "In Progress"}
+                                </span>
+                                <span className="text-xs font-black text-indigo-900">
+                                  {percentage}%
+                                </span>
+                              </div>
+                              {/* Track Background */}
+                              <div className="h-2.5 w-full bg-indigo-100/80 rounded-full overflow-hidden shadow-inner">
+                                {/* Animated Gradient Fill */}
+                                <div
+                                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                                    isFullyPaid
+                                      ? "bg-gradient-to-r from-emerald-400 to-teal-400"
+                                      : "bg-gradient-to-r from-violet-500 to-fuchsia-500"
+                                  }`}
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
