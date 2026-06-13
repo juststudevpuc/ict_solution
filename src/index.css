@@ -71,6 +71,16 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    /* 🔵 Force the Sidebar to always be Premium Deep Blue */
+    --sidebar: oklch(0.208 0.042 265.755); 
+    --sidebar-foreground: oklch(0.968 0.007 247.896); /* This makes the text slate-100! */
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.279 0.041 260.031); 
+    --sidebar-accent-foreground: oklch(0.968 0.007 247.896); 
+    --sidebar-border: oklch(0.279 0.041 260.031);
+    --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
 .dark {
@@ -105,6 +115,22 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+
+    /* 🔵 Premium Deep Blue Sidebar (Tailwind blue-950 equivalent) */
+    --sidebar: oklch(0.208 0.042 265.755); /* blue-950 */
+    --sidebar-foreground: oklch(0.968 0.007 247.896); /* slate-100 */
+    
+    /* Slightly lighter blue for when you hover over buttons */
+    --sidebar-accent: oklch(0.279 0.041 260.031); /* blue-900 */
+    --sidebar-accent-foreground: oklch(0.968 0.007 247.896); /* slate-100 */
+    
+    /* The primary highlight color (keep it distinct, like a bright blue or your brand color) */
+    --sidebar-primary: oklch(0.488 0.243 264.376); 
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    
+    /* Subtle borders so they blend into the dark blue */
+    --sidebar-border: oklch(0.279 0.041 260.031);
+    --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
 @theme inline {

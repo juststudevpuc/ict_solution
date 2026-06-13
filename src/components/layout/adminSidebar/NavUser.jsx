@@ -1,121 +1,102 @@
-"use client"
+"use client";
 
-import React from "react"
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import React from "react";
+import { ChevronsUpDown, LogOut, ShieldCheck } from "lucide-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-/**
- * NavUser Component
- * @param {Object} user - The user data object
- * @param {string} user.name - Name of the user
- * @param {string} user.email - Email address of the user
- * @param {string} user.avatar - URL for the user's avatar image
- */
 export function NavUser({ user }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, state } = useSidebar();
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
+            {/* Added transition and updated hover state to use our new blue-900 accent */}
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent hover:bg-sidebar-accent/80 transition-all duration-200 rounded-xl mb-2"
             >
-              {/* <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} /> */}
-                {/* <AvatarFallback className="rounded-lg">ADMIN</AvatarFallback> */}
-              {/* </Avatar> */}
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+              <div className="">
+                <Avatar className="h-8 w-8 rounded-lg border border-sidebar-border shadow-sm">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  {/* Changed to yellow background with dark text */}
+                  <AvatarFallback className="rounded-lg bg-yellow-600 text-white font-bold">
+                    AD
+                  </AvatarFallback>
+                </Avatar>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+
+              {/* Only show text if sidebar is fully expanded */}
+              {state === "expanded" && (
+                <div className="grid flex-1 text-left text-sm leading-tight text-sidebar-foreground">
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate text-xs text-sidebar-foreground/60">
+                    {user.email}
+                  </span>
+                </div>
+              )}
+
+              {state === "expanded" && (
+                <ChevronsUpDown className="ml-auto size-4 text-sidebar-foreground/50" />
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          
+
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl border-sidebar-border bg-sidebar shadow-xl"
             side={isMobile ? "bottom" : "right"}
             align="end"
-            sideOffset={4}
+            sideOffset={10}
           >
-            {/* <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-3 px-3 py-2.5 text-left text-sm text-sidebar-foreground">
+                <Avatar className="h-9 w-9 rounded-lg border border-sidebar-border">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">Admin</AvatarFallback>
+                  <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                    AD
+                  </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                <div className="grid flex-1 leading-tight">
+                  <span className="truncate font-bold">{user.name}</span>
+                  <span className="truncate text-xs text-sidebar-foreground/60">
+                    {user.email}
+                  </span>
                 </div>
               </div>
-            </DropdownMenuLabel> */}
-            
-            {/* <DropdownMenuSeparator /> */}
-            
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles className="mr-2 size-4" />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck className="mr-2 size-4" />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className="mr-2 size-4" />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="mr-2 size-4" />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup> */}
-            
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuItem>
-              <LogOut className="mr-2 size-4" />
-              Log out
+            </DropdownMenuLabel>
+
+            <DropdownMenuSeparator className="bg-sidebar-border" />
+
+            <DropdownMenuItem className="py-2.5 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent focus:bg-sidebar-accent">
+              <ShieldCheck className="mr-3 size-4 text-sidebar-primary" />
+              <span className="font-medium">Admin Settings</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="bg-sidebar-border" />
+
+            <DropdownMenuItem className="py-2.5 cursor-pointer text-destructive focus:bg-destructive/10 transition-colors">
+              <LogOut className="mr-3 size-4" />
+              <span className="font-semibold">Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -19,6 +19,7 @@ import LoginAdmin from "./pages/adminAuth/login/LoginAdmin";
 import UserProfile from "./pages/front/profile/UserProfile";
 import Dashboard from "./pages/admin/Dashboard";
 import RequestOrder from "./pages/admin/RequestOrder";
+import Inventory from "./pages/admin/Inventory";
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="productPage" element={<ProductAdmin />} />
             <Route path="orderPage" element={<OrderPage />} />
             <Route path="request_order" element={<RequestOrder />} />
+            <Route path="inventory" element={<Inventory />} />
           </Route>
         </Routes>
       </TooltipProvider>

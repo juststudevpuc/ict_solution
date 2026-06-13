@@ -1,94 +1,54 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import * as React from "react";
+import { GalleryVerticalEnd, PanelLeftClose, ShieldCheck } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-/**
- * TeamSwitcher Component
- * @param {Object[]} teams - Array of team objects
- * @param {string} teams[].name - Name of the team
- * @param {React.ElementType} teams[].logo - Icon/Logo component for the team
- * @param {string} teams[].plan - The subscription plan (e.g., "Enterprise")
- */
 export function TeamSwitcher({ teams }) {
-  const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams?.[0])
+  const { state } = useSidebar();
+  const activeTeam = teams?.[0];
 
-  if (!activeTeam) {
-    return null
-  }
+  if (!activeTeam) return null;
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        <div className="flex items-center justify-between px-3 py-4 transition-all duration-300">
+          {/* 1. Brand Logo & Name */}
+          <div className="flex items-center gap-3 overflow-hidden">
+            {/* Change bg-sidebar-primary to bg-yellow-500 */}
+            <div className="flex size-9 items-center justify-center rounded-xl bg-yellow-500 text-white shadow-md shrink-0">
+              <ShieldCheck className="size-5" />
+            </div>
+            {state === "expanded" && (
+              <div className="flex flex-col truncate animate-in fade-in duration-500">
+                <span className="font-bold text-lg text-yellow-400 tracking-tight text-sidebar-foreground leading-tight">
+                  {activeTeam.name}
+                </span>
+                <span className="text-[11px] font-medium tracking-wider text-sidebar-foreground/60 uppercase">
+                  {activeTeam.plan}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* 2. The Close / Collapse Button */}
+          {/* {state === "expanded" && (
+            <button
+              onClick={toggleSidebar}
+              className="rounded-lg p-2 text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-200"
+              title="Collapse Sidebar"
             >
-              <div className="flex  items-center justify-center text-sidebar-primary-foreground">
-                <activeTeam className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-bold text-2xl text-yellow-500">{activeTeam.name}</span>
-                <span className="truncate text-28">{activeTeam.plan}</span>
-              </div>
-              {/* <ChevronsUpDown className="ml-auto" /> */}
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          
-          {/* <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
-          > */}
-            {/* <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
-            </DropdownMenuLabel> */}
-            
-            {/* {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))} */}
-            
-            {/* <DropdownMenuSeparator />
-            
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
-            </DropdownMenuItem> */}
-          {/* </DropdownMenuContent> */}
-        </DropdownMenu>
+              <PanelLeftClose className="size-5" />
+            </button>
+          )} */}
+        </div>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
