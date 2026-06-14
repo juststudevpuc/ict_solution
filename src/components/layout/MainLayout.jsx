@@ -222,12 +222,15 @@ export default function MainLayout() {
                     <DropdownMenuItem
                       onClick={() =>
                         navigate(
-                          user?.role === "admin" ? "/admin" : "/userProfile",
+                          ["admin", "staff"].includes(user?.role)
+                            ? "/admin"
+                            : "/userProfile",
                         )
                       }
                     >
-                      {/* Show "Dashboard" for admins, "Profile" for everyone else */}
-                      {user?.role === "admin" ? "Dashboard" : "Profile"}
+                      {["admin", "staff"].includes(user?.role)
+                        ? "Dashboard"
+                        : "Profile"}
                     </DropdownMenuItem>
 
                     <DropdownMenuItem

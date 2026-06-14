@@ -59,7 +59,7 @@ export default function AdminLayout() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  if (user?.role?.toLowerCase() !== "admin") {
+  if (!["admin", "staff"].includes(user?.role?.toLowerCase())) {
     return <Navigate to="/" replace />;
   }
 

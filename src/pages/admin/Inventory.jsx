@@ -308,8 +308,8 @@ export default function Inventory() {
         {/* table */}
         <div className="">
           <Table className="w-full border-collapse text-sm border border-border/50">
-            <TableHeader className="bg-blue-950">
-              <TableRow className="hover:bg-blue-950">
+            <TableHeader className="">
+              <TableRow className="bg-sky-900 hover:bg-sky-900">
                 {tbl_head?.map((item, index) => (
                   <TableHead
                     key={index}
@@ -334,7 +334,7 @@ export default function Inventory() {
                   {inventory?.map((item, index) => (
                     <TableRow
                       key={item?.id || index}
-                      className="hover:bg-gray-200 bg-gray-300"
+                      className="hover:bg-gray-200 bg-gray-100 "
                     >
                       <TableCell className="border border-border/50  px-4 py-3">
                         {index + 1}

@@ -569,20 +569,20 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="w-full min-w-0 rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+      <div className="w-full min-w-0 border border-border/50 bg-card shadow-sm overflow-hidden">
         <div className="w-full overflow-x-auto custom-scrollbar">
           <Table className="w-full min-w-[800px] border-separate border-spacing-0 text-sm">
             <TableHeader className={""}>
               {/* The Colorful & Clean Row */}
               <TableRow className="border-b-2  dark:border-blue-900/50 dark:bg-blue-950/30 dark:hover:bg-blue-950/30 backdrop-blur-sm transition-colors">
                 {tbl_head?.map((item, index) => (
-                  <TableHead key={index} className="whitespace-nowrap">
+                  <TableHead key={index} className="bg-sky-900 hover:bg-sky-900 text-white">
                     {item}
                   </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="bg-gray-100">
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={tbl_head.length}>

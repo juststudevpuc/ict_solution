@@ -20,7 +20,10 @@ import UserProfile from "./pages/front/profile/UserProfile";
 import Dashboard from "./pages/admin/Dashboard";
 import RequestOrder from "./pages/admin/RequestOrder";
 import Inventory from "./pages/admin/Inventory";
-
+import StaffManagement from "./pages/admin/StaffManagement";
+import Settings from "./pages/admin/Settings";
+import { Toaster } from "sonner";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
 export default function App() {
   return (
     <BrowserRouter>
@@ -54,16 +57,70 @@ export default function App() {
           <Route path="/admin/signup" element={<SignUpAdmin />} />
 
           {/* ADMIN DASHBOARD ROUTES (Protected by AdminLayout) */}
+          {/* ADMIN DASHBOARD ROUTES */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
+
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="productPage" element={<ProductAdmin />} />
-            <Route path="orderPage" element={<OrderPage />} />
-            <Route path="request_order" element={<RequestOrder />} />
-            <Route path="inventory" element={<Inventory />} />
+
+            {/* PROTECTED ROUTES */}
+            <Route
+              path="productPage"
+              element={
+                <ProtectedRoute moduleKey="productPage">
+                  <ProductAdmin />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="orderPage"
+              element={
+                <ProtectedRoute moduleKey="orderPage">
+                  <OrderPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="request_order"
+              element={
+                <ProtectedRoute moduleKey="request_order">
+                  <RequestOrder />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="inventory"
+              element={
+                <ProtectedRoute moduleKey="inventory">
+                  <Inventory />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="staff_management"
+              element={
+                <ProtectedRoute moduleKey="staff_management">
+                  <StaffManagement />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="setting"
+              element={
+                <ProtectedRoute moduleKey="super_admin_only_setting">
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </TooltipProvider>
+      <Toaster richColors position="top-right" />
     </BrowserRouter>
   );
 }

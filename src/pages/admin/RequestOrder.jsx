@@ -222,7 +222,7 @@ export default function RequestOrder() {
         </div>
 
         <div className="py-10">
-          <Table className="border bg-sky-900 ">
+          <Table className="border bg-sky-900 hover:bg-sky-900 ">
             <TableHeader>
               <TableRow>
                 {tbl_head?.map((item, index) => (
@@ -232,7 +232,7 @@ export default function RequestOrder() {
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="bg-white dark:bg-slate-950">
+            <TableBody className="bg-gray-100 dark:bg-slate-950">
               {/* Filter out approved/rejected so ONLY pending shows in the table */}
               {orders
                 // ?.filter(

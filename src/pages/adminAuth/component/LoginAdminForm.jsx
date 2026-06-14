@@ -50,11 +50,14 @@ export function LoginAdminForm({ className, ...props }) {
         // 1. Convert to lowercase just in case the database says "Admin"
         const userRole = res?.user?.role?.toLowerCase();
 
-        if (userRole === "admin") {
+        if (["admin", "staff"].includes(userRole)) {
           // ✅ They are an admin! Save data and let them in.
           dispatch(setUser(res?.user));
           dispatch(setToken(res?.token));
           localStorage.setItem("token", res?.token);
+
+          // ADD THIS ONE LINE:
+          localStorage.setItem("user", JSON.stringify(res?.user));
 
           navigate("/admin/productPage", { replace: true });
         } else {

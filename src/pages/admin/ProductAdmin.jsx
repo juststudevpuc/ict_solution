@@ -422,15 +422,15 @@ export default function ProductAdmin() {
       <div className="mt-7">
         {/* <h1>{Product[0]?.name}</h1> */}
 
-        <Table className={"border border-1"}>
-          <TableHeader>
+        <Table className={"border border-1 "}>
+          <TableHeader className="">
             <TableRow>
               {tbl_head?.map((item, index) => (
-                <TableHead key={index}>{item}</TableHead>
+                <TableHead className={"bg-sky-900 hover:bg-sky-900 text-white"}  key={index}>{item}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className={"bg-gray-100"}>
             {loading ? (
               <TableRow>
                 <TableCell colspan={13}>
