@@ -25,6 +25,7 @@ import Settings from "./pages/admin/Settings";
 import { Toaster } from "sonner";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import TransactionHistory from "./pages/admin/TransactionHistory";
+import ReportPage from "./pages/admin/ReportPage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -61,9 +62,7 @@ export default function App() {
           {/* ADMIN DASHBOARD ROUTES */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
-
             <Route path="dashboard" element={<Dashboard />} />
-
             {/* PROTECTED ROUTES */}
             <Route
               path="productPage"
@@ -73,7 +72,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="orderPage"
               element={
@@ -82,7 +80,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="request_order"
               element={
@@ -91,7 +88,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="inventory"
               element={
@@ -100,7 +96,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="staff_management"
               element={
@@ -109,7 +104,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
             <Route
               path="transaction_history"
               element={
@@ -117,8 +111,15 @@ export default function App() {
                   <TransactionHistory />
                 </ProtectedRoute>
               }
+            />{" "}
+            <Route
+              path="report"
+              element={
+                <ProtectedRoute moduleKey="report">
+                  <ReportPage />
+                </ProtectedRoute>
+              }
             />
-
             <Route
               path="setting"
               element={

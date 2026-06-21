@@ -6,6 +6,7 @@ import {
   LucideLayoutDashboard,
   Mail,
   PackageCheck,
+  Paperclip,
   PersonStandingIcon,
   Settings2,
   Warehouse,
@@ -32,6 +33,7 @@ const BASE_NAV_MAIN = [
   { title: "Inventory", url: "/admin/inventory", icon: Warehouse },
   { title: "Staff", url: "/admin/staff_management", icon: PersonStandingIcon },
   { title: "Transaction History", url: "/admin/transaction_history", icon: History },
+  { title: "Report", url: "/admin/report", icon: Paperclip },
   { title: "Setting", url: "/admin/setting", icon: Settings2 },
 ];
 
