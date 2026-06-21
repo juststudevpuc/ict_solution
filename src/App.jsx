@@ -24,6 +24,7 @@ import StaffManagement from "./pages/admin/StaffManagement";
 import Settings from "./pages/admin/Settings";
 import { Toaster } from "sonner";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+import TransactionHistory from "./pages/admin/TransactionHistory";
 export default function App() {
   return (
     <BrowserRouter>
@@ -105,6 +106,15 @@ export default function App() {
               element={
                 <ProtectedRoute moduleKey="staff_management">
                   <StaffManagement />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="transaction_history"
+              element={
+                <ProtectedRoute moduleKey="transaction_history">
+                  <TransactionHistory />
                 </ProtectedRoute>
               }
             />

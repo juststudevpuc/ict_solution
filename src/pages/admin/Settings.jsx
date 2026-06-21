@@ -19,11 +19,11 @@ export default function Settings() {
 
   // Start with an empty array! It will fill up dynamically.
   const [matrix, setMatrix] = useState([]);
-
+ 
   // 1. DYNAMIC FETCH: Load from MongoDB
   const fetchSettings = async () => {
     try {
-      const res = await request("permissions", "get");
+      const res = await request("permissions", "get"); 
       if (res) {
         // Handle Laravel's standard data wrapping if needed (res.data vs res)
         setMatrix(res.data || res);
@@ -136,10 +136,10 @@ export default function Settings() {
                     <div className="flex justify-center items-center">
                       <Switch
                         checked={row.staff}
-                        // 2. Update the Toggle trigger
                         onCheckedChange={() =>
                           handleToggle(row._id || row.id, "staff")
                         }
+                        className="transition-colors duration-300 data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-slate-300"
                       />
                     </div>
                   </TableCell>
@@ -152,6 +152,7 @@ export default function Settings() {
                         onCheckedChange={() =>
                           handleToggle(row._id || row.id, "user")
                         }
+                        className="transition-colors duration-300 data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-slate-300"
                       />
                     </div>
                   </TableCell>

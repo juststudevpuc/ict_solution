@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import {
   Box,
+  History,
   LucideLayoutDashboard,
   Mail,
   PackageCheck,
@@ -29,7 +30,8 @@ const BASE_NAV_MAIN = [
   { title: "Order", url: "/admin/orderPage", icon: PackageCheck },
   { title: "Request Checkout", url: "/admin/request_order", icon: Mail },
   { title: "Inventory", url: "/admin/inventory", icon: Warehouse },
-  { title: "Set up Staff", url: "/admin/staff_management", icon: PersonStandingIcon },
+  { title: "Staff", url: "/admin/staff_management", icon: PersonStandingIcon },
+  { title: "Transaction History", url: "/admin/transaction_history", icon: History },
   { title: "Setting", url: "/admin/setting", icon: Settings2 },
 ];
 

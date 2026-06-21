@@ -150,7 +150,27 @@ const UserProfile = () => {
     "Duration Month",
     "Remark",
     "Payment Process",
+    "Action",
   ];
+
+  const handleRequestRefund = async (orderId) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to request a refund for this order?",
+      )
+    )
+      return;
+    console.log("Attempting refund for ID:", orderId); // Check your Browser Console (F12)
+    if (!orderId) return alert("Error: Order ID is missing!");
+
+    try {
+      const res = await request(`order/${orderId}/request-refund`, "post");
+      alert(res.message);
+      fetchingData(); // Refresh the table to show updated status
+    } catch (error) {
+      alert("Failed to request refund.");
+    }
+  };
 
   // 5. Render
   return (
@@ -305,7 +325,6 @@ const UserProfile = () => {
                     />
                   </div>
                 </div>
-                
               </div>
             </div>
 
@@ -590,6 +609,26 @@ const UserProfile = () => {
                                 />
                               </div>
                             </div>
+                          </TableCell>
+                          <TableCell className="px-4 py-5 whitespace-nowrap">
+                            {item.status === "approved" ? (
+                              <button
+                                onClick={() => handleRequestRefund(item.id)}
+                                className="px-3 py-1.5 text-xs font-bold bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200"
+                              >
+                                Request Refund
+                              </button>
+                            ) : item.status === "refund_requested" ? (
+                              <span className="text-xs font-bold text-amber-600 uppercase">
+                                Pending Review
+                              </span>
+                            ) : item.status === "refunded" ? (
+                              <span className="text-xs font-bold text-slate-400 uppercase">
+                                Refunded
+                              </span>
+                            ) : (
+                              <span className="text-xs text-slate-300">—</span>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
