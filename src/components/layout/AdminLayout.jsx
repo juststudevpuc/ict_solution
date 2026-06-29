@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar"; // Added SidebarTrigger!
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./adminSidebar/AppSidebar";
 import {
   Breadcrumb,
@@ -16,7 +16,10 @@ import { useSelector } from "react-redux";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import { toast, Toaster } from "sonner";
-import { Bell } from "lucide-react"; // Added for a clean notification bell
+import { Bell } from "lucide-react";
+import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+
+// 🌙 IMPORT THE THEME TOGGLER
 
 window.Pusher = Pusher;
 
@@ -68,19 +71,14 @@ export default function AdminLayout() {
       <SidebarProvider>
         <AppSidebar />
 
-        {/* Added a subtle background pattern or slight off-white tone */}
-        <SidebarInset className="bg-background/50 flex flex-col min-h-screen transition-all duration-300 ease-in-out">
-          {/* MODERN HEADER: 
-              - Increased blur and opacity for a true 'glass' feel
-              - Added a subtle bottom border shadow
-          */}
+        <SidebarInset className="bg-background/50 flex flex-col min-h-screen transition-all duration-300 ease-in-out min-w-0">
+          
           <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/50 bg-background/70 backdrop-blur-xl px-4 sm:px-6 transition-all shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
             <div className="flex items-center gap-3 w-full">
               <SidebarTrigger className="-ml-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg" />
 
               <div className="h-6 w-px bg-border mx-1 hidden sm:block"></div>
 
-              {/* Breadcrumb section now looks like a 'Path' indicator */}
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden sm:block">
@@ -94,15 +92,23 @@ export default function AdminLayout() {
                   <BreadcrumbSeparator className="text-muted-foreground/30" />
                   <BreadcrumbItem>
                     <BreadcrumbPage className="text-xs uppercase tracking-wider font-bold text-foreground">
-                      {/* Dynamically, this could reflect the current page name */}
                       Dashboard
                     </BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
 
-              <div className="ml-auto flex items-center gap-2">
-                {/* Notification Bell with a softer modern look */}
+              {/* 🔥 RIGHT HEADER TOOLS */}
+              <div className="ml-auto flex items-center gap-2 sm:gap-4">
+                
+                {/* 🌙 MAGIC UI THEME TOGGLER */}
+                <div className="flex items-center justify-center scale-90 sm:scale-100">
+                  <AnimatedThemeToggler />
+                </div>
+
+                {/* Subtle Divider between Toggler and Bell */}
+                <div className="h-5 w-px bg-border/60 hidden sm:block"></div>
+
                 <button className="relative p-2.5 text-muted-foreground hover:bg-accent hover:text-foreground rounded-xl transition-all active:scale-95">
                   <Bell className="size-5" />
                   <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background"></span>
@@ -111,14 +117,9 @@ export default function AdminLayout() {
             </div>
           </header>
 
-          {/* MODERN MAIN CONTENT: 
-              - Used a slightly tighter container
-              - Added a very subtle top margin for a 'floating' feel
-          */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8">
-            <div className="mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-700">
-              {/* Optional: Add a subtle 'Glass' Card wrapper for all children */}
-              <div className="bg-background/40 backdrop-blur-sm border border-border/50 rounded-2xl p-6 shadow-sm w-full">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-hidden flex flex-col">
+            <div className="w-full animate-in fade-in slide-in-from-bottom-2 duration-700 min-w-0">
+              <div className="bg-background/40 backdrop-blur-sm border border-border/50 rounded-3xl p-4 sm:p-6 shadow-sm w-full min-w-0 overflow-x-hidden">
                 <Outlet />
               </div>
             </div>

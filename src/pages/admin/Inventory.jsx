@@ -28,6 +28,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NavigationMenuList } from "@/components/ui/navigation-menu";
@@ -306,27 +307,37 @@ export default function Inventory() {
         </Dialog>
 
         {/* table */}
-        <div className="">
-          <Table className="w-full border-collapse text-sm border border-border/50">
-            <TableHeader className="">
-              <TableRow className="bg-sky-900 hover:bg-sky-900">
+        <div className="w-full overflow-x-auto custom-scrollbar bg-white rounded-3xl border border-slate-100 shadow-sm">
+          <Table className="w-full min-w-[800px] text-sm text-left">
+            <TableHeader>
+              <TableRow className="bg-slate-50/80 border-b border-slate-100">
                 {tbl_head?.map((item, index) => (
                   <TableHead
                     key={index}
-                    className="border border-border/50 px-4 h-12 text-white font-semibold uppercase text-xs tracking-wider"
+                    className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap"
                   >
                     {item}
                   </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody>
+
+            <TableBody className="divide-y divide-slate-50">
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="py-10">
-                    <div className="flex w-full items-center justify-center">
-                      <Spinner className="size-6 text-primary" />
+                  <TableCell colSpan={tbl_head.length || 9}>
+                    <div className="flex w-full items-center justify-center py-12">
+                      <Spinner className="size-8 text-blue-600 animate-spin" />
                     </div>
+                  </TableCell>
+                </TableRow>
+              ) : inventory?.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={tbl_head.length || 9}
+                    className="text-center py-10 text-slate-400 font-medium text-sm"
+                  >
+                    No inventory records found.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -334,73 +345,87 @@ export default function Inventory() {
                   {inventory?.map((item, index) => (
                     <TableRow
                       key={item?.id || index}
-                      className="hover:bg-gray-200 bg-gray-100 "
+                      className="hover:bg-slate-50/50 transition-colors"
                     >
-                      <TableCell className="border border-border/50  px-4 py-3">
+                      <TableCell className="font-medium text-slate-400 pl-6">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
-                        {item?.product?.name}
+
+                      <TableCell className="font-bold text-slate-900">
+                        {item?.product?.name || "Unknown Product"}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3 uppercase font-medium">
-                        {item?.type}
+
+                      <TableCell>
+                        <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                          {item?.type || "—"}
+                        </span>
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
-                        {item?.qty}
+
+                      <TableCell className="font-bold text-slate-700">
+                        {item?.qty || 0}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
-                        {item?.stock_left}
+
+                      <TableCell className="font-black text-blue-600">
+                        {item?.stock_left || 0}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
-                        {item?.reference_id}
+
+                      <TableCell className="font-medium text-slate-400 text-xs font-mono uppercase">
+                        {item?.reference_id || "—"}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
-                        {item?.remark}
+
+                      <TableCell
+                        className="font-medium text-slate-500 max-w-[150px] truncate"
+                        title={item?.remark}
+                      >
+                        {item?.remark || "—"}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
+
+                      <TableCell className="font-medium text-slate-500 text-xs">
                         {formatDate(item?.created_at)}
                       </TableCell>
-                      <TableCell className="border border-border/50 px-4 py-3">
+
+                      <TableCell className="font-medium text-slate-500 text-xs">
                         {formatDate(item?.updated_at)}
                       </TableCell>
-                      <TableCell>
-                        <ButtonGroup>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <div className="">
-                                <Button
-                                  variant="outline"
-                                  size="icon"
-                                  className="h-8 w-8 flex items-center justify-center ml-4"
-                                >
-                                  <div className="rounded-md bg-gray-600 p-1">
-                                    <ArrowBigDown className="size-4 text-white" />
-                                  </div>
-                                </Button>
-                              </div>
-                            </DropdownMenuTrigger>
 
-                            <DropdownMenuContent align="end" className="w-40">
-                              <DropdownMenuGroup>
-                                <DropdownMenuItem
-                                  onClick={() => onEdit(item)}
-                                  className="cursor-pointer gap-2 hover:bg-blue-50 focus:bg-blue-50 text-blue-600 dark:text-blue-400"
-                                >
-                                  <EditIcon className="size-4" />
-                                  Edit
-                                </DropdownMenuItem>
-                                {/* Delete Action (Styled with destructive red colors) */}
-                                <DropdownMenuItem
-                                  onClick={() => onDelete(item)}
-                                  className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
-                                >
-                                  <TrashIcon className="mr-2 size-4" />
-                                  Delete Record
-                                </DropdownMenuItem>
-                              </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </ButtonGroup>
+                      {/* 🔥 UPDATED: Clean Inline Action Buttons */}
+                      <TableCell className="py-4 pr-6 align-middle text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="size-9 rounded-xl border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm ml-auto flex items-center justify-center"
+                            >
+                              <Menu className="size-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-40 p-2 rounded-2xl shadow-xl border-slate-100"
+                          >
+                            <DropdownMenuGroup>
+                              <DropdownMenuItem
+                                onClick={() => onEdit(item)}
+                                className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 focus:bg-blue-50 font-medium transition-colors"
+                              >
+                                <EditIcon className="size-4" />
+                                <span>Edit</span>
+                              </DropdownMenuItem>
+
+                              <DropdownMenuSeparator className="my-1.5 bg-slate-100" />
+
+                              <DropdownMenuItem
+                                onClick={() => onDelete(item)}
+                                className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 focus:bg-red-50 font-medium transition-colors"
+                              >
+                                <TrashIcon className="size-4" />
+                                <span>Delete</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))}

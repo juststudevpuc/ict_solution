@@ -389,13 +389,12 @@ const UserProfile = () => {
           <div className="bg-white border-2 border-indigo-100 rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden">
             <div className="overflow-x-auto custom-scrollbar">
               <Table className="w-full text-sm text-left">
-                {/* 🔴 VIBRANT GRADIENT HEADER */}
                 <TableHeader>
-                  <TableRow className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 border-none hover:from-blue-600 hover:to-purple-600">
+                  <TableRow className="bg-slate-50/80 border-b border-slate-100">
                     {tbl_head?.map((item, index) => (
                       <TableHead
                         key={index}
-                        className="py-5 px-4 font-black text-xs text-white/95 uppercase tracking-widest whitespace-nowrap"
+                        className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle"
                       >
                         {item}
                       </TableHead>
@@ -403,16 +402,28 @@ const UserProfile = () => {
                   </TableRow>
                 </TableHeader>
 
-                <TableBody className="divide-y divide-indigo-50/60">
+                <TableBody className="divide-y divide-slate-50">
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={tbl_head.length} className="h-40">
-                        <div className="flex flex-col items-center justify-center h-full text-indigo-400 gap-4">
-                          <Spinner className="size-10 text-purple-600 animate-spin" />
-                          <span className="text-sm font-bold tracking-widest uppercase animate-pulse">
-                            Loading Magic...
+                      <TableCell
+                        colSpan={tbl_head.length || 12}
+                        className="h-40 align-middle"
+                      >
+                        <div className="flex flex-col items-center justify-center h-full text-blue-600 gap-4">
+                          <Spinner className="size-8 animate-spin" />
+                          <span className="text-sm font-medium text-slate-500">
+                            Loading data...
                           </span>
                         </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : order?.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tbl_head.length || 12}
+                        className="text-center py-12 text-slate-400 font-medium text-sm align-middle"
+                      >
+                        No orders found.
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -435,7 +446,6 @@ const UserProfile = () => {
                       let timePercent = 0;
 
                       if (item.status === "approved") {
-                        // Check if it has dates (New Orders)
                         if (item.approved_at && item.deadline_at) {
                           const start = new Date(item.approved_at).getTime();
                           const end = new Date(item.deadline_at).getTime();
@@ -458,7 +468,6 @@ const UserProfile = () => {
                             daysLeftText = `${daysLeft} days left`;
                           }
                         } else {
-                          // Fallback for Old Orders that were approved before we added the date logic
                           daysLeftText = "Approved (No Timeline)";
                           timePercent = 100;
                         }
@@ -469,47 +478,44 @@ const UserProfile = () => {
                       return (
                         <TableRow
                           key={item?.id || index}
-                          className="group transition-all duration-300 bg-white hover:bg-indigo-50/80 hover:shadow-[inset_4px_0_0_0_#8b5cf6]"
+                          className="hover:bg-slate-50/50 transition-colors group"
                         >
-                          {/* 1. Order Number (Bold Indigo Pill) */}
-                          <TableCell className="px-4 py-5 whitespace-nowrap">
-                            <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 font-mono text-xs font-black border border-indigo-200 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                          {/* 1. Order Number */}
+                          <TableCell className="px-4 py-4 whitespace-nowrap align-middle">
+                            <span className="font-bold text-blue-600 font-mono">
                               {item?.order_no || `#${item?.id}`}
                             </span>
                           </TableCell>
 
-                          {/* 2. Status Badge (Solid Colorful Gradients) */}
-                          <TableCell className="px-4 py-5 whitespace-nowrap">
+                          {/* 2. Status Badge */}
+                          <TableCell className="px-4 py-4 whitespace-nowrap align-middle">
                             <span
-                              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black text-white shadow-sm ${
+                              className={`inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border ${
                                 item.status === "approved"
-                                  ? "bg-gradient-to-r from-emerald-400 to-teal-500 shadow-emerald-200"
+                                  ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                                   : item.status === "rejected"
-                                    ? "bg-gradient-to-r from-rose-400 to-red-500 shadow-rose-200"
-                                    : "bg-gradient-to-r from-amber-400 to-orange-500 shadow-amber-200"
+                                    ? "bg-red-50 text-red-600 border-red-100"
+                                    : "bg-amber-50 text-amber-600 border-amber-100"
                               }`}
                             >
-                              {item.status
-                                ? item.status.charAt(0).toUpperCase() +
-                                  item.status.slice(1)
-                                : "Pending"}
+                              {item.status ? item.status : "Pending"}
                             </span>
                           </TableCell>
 
-                          {/* 3. Products List (Deep Indigo Text) */}
+                          {/* 3. Products List */}
                           <TableCell
-                            className="px-4 py-5 max-w-[200px] truncate text-indigo-950 font-bold"
+                            className="px-4 py-4 max-w-[200px] truncate text-slate-900 font-bold align-middle"
                             title={productNames}
                           >
                             {productNames || (
-                              <span className="text-slate-300 italic">
-                                No items
+                              <span className="text-slate-400 font-medium">
+                                —
                               </span>
                             )}
                           </TableCell>
 
-                          {/* 4. Date (Soft Blue) */}
-                          <TableCell className="px-4 py-5 whitespace-nowrap text-blue-600/80 font-bold text-sm">
+                          {/* 4. Date */}
+                          <TableCell className="px-4 py-4 whitespace-nowrap text-slate-500 font-medium text-xs align-middle">
                             {item?.created_at
                               ? new Date(item.created_at).toLocaleDateString(
                                   "en-US",
@@ -522,33 +528,38 @@ const UserProfile = () => {
                               : "—"}
                           </TableCell>
 
-                          {/* 5. Total Qty (Fuchsia Pill) */}
-                          <TableCell className="px-4 py-5 text-center whitespace-nowrap">
-                            <span className="bg-fuchsia-100 text-fuchsia-700 px-3 py-1.5 rounded-full font-black text-xs border border-fuchsia-200">
+                          {/* 5. Total Qty */}
+                          <TableCell className="px-4 py-4 text-center whitespace-nowrap align-middle">
+                            <span className="font-bold text-slate-700">
                               {totalQty || 0}
                             </span>
                           </TableCell>
 
                           {/* 6. Total Amount */}
-                          <TableCell className="px-4 py-5 whitespace-nowrap tabular-nums font-black text-indigo-950 text-base">
+                          <TableCell className="px-4 py-4 whitespace-nowrap font-black text-slate-900 align-middle">
                             ${total.toFixed(2)}
                           </TableCell>
 
-                          {/* 7. Paid Amount (Bright Emerald) */}
+                          {/* 7. Paid Amount */}
                           <TableCell
-                            className={`px-4 py-5 whitespace-nowrap tabular-nums font-black text-base ${isFullyPaid ? "text-emerald-500" : "text-amber-500"}`}
+                            className={`px-4 py-4 whitespace-nowrap font-bold align-middle ${
+                              isFullyPaid
+                                ? "text-emerald-600"
+                                : "text-amber-500"
+                            }`}
                           >
                             ${paid.toFixed(2)}
                           </TableCell>
 
-                          {/* 8. Payment Method (Cyan Badge) */}
-                          <TableCell className="px-4 py-5 whitespace-nowrap">
-                            <span className="bg-cyan-50 text-cyan-700 border border-cyan-200 px-2.5 py-1 rounded-md font-bold text-xs uppercase tracking-wider">
+                          {/* 8. Payment Method */}
+                          <TableCell className="px-4 py-4 whitespace-nowrap align-middle">
+                            <span className="text-xs uppercase font-bold tracking-wider text-slate-400">
                               {item?.payment_method || "—"}
                             </span>
                           </TableCell>
 
-                          <TableCell className="min-w-[140px]">
+                          {/* 9. Timeline */}
+                          <TableCell className="min-w-[140px] px-4 py-4 align-middle">
                             {item.status === "approved" ? (
                               <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center justify-between">
@@ -559,75 +570,81 @@ const UserProfile = () => {
                                     {timePercent.toFixed(0)}%
                                   </span>
                                 </div>
-                                {/* Progress Track */}
-                                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
-                                  {/* Progress Fill */}
+                                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200/50">
                                   <div
-                                    className="h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-blue-400 to-indigo-500"
+                                    className="h-full rounded-full transition-all duration-1000 bg-blue-500"
                                     style={{ width: `${timePercent}%` }}
                                   />
                                 </div>
                               </div>
                             ) : (
-                              <span className="text-xs text-slate-400 italic">
+                              <span className="text-xs text-slate-400 font-medium italic">
                                 {daysLeftText}
                               </span>
                             )}
                           </TableCell>
 
-                          {/* 9. Remark */}
+                          {/* 10. Remark */}
                           <TableCell
-                            className="px-4 py-5 text-slate-500 max-w-[150px] truncate font-medium text-sm"
+                            className="px-4 py-4 text-slate-500 max-w-[150px] truncate font-medium text-sm align-middle"
                             title={item?.remark}
                           >
                             {item?.remark || "—"}
                           </TableCell>
 
-                          {/* 10. Progress Bar (Vibrant Gradients) */}
-                          <TableCell className="px-4 py-5 min-w-[160px]">
-                            <div className="flex flex-col gap-2">
+                          {/* 11. Progress Bar */}
+                          <TableCell className="px-4 py-4 min-w-[160px] align-middle">
+                            <div className="flex flex-col gap-1.5">
                               <div className="flex items-center justify-between">
                                 <span
-                                  className={`text-[10px] font-black uppercase tracking-widest ${isFullyPaid ? "text-emerald-500" : "text-violet-500"}`}
+                                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                                    isFullyPaid
+                                      ? "text-emerald-600"
+                                      : "text-amber-500"
+                                  }`}
                                 >
                                   {isFullyPaid ? "Completed" : "In Progress"}
                                 </span>
-                                <span className="text-xs font-black text-indigo-900">
+                                <span className="text-[10px] font-bold text-slate-500">
                                   {percentage}%
                                 </span>
                               </div>
-                              {/* Track Background */}
-                              <div className="h-2.5 w-full bg-indigo-100/80 rounded-full overflow-hidden shadow-inner">
-                                {/* Animated Gradient Fill */}
+                              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
                                 <div
-                                  className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                                  className={`h-full transition-all duration-1000 ${
                                     isFullyPaid
-                                      ? "bg-gradient-to-r from-emerald-400 to-teal-400"
-                                      : "bg-gradient-to-r from-violet-500 to-fuchsia-500"
+                                      ? "bg-emerald-500"
+                                      : "bg-blue-500"
                                   }`}
                                   style={{ width: `${percentage}%` }}
                                 />
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="px-4 py-5 whitespace-nowrap">
+
+                          {/* 12. Actions */}
+                          <TableCell className="px-4 py-4 whitespace-nowrap align-middle">
                             {item.status === "approved" ? (
-                              <button
+                              <Button
                                 onClick={() => handleRequestRefund(item.id)}
-                                className="px-3 py-1.5 text-xs font-bold bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition-colors border border-rose-200"
+                                variant="outline"
+                                size="sm"
+                                className="h-8 text-xs font-bold border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-colors shadow-sm"
                               >
                                 Request Refund
-                              </button>
+                              </Button>
                             ) : item.status === "refund_requested" ? (
-                              <span className="text-xs font-bold text-amber-600 uppercase">
+                              <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
                                 Pending Review
                               </span>
                             ) : item.status === "refunded" ? (
-                              <span className="text-xs font-bold text-slate-400 uppercase">
+                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-md border border-slate-200">
                                 Refunded
                               </span>
                             ) : (
-                              <span className="text-xs text-slate-300">—</span>
+                              <span className="text-xs font-medium text-slate-300">
+                                —
+                              </span>
                             )}
                           </TableCell>
                         </TableRow>

@@ -1,14 +1,16 @@
 import { formatDate } from "@/utils/helper/format";
 import { request } from "@/utils/request/request";
+import { useEffect, useState } from "react";
 import {
-  Calendar,
-  CheckCircle,
-  Clock,
   Package,
   ShoppingCart,
   Users,
+  DollarSign,
+  TrendingUp,
+  ReceiptText,
+  Calendar,
+  Filter
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
@@ -18,77 +20,97 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import FilterData from "@/components/cards/FilterData";
 import Graph from "./Graph";
 
 export default function Dashboard() {
-  const [product, setProduct] = useState([]);
-  const [order, setOrder] = useState([]); // Fixed camelCase
+  // --- 1. STATE MANAGEMENT ---
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState();
-  const [selectedDate, setSelectedDate] = useState("");
+  const [userRole, setUserRole] = useState("staff"); // Defaults to lowest privilege
+  
+  const [product, setProduct] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [order, setOrder] = useState([]);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+
+  // --- 2. DATE & FILTER CONFIGURATION ---
+  const todayDate = new Date();
+  const currentYear = todayDate.getFullYear().toString();
+  const currentMonth = (todayDate.getMonth() + 1).toString();
+  const currentDay = todayDate.getDate().toString();
+
+  const [filterYear, setFilterYear] = useState(currentYear);
+  const [filterMonth, setFilterMonth] = useState(currentMonth);
+  const [filterDay, setFilterDay] = useState(currentDay);
   const [status, setStatus] = useState("approved");
+  const [graphDate, setGraphDate] = useState("");
 
-  const [appliedDate, setAppliedDate] = useState("");
+  const isAdmin = userRole === "admin";
 
-  // Calculate Paid and Pending based on your exact table logic
-  const paidOrders =
-    order?.filter(
-      (item) =>
-        Number(item?.total_paid || 0) >= Number(item?.total_amount || 0),
-    ).length || 0;
-  const pendingOrders =
-    order?.filter(
-      (item) => Number(item?.total_paid || 0) < Number(item?.total_amount || 0),
-    ).length || 0;
+  // --- 3. AUTHENTICATION (Extract Role) ---
+  useEffect(() => {
+    const persistString = localStorage.getItem("persist:root");
+    if (persistString) {
+      try {
+        const parsedRoot = JSON.parse(persistString);
+        if (parsedRoot.user) {
+          const userObj = JSON.parse(parsedRoot.user);
+          setUserRole(userObj?.role?.toLowerCase() || "staff");
+        }
+      } catch (error) {
+        console.error("Failed to parse role:", error);
+      }
+    }
+  }, []);
 
-  const fetchingData = async (dateToFilter = "", statusParam = "") => {
+  // --- 4. DATA FETCHING (Role-Protected) ---
+  const fetchingData = async (start, end, graphRefDate, currentStatus, role) => {
     setLoading(true);
-
-    // LOG 1: What filters did the UI send?
-    console.log(
-      "🔥 1. Filter Triggered - Date:",
-      dateToFilter,
-      "| Status:",
-      statusParam,
-    );
+    setGraphDate(graphRefDate);
 
     try {
-      const res = await request("product", "get");
-      const userRes = await request("admin/user", "get");
+      let orderUrl = "admin/order?";
+      let params = [];
+      if (start) params.push(`start_date=${start}`);
+      if (end) params.push(`end_date=${end}`);
+      if (currentStatus) params.push(`status=${currentStatus}`);
+      orderUrl += params.join("&");
 
-      // BUILD THE URL: Handle date and status dynamically
-      let orderUrl = "order";
-      let queryParams = [];
+      // Core API calls for everyone
+      const apiCalls = [
+        request("admin/product", "get"),
+        request("admin/user", "get"),
+        request(orderUrl, "get"),
+      ];
 
-      if (dateToFilter !== "") {
-        queryParams.push(`start_date=${dateToFilter}&end_date=${dateToFilter}`);
+      // Sensitive API call (Only pushed to the queue if Admin)
+      if (role === "admin") {
+        let salesUrl = "admin/sales-summary";
+        if (graphRefDate) salesUrl += `?date=${graphRefDate}`;
+        apiCalls.push(request(salesUrl, "get"));
       }
 
-      if (statusParam !== "") {
-        queryParams.push(`status=${statusParam}`);
-      } else {
-        queryParams.push(`status=approved`);
+      const results = await Promise.all(apiCalls);
+      
+      const productRes = results[0];
+      const userRes = results[1];
+      const orderRes = results[2];
+      const salesRes = results[3]; // Undefined for staff
+
+      // Populate State
+      if (productRes) setProduct(productRes.total || productRes.data?.length || 0);
+      if (userRes) setUserCount(userRes.total || userRes.data?.length || 0);
+      if (orderRes) {
+        const orderData = Array.isArray(orderRes.data) ? orderRes.data : orderRes.data?.data || [];
+        setOrder(orderData);
+        setTotalOrders(orderRes?.total || orderData.length || 0); 
+      }
+      
+      if (salesRes && role === "admin") {
+        setRevenue(salesRes?.sale_this_month?.total || salesRes?.total || 0);
       }
 
-      // If we have any filters, stick them to the end of the URL
-      if (queryParams.length > 0) {
-        orderUrl += "?" + queryParams.join("&");
-      }
-
-      // LOG 2: What is the exact URL hitting the Laravel API?
-      console.log("🔥 2. Requesting URL:", orderUrl);
-
-      const orderRes = await request(orderUrl, "get");
-
-      // LOG 3: What did Laravel and MongoDB actually send back?
-      console.log("🔥 3. Database Response:", orderRes);
-
-      if (res) setProduct(res?.data || res);
-      if (userRes) setUser(userRes?.total_users || 0);
-      if (orderRes) setOrder(orderRes?.data || orderRes);
     } catch (error) {
       console.error("Dashboard Fetch Error:", error);
     } finally {
@@ -96,302 +118,237 @@ export default function Dashboard() {
     }
   };
 
-  const handleFilterClick = () => {
-    // Pass both the date state and the status state!
-    fetchingData(selectedDate, status);
-
-    setAppliedDate(selectedDate);
-  };
-
+  // --- 5. FILTER WATCHER ---
   useEffect(() => {
-    fetchingData();
-  }, []);
+    let start = "";
+    let end = "";
+    let refDate = "";
 
-  const tbl_head = [
-    "No",
-    "Order No",
-    "Paid Date",
-    "Update Paid",
-    "Customer", // Stored directly in 'orders' table
-    "Phone", // Stored directly in 'orders' table
-    "Products", // List of names from 'order_details'
-    "Total Qty", // Sum of qty from 'order_details'
-    "Total ($)",
-    "Status",
-    "Paid",
-    "PayWay",
-    "Note",
-    "Method",
+    if (filterYear) {
+      if (filterMonth) {
+        if (filterDay) {
+          const d = `${filterYear}-${String(filterMonth).padStart(2, "0")}-${String(filterDay).padStart(2, "0")}`;
+          start = d; end = d; refDate = d;
+        } else {
+          start = `${filterYear}-${String(filterMonth).padStart(2, "0")}-01`;
+          const lastDay = new Date(filterYear, filterMonth, 0).getDate();
+          end = `${filterYear}-${String(filterMonth).padStart(2, "0")}-${lastDay}`;
+          refDate = start;
+        }
+      } else {
+        start = `${filterYear}-01-01`;
+        end = `${filterYear}-12-31`;
+        refDate = start;
+      }
+    }
+
+    fetchingData(start, end, refDate, status, userRole);
+  }, [filterYear, filterMonth, filterDay, status, userRole]);
+
+  // --- 6. UI HELPERS ---
+  const years = Array.from({ length: 5 }, (_, i) => parseInt(currentYear) - i);
+  const months = [
+    { value: 1, label: "Jan" }, { value: 2, label: "Feb" }, { value: 3, label: "Mar" },
+    { value: 4, label: "Apr" }, { value: 5, label: "May" }, { value: 6, label: "Jun" },
+    { value: 7, label: "Jul" }, { value: 8, label: "Aug" }, { value: 9, label: "Sep" },
+    { value: 10, label: "Oct" }, { value: 11, label: "Nov" }, { value: 12, label: "Dec" },
   ];
+  const daysInMonth = filterYear && filterMonth ? new Date(filterYear, filterMonth, 0).getDate() : 31;
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  // Dynamic Table Headers (Hides money columns for Staff)
+  const tbl_head = isAdmin 
+    ? ["No", "Order No", "Customer", "Date", "Products", "Qty", "Total", "Status", "Paid", "Method"]
+    : ["No", "Order No", "Customer", "Date", "Products", "Qty", "Status"];
 
   return (
-    <div className="p-4 pt-0 ">
-      <div className="flex flex-1 flex-col gap-4">
-        {/* Top Row: Main Metrics */}
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          {/* Order Metric Card */}
-          <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
-            <div className="flex items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Total Approve Orders 
-              </h3>
-              {/* Blue Icon Box */}
-              <div className="rounded-md bg-blue-100 p-2 dark:bg-blue-900/20">
-                <ShoppingCart className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              </div>
-            </div>
-            <p className="text-3xl font-bold">
-              {loading ? "..." : order?.length || 0}
-            </p>
-          </div>
+    <div className="p-6 md:p-8 space-y-8 bg-slate-50 min-h-screen">
+      
+      {/* HEADER */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Overview Dashboard</h1>
+        <p className="text-slate-500 mt-1 font-medium">Here is what is happening with your store.</p>
+      </div>
 
-          {/* Product Metric Card */}
-          <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
-            <div className="flex items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Total Products
-              </h3>
-              {/* Orange Icon Box */}
-              <div className="rounded-md bg-orange-100 p-2 dark:bg-orange-900/20">
-                <Package className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+      {/* METRICS GRID (Adapts columns based on role) */}
+      <div className={`grid grid-cols-1 gap-6 sm:grid-cols-2 ${isAdmin ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
+        
+        {isAdmin && (
+          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Revenue</h3>
+              <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600 border border-emerald-100">
+                <DollarSign className="size-5" />
               </div>
             </div>
-            <p className="text-3xl font-bold">
-              {loading ? "..." : product?.length || 0}
+            <p className="text-3xl font-black text-slate-900">{loading ? "..." : `$${parseFloat(revenue).toFixed(2)}`}</p>
+            <p className="text-xs text-emerald-600 font-bold mt-2 flex items-center gap-1">
+              <TrendingUp className="size-3" />
+              {filterMonth ? `Month of ${months.find(m => m.value == filterMonth)?.label}` : "Filtered Revenue"}
             </p>
           </div>
+        )}
 
-          {/* User Metric Card */}
-          <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
-            <div className="flex items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Total Users
-              </h3>
-              {/* Green Icon Box */}
-              <div className="rounded-md bg-green-100 p-2 dark:bg-green-900/20">
-                <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
-              </div>
+        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Filtered Orders</h3>
+            <div className="p-2 bg-blue-50 rounded-xl text-blue-600 border border-blue-100">
+              <ShoppingCart className="size-5" />
             </div>
-            <p className="text-3xl font-bold">
-              {loading ? "..." : user?.length || 0}
-            </p>
           </div>
+          <p className="text-3xl font-black text-slate-900">{loading ? "..." : totalOrders}</p>
+          <p className="text-xs text-blue-600 font-bold mt-2 flex items-center gap-1">
+            <Filter className="size-3" /> Status: {status.charAt(0).toUpperCase() + status.slice(1)}
+          </p>
         </div>
 
-        {/* Bottom Row: Order Status Breakdown */}
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          {/* Paid Orders Card */}
-          <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
-            <div className="flex items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Paid Orders
-              </h3>
-              {/* Green Check Icon */}
-              <div className="rounded-md bg-emerald-100 p-2 dark:bg-emerald-900/20">
-                <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
+        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Customers</h3>
+            <div className="p-2 bg-purple-50 rounded-xl text-purple-600 border border-purple-100">
+              <Users className="size-5" />
             </div>
-            <p className="text-3xl font-bold">{loading ? "..." : paidOrders}</p>
           </div>
-
-          {/* Pending Orders Card */}
-          <div className="flex h-32 flex-col justify-center rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
-            <div className="flex items-center justify-between pb-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Pending Orders
-              </h3>
-              {/* Amber Clock Icon */}
-              <div className="rounded-md bg-amber-100 p-2 dark:bg-amber-900/20">
-                <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              </div>
-            </div>
-            <p className="text-3xl font-bold">
-              {loading ? "..." : pendingOrders}
-            </p>
-          </div>
+          <p className="text-3xl font-black text-slate-900">{loading ? "..." : userCount}</p>
+          <p className="text-xs text-slate-400 font-medium mt-2">Registered accounts</p>
         </div>
 
-        <div className="">
-          <Graph selectedDate={appliedDate} />
+        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Active Products</h3>
+            <div className="p-2 bg-orange-50 rounded-xl text-orange-600 border border-orange-100">
+              <Package className="size-5" />
+            </div>
+          </div>
+          <p className="text-3xl font-black text-slate-900">{loading ? "..." : product}</p>
+          <p className="text-xs text-slate-400 font-medium mt-2">Available in inventory</p>
         </div>
-        {/* filter */}
-        <div className="flex w-[30%] min-w-[300px] items-center gap-4">
-          {/* 2. Filter Button */}
-          <div className="flex items-center justify-end bg-card p-4 rounded-lg border shadow-sm">
-            <FilterData
-              date={selectedDate}
-              setDate={setSelectedDate}
-              onFilter={handleFilterClick}
-              status={status} // <-- Pass the status state down
-              setStatus={setStatus} // <-- Pass the setter down
-            />
-            {/* Optional: Add a clear button to reset the table */}
-            {(selectedDate || status) && (
-              <Button
-                onClick={() => {
-                  setSelectedDate("");
-                  fetchingData("");
-                }}
-                className="ml-4 text-xs font-semibold text-white bg-red-800 hover:bg-red-500 hover:underline"
-                variant="destructive"
-              >
-                Clear Filter
+      </div>
+
+      {/* GRAPH SECTION (Admin Only) */}
+      {isAdmin && (
+        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+          <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <TrendingUp className="size-5 text-blue-600" />
+            Sales Performance
+          </h3>
+          <Graph selectedDate={graphDate} />
+        </div>
+      )}
+
+      {/* RECENT ORDERS TABLE */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        
+        {/* Toolbar */}
+        <div className="p-5 md:p-6 border-b border-slate-100 flex flex-col xl:flex-row xl:items-center justify-between gap-4 bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <ReceiptText className="size-5 text-slate-400" />
+            <h3 className="text-lg font-bold text-slate-900">Recent Transactions</h3>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+              <select className="bg-transparent border-none text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer outline-none pl-3 pr-6 py-1" value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+
+            <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+              <div className="flex items-center pl-3 pr-1 text-slate-400">
+                <Calendar className="size-4" />
+              </div>
+              <select className="bg-transparent border-none text-sm font-bold text-slate-700 outline-none pl-1 pr-4 py-1" value={filterYear} onChange={(e) => { setFilterYear(e.target.value); if (filterDay === "29" && filterMonth === "2") setFilterDay(""); }}>
+                <option value="">All Years</option>
+                {years.map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <select className="bg-transparent border-none text-sm font-bold text-slate-700 outline-none pl-3 pr-4 py-1 disabled:opacity-50" value={filterMonth} onChange={(e) => { setFilterMonth(e.target.value); setFilterDay(""); }} disabled={!filterYear}>
+                <option value="">All Months</option>
+                {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <select className="bg-transparent border-none text-sm font-bold text-slate-700 outline-none pl-3 pr-4 py-1 disabled:opacity-50" value={filterDay} onChange={(e) => setFilterDay(e.target.value)} disabled={!filterMonth}>
+                <option value="">All Days</option>
+                {days.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+
+            {(filterYear !== currentYear || filterMonth !== currentMonth || filterDay !== currentDay || status !== "approved") && (
+              <Button onClick={() => { setFilterYear(currentYear); setFilterMonth(currentMonth); setFilterDay(currentDay); setStatus("approved"); }} variant="destructive" className="text-xs font-bold shadow-sm rounded-xl px-4">
+                Reset
               </Button>
             )}
           </div>
         </div>
 
-        <div className="w-5xl">
-          <div className="w-full overflow-x-auto px-4 custom-scrollbar border border-border bg-card ">
-            <Table className="w-full border-collapse text-sm">
-              <TableHeader>
-                <TableRow className="bg-slate-50/50 dark:bg-white/5">
-                  {tbl_head?.map((item, index) => (
-                    <TableHead key={index} className="whitespace-nowrap">
-                      {item}
-                    </TableHead>
-                  ))}
+        {/* Table Data */}
+        <div className="overflow-x-auto custom-scrollbar">
+          <Table className="w-full text-sm text-left">
+            <TableHeader>
+              <TableRow className="bg-slate-50/80">
+                {tbl_head?.map((item, index) => (
+                  <TableHead key={index} className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+                    {item}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            
+            <TableBody className="divide-y divide-slate-50">
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={tbl_head.length}>
+                    <div className="flex justify-center py-12 text-blue-600">
+                      <Spinner className="size-8 animate-spin" />
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={tbl_head.length}>
-                      <div className="flex justify-center py-10">
-                        <Spinner className={"size-7"} />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  order?.map((item, index) => {
-                    const productNames = item?.order_details
-                      ?.map((d) => d.product?.name || "Unknown Item")
-                      .join(", ");
-                    const totalQty = item?.order_details?.reduce(
-                      (acc, curr) => acc + Number(curr.qty || 0),
-                      0,
-                    );
-                    const paid = Number(item?.total_paid) || 0;
-                    const total = Number(item?.total_amount) || 0;
-                    const percentage =
-                      total > 0 ? ((paid / total) * 100).toFixed(2) : "0.00";
+              ) : order?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={tbl_head.length} className="text-center py-12 text-slate-400 font-medium text-sm">
+                    No orders found. Try changing your filters.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                order?.map((item, index) => {
+                  const productNames = item?.order_details?.map((d) => d.product?.name).join(", ");
+                  const totalQty = item?.order_details?.reduce((acc, curr) => acc + Number(curr.qty || 0), 0);
+                  const paid = Number(item?.total_paid) || 0;
+                  const total = Number(item?.total_amount) || 0;
 
-                    return (
-                      <TableRow key={item?.id || index}>
-                        <TableCell className="font-medium py-6 text-slate-500">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell className="font-semibold">
-                          {item?.order_no}
-                        </TableCell>
-                        <TableCell>{formatDate(item?.created_at)}</TableCell>
-                        <TableCell>{formatDate(item?.updated_at)}</TableCell>
-                        <TableCell>{item?.customer_name || "Guest"}</TableCell>
-                        <TableCell>{item?.phone || "N/A"}</TableCell>
-                        <TableCell
-                          className="max-w-[200px] truncate"
-                          title={productNames}
-                        >
-                          {productNames || "—"}
-                        </TableCell>
-                        <TableCell className="text-center font-bold">
-                          {totalQty || 0}
-                        </TableCell>
-                        <TableCell className="font-bold text-slate-900">
-                          ${total.toFixed(2)}
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                              item.status === "approved"
-                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
-                                : item.status === "rejected"
-                                  ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-                                  : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
-                            }`}
-                          >
-                            {item.status
-                              ? item.status.charAt(0).toUpperCase() +
-                                item.status.slice(1)
-                              : "Pending"}
-                          </span>
-                        </TableCell>
-                        <TableCell className="font-bold text-slate-900">
-                          ${paid.toFixed(2)}
-                        </TableCell>
+                  return (
+                    <TableRow key={item?.id || index} className="hover:bg-slate-50/50 transition-colors group">
+                      <TableCell className="py-4 pl-6 font-medium text-slate-400 w-12 align-middle">{index + 1}</TableCell>
+                      <TableCell className="py-4 px-4 font-bold text-blue-600 font-mono align-middle">{item?.order_no}</TableCell>
+                      <TableCell className="py-4 px-4 font-bold text-slate-900 align-middle">{item?.customer_name || "Guest"}</TableCell>
+                      <TableCell className="py-4 px-4 text-slate-500 font-medium text-xs whitespace-nowrap align-middle">{formatDate(item?.created_at)}</TableCell>
+                      <TableCell className="py-4 px-4 max-w-[200px] truncate text-slate-500 font-medium align-middle" title={productNames}>{productNames || "—"}</TableCell>
+                      <TableCell className="py-4 px-4 font-bold text-slate-700 align-middle">{totalQty || 0}</TableCell>
+                      
+                      {isAdmin && (
+                        <TableCell className="py-4 px-4 font-black text-slate-900 align-middle">${total.toFixed(2)}</TableCell>
+                      )}
 
-                        <TableCell>{item?.payment_method || "-"}</TableCell>
-                        <TableCell>{item?.remark || "-"}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-col gap-2 min-w-[120px]">
-                            <div className="flex items-center justify-between gap-2">
-                              <Badge
-                                className={`text-[10px] border-none px-2 py-0 h-5 text-white ${paid >= total ? "bg-green-600" : "bg-amber-500"}`}
-                              >
-                                {paid >= total ? "Paid" : "Pending"}
-                              </Badge>
-                              <span className="text-[10px] font-bold text-slate-600">
-                                {percentage}%
-                              </span>
-                            </div>
-                            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/50">
-                              <div
-                                className={`h-full transition-all duration-1000 ${paid >= total ? "bg-green-500" : "bg-blue-500"}`}
-                                style={{ width: `${percentage}%` }}
-                              />
-                            </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                      <TableCell className="py-4 px-4 align-middle">
+                        <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border ${item.status === "approved" ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"}`}>
+                          {item.status ? item.status : "PENDING"}
+                        </span>
+                      </TableCell>
 
-          {/* 2. FIXED FOOTER AREA */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-t border-border rounded-b-xl bg-card">
-            <span className="text-sm font-medium text-slate-500">
-              Total:{" "}
-              <span className="text-slate-900 dark:text-white font-bold">
-                {order?.length}
-              </span>{" "}
-              records
-            </span>
-
-            <div className="flex items-center gap-1">
-              {/* Always show page 1 */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-blue-600 text-white hover:bg-blue-700"
-              >
-                1
-              </Button>
-
-              {/* Only show page 2 if there are more than 10 records */}
-              {order?.length > 10 && (
-                <Button variant="outline" size="sm">
-                  2
-                </Button>
+                      {isAdmin && (
+                        <>
+                          <TableCell className={`py-4 px-4 font-bold align-middle ${paid >= total ? "text-emerald-600" : "text-amber-500"}`}>${paid.toFixed(2)}</TableCell>
+                          <TableCell className="py-4 pr-6 text-xs uppercase font-bold tracking-wider text-slate-400 align-middle">{item?.payment_method || "-"}</TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  );
+                })
               )}
-
-              {/* Only show page 3 if there are more than 20 records */}
-              {order?.length > 20 && (
-                <Button variant="outline" size="sm">
-                  3
-                </Button>
-              )}
-
-              {/* Show the next arrow if there are more than 10 records */}
-              {order?.length > 10 && (
-                <Button variant="outline" size="sm" className="px-2">
-                  {">"}
-                </Button>
-              )}
-            </div>
-          </div>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

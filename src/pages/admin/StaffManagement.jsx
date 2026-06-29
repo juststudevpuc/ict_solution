@@ -140,54 +140,74 @@ export default function StaffManagement() {
       </div>
 
       {/* Staff Table */}
-      <div className="border bg-card">
-        <Table >
-          <TableHeader className="border bg-sky-900 hover:bg-sky-900">
-            <TableRow>
-              <TableHead className="text-white">Name</TableHead>
-              <TableHead className="text-white">Email</TableHead>
-              <TableHead className="text-white">Phone</TableHead>
-              <TableHead className=" w-24 text-white">Actions</TableHead>
+      <div className="w-full overflow-x-auto custom-scrollbar bg-white rounded-3xl border border-slate-100 shadow-sm">
+        <Table className="w-full min-w-[600px] text-sm text-left">
+          
+          <TableHeader>
+            <TableRow className="bg-slate-50/80 border-b border-slate-100">
+              <TableHead className="py-5 pl-6 pr-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+                Name
+              </TableHead>
+              <TableHead className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+                Email
+              </TableHead>
+              <TableHead className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+                Phone
+              </TableHead>
+              <TableHead className="py-5 pr-6 pl-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle text-right w-24">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className={"bg-gray-100"}>
+
+          <TableBody className="divide-y divide-slate-50">
             {staff && staff.length > 0 ? (
-              staff.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.phone || "N/A"}</TableCell>
+              staff.map((item, index) => (
+                <TableRow key={item.id || index} className="hover:bg-slate-50/50 transition-colors group">
+                  
+                  <TableCell className="py-4 pl-6 pr-4 font-bold text-slate-900 align-middle">
+                    {item.name}
+                  </TableCell>
+                  
+                  <TableCell className="py-4 px-4 font-medium text-slate-500 align-middle">
+                    {item.email}
+                  </TableCell>
+                  
+                  <TableCell className="py-4 px-4 font-medium text-slate-500 align-middle">
+                    {item.phone || "N/A"}
+                  </TableCell>
                   
                   {/* Actions Dropdown */}
-                  <TableCell className="text-center">
+                  <TableCell className="py-4 pr-6 pl-4 align-middle text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button 
                           variant="outline" 
                           size="icon" 
-                          className="h-8 w-8 flex items-center justify-center"
+                          className="size-9 rounded-xl border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm ml-auto flex items-center justify-center"
                         >
-                          <Menu className="size-4 text-muted-foreground" />
+                          <Menu className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40 p-2 rounded-xl">
+                      
+                      <DropdownMenuContent align="end" className="w-40 p-2 rounded-2xl shadow-xl border-slate-100">
                         <DropdownMenuGroup>
                           <DropdownMenuItem 
                             onClick={() => onEdit(item)} 
-                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 focus:bg-blue-50"
+                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 focus:bg-blue-50 font-medium transition-colors"
                           >
                             <EditIcon className="size-4" />
-                            <span className="font-medium">Edit</span>
+                            <span>Edit</span>
                           </DropdownMenuItem>
                           
-                          <DropdownMenuSeparator className="my-1.5" />
+                          <DropdownMenuSeparator className="my-1.5 bg-slate-100" />
                           
                           <DropdownMenuItem 
                             onClick={() => onDelete(item)} 
-                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg text-destructive hover:bg-destructive/10 focus:bg-destructive/10"
+                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 focus:bg-red-50 font-medium transition-colors"
                           >
                             <TrashIcon className="size-4" />
-                            <span className="font-medium">Delete</span>
+                            <span>Delete</span>
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -197,7 +217,7 @@ export default function StaffManagement() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center py-12 text-slate-400 font-medium text-sm align-middle">
                   No staff members found.
                 </TableCell>
               </TableRow>

@@ -61,9 +61,16 @@ export default function App() {
           {/* ADMIN DASHBOARD ROUTES (Protected by AdminLayout) */}
           {/* ADMIN DASHBOARD ROUTES */}
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route index element={<Navigate to="orderPage" replace />} />
             {/* PROTECTED ROUTES */}
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute moduleKey="dashboard">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="productPage"
               element={

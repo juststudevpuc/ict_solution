@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { request } from "@/utils/request/request";
+import { Lock, ArrowLeft } from "lucide-react"; // 🔥 NEW: Added icons for the error screen
+import { Button } from "@/components/ui/button"; // Adjust path if your button is elsewhere
 
 export default function ProtectedRoute({ moduleKey, children }) {
   const [hasAccess, setHasAccess] = useState(null);
@@ -8,13 +10,12 @@ export default function ProtectedRoute({ moduleKey, children }) {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        // --- UPDATED LOGIC FOR REDUX PERSIST ---
+        // --- REDUX PERSIST LOGIC ---
         const persistString = localStorage.getItem("persist:root");
         let role = "staff"; // Default safety net
 
         if (persistString) {
             try {
-                // Redux Persist double-stringifies objects, so we parse twice!
                 const parsedRoot = JSON.parse(persistString);
                 if (parsedRoot.user) {
                     const userObj = JSON.parse(parsedRoot.user); 
@@ -24,7 +25,6 @@ export default function ProtectedRoute({ moduleKey, children }) {
                 console.error("Failed to parse Redux Persist data:", e);
             }
         }
-        // --- END UPDATED LOGIC ---
 
         // 3. Super Admin Bypass
         if (role === "admin") {
@@ -43,7 +43,9 @@ export default function ProtectedRoute({ moduleKey, children }) {
         }
 
         // 5. Check the specific rule
-        const moduleRules = matrix.find((m) => m.key === moduleKey);
+        // Make sure "setting" maps to the DB key just like we did in the Sidebar!
+        const dbKey = moduleKey === "setting" ? "super_admin_only_setting" : moduleKey;
+        const moduleRules = matrix.find((m) => m.key === dbKey);
 
         if (moduleRules && moduleRules[role] === true) {
           setHasAccess(true);
@@ -60,8 +62,38 @@ export default function ProtectedRoute({ moduleKey, children }) {
     checkAccess();
   }, [moduleKey]);
 
-  if (hasAccess === null) return <div className="p-10 text-center font-semibold text-slate-500">Authenticating access...</div>; 
-  if (hasAccess === false) return <Navigate to="/admin/dashboard" replace />; 
+  // Loading State
+  if (hasAccess === null) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-pulse flex flex-col items-center gap-3">
+          <div className="size-8 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <span className="text-sm font-bold text-slate-400 tracking-wider uppercase">Authenticating...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // 🔥 NEW: Beautiful "Access Denied" Screen instead of a Redirect!
+  if (hasAccess === false) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="bg-rose-50 text-rose-500 p-5 rounded-3xl mb-6 shadow-sm border border-rose-100">
+          <Lock className="size-10" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-900 mb-2">Access Restricted</h2>
+        <p className="text-slate-500 font-medium max-w-sm mb-8 leading-relaxed">
+          You don't have the necessary permissions to view the <span className="font-bold text-slate-700">"{moduleKey}"</span> module. 
+        </p>
+        <Link to="/admin/orderPage">
+          <Button className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold gap-2 px-6">
+            <ArrowLeft className="size-4" />
+            Return to Orders
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   return children;
 }

@@ -53,6 +53,7 @@
     --muted-foreground: oklch(0.556 0 0);
     --accent: oklch(0.97 0 0);
     --accent-foreground: oklch(0.205 0 0);
+    --destructive-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
@@ -84,51 +85,46 @@
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
+    /* 🟢 1. Softer, elevated background (No more pure black) */
+    --background: oklch(0.22 0 0); 
     --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
+
+    /* 🟢 2. Cards are slightly lighter than the background so they "float" */
+    --card: oklch(0.27 0 0); 
     --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
+
+    --popover: oklch(0.27 0 0);
     --popover-foreground: oklch(0.985 0 0);
+
     --primary: oklch(0.922 0 0);
     --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
+    --secondary: oklch(0.32 0 0); /* Softened secondary */
     --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
+    --muted: oklch(0.32 0 0); /* Softened muted */
+    --muted-foreground: oklch(0.75 0 0);
+    --accent: oklch(0.32 0 0);
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
+    --destructive-foreground: oklch(0.985 0 0);
+
+    /* Lighter borders so they don't get lost in the new background */
+    --border: oklch(0.35 0 0); 
+    --input: oklch(0.35 0 0);
     --ring: oklch(0.556 0 0);
+
     --chart-1: oklch(0.809 0.105 251.813);
     --chart-2: oklch(0.623 0.214 259.815);
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
 
-    /* 🔵 Premium Deep Blue Sidebar (Tailwind blue-950 equivalent) */
-    --sidebar: oklch(0.208 0.042 265.755); /* blue-950 */
-    --sidebar-foreground: oklch(0.968 0.007 247.896); /* slate-100 */
-    
-    /* Slightly lighter blue for when you hover over buttons */
-    --sidebar-accent: oklch(0.279 0.041 260.031); /* blue-900 */
-    --sidebar-accent-foreground: oklch(0.968 0.007 247.896); /* slate-100 */
-    
-    /* The primary highlight color (keep it distinct, like a bright blue or your brand color) */
+    /* 🔵 Premium Deep Blue Sidebar remains the same */
+    --sidebar: oklch(0.208 0.042 265.755); 
+    --sidebar-foreground: oklch(0.968 0.007 247.896); 
+    --sidebar-accent: oklch(0.279 0.041 260.031); 
+    --sidebar-accent-foreground: oklch(0.968 0.007 247.896); 
     --sidebar-primary: oklch(0.488 0.243 264.376); 
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    
-    /* Subtle borders so they blend into the dark blue */
     --sidebar-border: oklch(0.279 0.041 260.031);
     --sidebar-ring: oklch(0.488 0.243 264.376);
 }
@@ -166,6 +162,7 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    --color-destructive-foreground: var(--destructive-foreground);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -232,4 +229,9 @@ body::-webkit-scrollbar {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: #f1f1f1; /* Light track background */
 }
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }

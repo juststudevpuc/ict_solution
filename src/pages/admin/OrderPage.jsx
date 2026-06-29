@@ -273,14 +273,14 @@ export default function OrderPage() {
 
   return (
     <div className="">
-      <div className="flex justify-between w-5xl items-center">
-        <div className="flex items-center gap-3 mb-4">
-          {/* <h1 className="text-xl font-bold">Order</h1> */}
+      <div className="flex flex-col sm:flex-row justify-between items-center w-full mb-6 gap-4">
+        {/* LEFT SIDE: Search Group */}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search order "
-            className="max-w-xs"
+            placeholder="Search order..."
+            className="max-w-xs bg-white border-slate-200 rounded-md shadow-sm"
           />
           <Button
             onClick={async () => {
@@ -291,17 +291,15 @@ export default function OrderPage() {
                   "get",
                 );
                 if (res) {
-                  // ✅ FIXED: Changed setProduct to setOrder
                   SetOrder(res?.data || []);
                 }
               } catch (error) {
                 console.error("Search failed", error);
               } finally {
-                // ✅ Moved to finally so the spinner always turns off!
                 setLoading(false);
               }
             }}
-            className={"bg-green-400 text-white hover:bg-green-600"}
+            className="bg-slate-500 text-white hover:bg-slate-600 font-bold rounded-md shadow-sm transition-colors"
           >
             Search
           </Button>
@@ -310,21 +308,26 @@ export default function OrderPage() {
               fetchingData();
               setQuery("");
             }}
-            variant="destructive"
+            variant="outline"
+            className="border-rose-200 bg-rose-50 hover:bg-rose-100 rounded-md shadow-sm transition-colors px-3"
           >
-            <SearchSlash className="w-4 h-4 text-red-500 transition-colors" />
+            <SearchSlash className="w-4 h-4 text-rose-600" />
           </Button>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button
-              variant="primary"
-              className={"bg-blue-500 text-white hover:bg-blue-700"}
-            >
-              <Plus />
-              Add Order
-            </Button>
+            <div className="flex justify-end">
+              <Button
+                variant="primary"
+                className={
+                  "bg-blue-500 text-white hover:bg-blue-700 flex justify-end"
+                }
+              >
+                <Plus />
+                Add Order
+              </Button>
+            </div>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
@@ -569,26 +572,38 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="w-full min-w-0 border border-border/50 bg-card shadow-sm overflow-hidden">
-        <div className="w-full overflow-x-auto custom-scrollbar">
-          <Table className="w-full min-w-[800px] border-separate border-spacing-0 text-sm">
-            <TableHeader className={""}>
-              {/* The Colorful & Clean Row */}
-              <TableRow className="border-b-2  dark:border-blue-900/50 dark:bg-blue-950/30 dark:hover:bg-blue-950/30 backdrop-blur-sm transition-colors">
+      <div className="w-full min-w-0 border rounded-3xl bg-card shadow-sm overflow-hidden">
+        <div className="w-full overflow-x-auto custom-scrollbar bg-white rounded-3xl border border-slate-100 shadow-sm">
+          <Table className="w-full min-w-[800px] text-sm text-left">
+            <TableHeader>
+              <TableRow className="bg-slate-50/80 border-b border-slate-100">
                 {tbl_head?.map((item, index) => (
-                  <TableHead key={index} className="bg-sky-900 hover:bg-sky-900 text-white">
+                  <TableHead
+                    key={index}
+                    className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap"
+                  >
                     {item}
                   </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="bg-gray-100">
+
+            <TableBody className="divide-y divide-slate-50">
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={tbl_head.length}>
-                    <div className="flex justify-center py-10">
-                      <Spinner className={"size-7"} />
+                    <div className="flex justify-center py-12">
+                      <Spinner className="size-8 text-blue-600 animate-spin" />
                     </div>
+                  </TableCell>
+                </TableRow>
+              ) : order?.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={tbl_head.length}
+                    className="text-center py-10 text-slate-400 font-medium text-sm"
+                  >
+                    No orders found.
                   </TableCell>
                 </TableRow>
               ) : (
@@ -606,12 +621,10 @@ export default function OrderPage() {
                     total > 0 ? ((paid / total) * 100).toFixed(2) : "0.00";
 
                   // --- TIMELINE MATH ---
-                  // --- TIMELINE MATH ---
                   let daysLeftText = "Pending Approval";
                   let timePercent = 0;
 
                   if (item.status === "approved") {
-                    // Check if it has dates (New Orders)
                     if (item.approved_at && item.deadline_at) {
                       const start = new Date(item.approved_at).getTime();
                       const end = new Date(item.deadline_at).getTime();
@@ -634,7 +647,6 @@ export default function OrderPage() {
                         daysLeftText = `${daysLeft} days left`;
                       }
                     } else {
-                      // Fallback for Old Orders that were approved before we added the date logic
                       daysLeftText = "Approved (No Timeline)";
                       timePercent = 100;
                     }
@@ -643,41 +655,67 @@ export default function OrderPage() {
                   }
 
                   return (
-                    <TableRow key={item?.id || index}>
-                      <TableCell className="font-medium py-6 text-slate-500">
+                    <TableRow
+                      key={item?.id || index}
+                      className="hover:bg-slate-50/50 transition-colors"
+                    >
+                      <TableCell className="font-medium text-slate-400 pl-6">
                         {index + 1}
                       </TableCell>
-                      <TableCell className="font-semibold">
+
+                      <TableCell className="font-bold text-slate-900">
                         {item?.order_no}
                       </TableCell>
-                      <TableCell>{formatDate(item?.created_at)}</TableCell>
-                      <TableCell>{formatDate(item?.updated_at)}</TableCell>
-                      <TableCell>{item?.customer_name || "Guest"}</TableCell>
-                      <TableCell>{item?.phone || "N/A"}</TableCell>
+
+                      <TableCell className="font-medium text-slate-500 text-xs">
+                        {formatDate(item?.created_at)}
+                      </TableCell>
+
+                      <TableCell className="font-medium text-slate-500 text-xs">
+                        {formatDate(item?.updated_at)}
+                      </TableCell>
+
+                      <TableCell className="font-medium text-slate-600">
+                        {item?.customer_name || "Guest"}
+                      </TableCell>
+
+                      <TableCell className="font-medium text-slate-500 text-xs">
+                        {item?.phone || "N/A"}
+                      </TableCell>
+
                       <TableCell
-                        className="max-w-[200px] truncate"
+                        className="max-w-[200px] truncate text-slate-500 font-medium"
                         title={productNames}
                       >
                         {productNames || "—"}
                       </TableCell>
-                      <TableCell className="text-center font-bold">
+
+                      <TableCell className="font-bold text-slate-700">
                         {totalQty || 0}
                       </TableCell>
+
                       <TableCell className="font-bold text-slate-900">
                         ${total.toFixed(2)}
                       </TableCell>
-                      <TableCell className="font-bold text-slate-900">
+
+                      <TableCell
+                        className={`font-bold ${paid >= total ? "text-emerald-600" : "text-amber-500"}`}
+                      >
                         ${paid.toFixed(2)}
                       </TableCell>
-                      <TableCell>{item?.payment_method || "-"}</TableCell>
+
+                      <TableCell className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                        {item?.payment_method || "-"}
+                      </TableCell>
+
                       <TableCell>
                         <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold border ${
                             item.status === "approved"
-                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                               : item.status === "rejected"
-                                ? "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-                                : "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
+                                ? "bg-red-50 text-red-600 border-red-100"
+                                : "bg-amber-50 text-amber-600 border-amber-100"
                           }`}
                         >
                           {item.status
@@ -686,7 +724,8 @@ export default function OrderPage() {
                             : "Pending"}
                         </span>
                       </TableCell>
-                      {/* 🔥 NEW TIMELINE COLUMN */}
+
+                      {/* TIMELINE COLUMN */}
                       <TableCell className="min-w-[140px]">
                         {item.status === "approved" ? (
                           <div className="flex flex-col gap-1.5">
@@ -698,25 +737,24 @@ export default function OrderPage() {
                                 {timePercent.toFixed(0)}%
                               </span>
                             </div>
-                            {/* Progress Track */}
-                            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
-                              {/* Progress Fill */}
+                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-200/50">
                               <div
-                                className="h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-blue-400 to-indigo-500"
+                                className="h-full rounded-full transition-all duration-1000 bg-blue-500"
                                 style={{ width: `${timePercent}%` }}
                               />
                             </div>
                           </div>
                         ) : (
-                          <span className="text-xs text-slate-400 italic">
+                          <span className="text-xs text-slate-400 font-medium italic">
                             {daysLeftText}
                           </span>
                         )}
                       </TableCell>
-                      {/* --- START OF NEW DATE CELLS --- */}
+
+                      {/* DATES */}
                       <TableCell className="text-slate-600 whitespace-nowrap">
                         {item.approved_at ? (
-                          <span className="font-medium">
+                          <span className="font-medium text-xs">
                             {formatDate(item.approved_at)}
                           </span>
                         ) : (
@@ -726,57 +764,43 @@ export default function OrderPage() {
 
                       <TableCell className="text-slate-600 whitespace-nowrap">
                         {item.deadline_at ? (
-                          <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                          <span className="font-semibold text-xs text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
                             {formatDate(item.deadline_at)}
                           </span>
                         ) : (
                           <span className="text-slate-400">—</span>
                         )}
                       </TableCell>
-                      {/* --- END OF NEW DATE CELLS --- */}
 
-                      <TableCell>{item?.remark || "-"}</TableCell>
+                      <TableCell className="text-slate-500 font-medium max-w-[150px] truncate">
+                        {item?.remark || "-"}
+                      </TableCell>
+
+                      {/* PAYMENT PROGRESS */}
                       <TableCell>
-                        <div className="flex flex-col gap-2 min-w-[120px]">
+                        <div className="flex flex-col gap-1.5 min-w-[120px]">
                           <div className="flex items-center justify-between gap-2">
-                            <Badge
-                              className={`text-[10px] border-none px-2 py-0 h-5 text-white ${paid >= total ? "bg-green-600" : "bg-amber-500"}`}
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wider ${paid >= total ? "text-emerald-600" : "text-amber-500"}`}
                             >
                               {paid >= total ? "Paid" : "Pending"}
-                            </Badge>
-                            <span className="text-[10px] font-bold text-slate-600">
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-500">
                               {percentage}%
                             </span>
                           </div>
-                          <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/50">
+                          <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
                             <div
-                              className={`h-full transition-all duration-1000 ${paid >= total ? "bg-green-500" : "bg-blue-500"}`}
+                              className={`h-full transition-all duration-1000 ${paid >= total ? "bg-emerald-500" : "bg-blue-500"}`}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
                         </div>
                       </TableCell>
-                      {/* <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={() => onEdit(item)}
-                            variant="outline"
-                            size="icon"
-                          >
-                            <Edit className="w-4 h-4 text-blue-600" />
-                          </Button>
-                          <Button
-                            onClick={() => onDelete(item)}
-                            variant="destructive"
-                            size="icon"
-                          >
-                            <Trash className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell> */}
+
+                      {/* ACTION BUTTONS */}
                       <TableCell>
-                        <div className="flex gap-2">
-                          {/* 🔥 NEW APPROVE BUTTON */}
+                        <div className="flex items-center gap-2">
                           {item.status !== "approved" && (
                             <Button
                               onClick={() => {
@@ -785,9 +809,9 @@ export default function OrderPage() {
                               }}
                               variant="outline"
                               size="icon"
-                              className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                              className="size-9 rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-colors shadow-sm"
                             >
-                              <CheckCircle className="w-4 h-4" />
+                              <CheckCircle className="size-4" />
                             </Button>
                           )}
 
@@ -795,16 +819,18 @@ export default function OrderPage() {
                             onClick={() => onEdit(item)}
                             variant="outline"
                             size="icon"
+                            className="size-9 rounded-xl border-slate-200 text-slate-500 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-colors shadow-sm"
                           >
-                            <Edit className="w-4 h-4 text-blue-600" />
+                            <Edit className="size-4" />
                           </Button>
 
                           <Button
                             onClick={() => onDelete(item)}
                             variant="destructive"
                             size="icon"
+                            className="size-9 rounded-xl shadow-sm shadow-red-200"
                           >
-                            <Trash className="w-4 h-4" />
+                            <Trash className="size-4" />
                           </Button>
                         </div>
                       </TableCell>

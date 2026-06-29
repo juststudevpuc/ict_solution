@@ -32,7 +32,11 @@ const BASE_NAV_MAIN = [
   { title: "Request Checkout", url: "/admin/request_order", icon: Mail },
   { title: "Inventory", url: "/admin/inventory", icon: Warehouse },
   { title: "Staff", url: "/admin/staff_management", icon: PersonStandingIcon },
-  { title: "Transaction History", url: "/admin/transaction_history", icon: History },
+  {
+    title: "Transaction History",
+    url: "/admin/transaction_history",
+    icon: History,
+  },
   { title: "Report", url: "/admin/report", icon: Paperclip },
   { title: "Setting", url: "/admin/setting", icon: Settings2 },
 ];
@@ -52,20 +56,20 @@ export function AppSidebar({ ...props }) {
       // A. Extract Real User from Redux Persist
       const persistString = localStorage.getItem("persist:root");
       let role = "staff";
-      
+
       if (persistString) {
         try {
           const parsedRoot = JSON.parse(persistString);
           if (parsedRoot.user) {
             const userObj = JSON.parse(parsedRoot.user);
             role = userObj?.role?.toLowerCase() || "staff";
-            
+
             // Update the UI with their actual name and email
             setCurrentUser({
               name: userObj.name || "User",
               email: userObj.email || "",
               role: role,
-              avatar: "/avatars/shadcn.jpg", 
+              avatar: "/avatars/shadcn.jpg",
             });
           }
         } catch (e) {
@@ -87,24 +91,23 @@ export function AppSidebar({ ...props }) {
       // C. Filter the Sidebar Links
       const filteredLinks = BASE_NAV_MAIN.filter((item) => {
         // Extract the key from the URL (e.g., "/admin/productPage" -> "productPage")
-        const key = item.url.split("/").pop();
+        const urlKey = item.url.split("/").pop();
 
-        // Rule 1: Dashboard is always visible to everyone
-        if (key === "dashboard") return true;
+        // 🔥 FIX 1: Map the sidebar URL to match your database key for Settings!
+        const dbKey =
+          urlKey === "setting" ? "super_admin_only_setting" : urlKey;
 
-        // Rule 2: Settings is strictly Admin only
-        if (key === "setting") return role === "admin";
-
-        // Rule 3: Super Admins see everything else
+        // Rule 1: Super Admins see absolutely everything
         if (role === "admin") return true;
 
-        // Rule 4: Check the database rules for Staff
+        // Rule 2: Check the MongoDB database rules for Staff (Dashboard included!)
         if (Array.isArray(matrix)) {
-          const moduleRule = matrix.find((m) => m.key === key);
+          const moduleRule = matrix.find((m) => m.key === dbKey);
+          // If the rule exists and is true for their role, show it!
           return moduleRule && moduleRule[role] === true;
         }
 
-        return false; // Hide by default if something breaks
+        return false; // Hide by default if something breaks or is turned off
       });
 
       setNavItems(filteredLinks);
@@ -115,7 +118,10 @@ export function AppSidebar({ ...props }) {
 
   // Update the top logo text dynamically based on role
   const dynamicTeams = [
-    { name: currentUser.role === "admin" ? "Admin" : "Staff", plan: "ICT Solution" }
+    {
+      name: currentUser.role === "admin" ? "Admin" : "Staff",
+      plan: "ICT Solution",
+    },
   ];
 
   return (

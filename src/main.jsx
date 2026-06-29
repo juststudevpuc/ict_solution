@@ -6,13 +6,18 @@ import { Provider } from "react-redux";
 import { persitor, store } from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
 
-// We use createRoot() directly because we imported it directly above!
+// ✅ The import with curly braces
+import { ThemeProvider } from "./components/ThemeProvider";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persitor}>
-        <App />
+        {/* Wrapping the App inside the ThemeProvider */}
+        <ThemeProvider defaultTheme="system" storageKey="app-theme">
+          <App />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
-  </StrictMode>,
+  </StrictMode>
 );
