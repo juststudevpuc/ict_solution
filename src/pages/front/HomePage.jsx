@@ -256,7 +256,8 @@ export default function HomePage() {
         {/* 6. FOUNDER SECTION (The Human Element)  */}
         {/* ======================================= */}
         <section className="py-24 bg-white border-t border-slate-100">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24">
+          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20">
+            {/* Image & Icon Wrapper */}
             <div className="relative shrink-0">
               <div className="absolute inset-0 bg-blue-400 rounded-full blur-[40px] opacity-20"></div>
               <img
@@ -269,17 +270,54 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="text-center md:text-left max-w-xl">
-              <h2 className="text-2xl md:text-3xl font-medium text-slate-800 tracking-tight leading-relaxed mb-8">
-                "Our mission is to empower the next generation of digital
-                innovators with the tools they need to change the world."
+            {/* Text Content */}
+            <div className="text-center md:text-left max-w-2xl">
+              <h2 className="text-3xl font-semibold text-slate-900 tracking-tight mb-6">
+                Message from the CEO
               </h2>
+
+              <div className="text-slate-600 text-lg leading-relaxed space-y-5 mb-8">
+                <p>
+                  Welcome to ICT Solution Co., Ltd. Our mission is to empower
+                  businesses and individuals through innovative, reliable, and
+                  high-quality technology solutions. Since our founding, we have
+                  been committed to delivering excellence in software
+                  development, web and mobile application development, UI/UX
+                  design, IT consulting, and digital transformation services.
+                </p>
+                <p>
+                  As the CEO & Founder, I firmly believe that technology is more
+                  than just a tool—it is a driving force for innovation, growth,
+                  and long-term success. Our dedicated team continuously strives
+                  to create practical, scalable, and user-focused solutions that
+                  help our clients achieve their goals in an ever-evolving
+                  digital world.
+                </p>
+                <p>
+                  We are passionate about building lasting partnerships based on
+                  trust, integrity, and outstanding service. Whether you are a
+                  startup, a growing business, or an established enterprise, ICT
+                  Solution Co., Ltd. is committed to providing customized
+                  solutions that deliver measurable results and sustainable
+                  value.
+                </p>
+                <p className="font-medium text-slate-800 italic">
+                  "Thank you for your trust and confidence in ICT Solution Co.,
+                  Ltd. We look forward to partnering with you and shaping a
+                  smarter digital future together."
+                </p>
+              </div>
+
+              {/* Signature Block */}
               <div className="flex flex-col md:items-start items-center">
                 <p className="text-xl font-bold text-slate-900">
-                  Mr.NHANH NHIM
+                  Mr. Nhem Nhim
                 </p>
                 <p className="text-blue-600 font-medium tracking-wide text-sm uppercase mt-1">
-                  CEO& Founder of ICT Solutions,Co,Ltd.
+                  CEO & Founder
+                </p>
+                <p className="text-slate-500 font-medium tracking-wide text-sm mt-0.5">
+                  ICT Solution Co., Ltd.
                 </p>
               </div>
             </div>
