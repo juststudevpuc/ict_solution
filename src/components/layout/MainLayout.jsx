@@ -14,6 +14,7 @@ import {
   Send,
   ShoppingBag,
   ShoppingCart,
+  ArrowUpIcon,
 } from "lucide-react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -39,6 +40,62 @@ import {
 import { logout } from "@/store/userSlice";
 import { clearToken } from "@/store/tokenSlice";
 import { clearAllCart } from "@/store/cartSlice";
+import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+
+function FloatingWidgets() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Show "Scroll to Top" only when scrolled down 300px
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) setIsVisible(true);
+      else setIsVisible(false);
+    };
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[90] flex flex-col gap-3">
+      {/* 🌙 Theme Toggler Floating Button */}
+      <div className="flex size-12 items-center justify-center rounded-full bg-slate-300 border border-slate-200 shadow-lg transition-transform hover:scale-110 active:scale-95 dark:bg-slate-800 dark:border-slate-700">
+        <AnimatedThemeToggler />
+      </div>
+
+      {/* Telegram Button */}
+      <a
+        href="https://t.me/ictinfo1"
+        target="_blank"
+        rel="noreferrer"
+        className="flex size-12 items-center justify-center rounded-full bg-[#0088cc] text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+      >
+        <Send className="size-5 -ml-1" />
+      </a>
+
+      {/* Messenger Button */}
+      {/* <a
+        href="https://m.me/your_facebook_page"
+        target="_blank"
+        rel="noreferrer"
+        className="flex size-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#00c6ff] to-[#0072ff] text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+      >
+        <MessageCircle className="size-6" />
+      </a> */}
+
+      {/* Scroll to Top Button (Fades in/out smoothly) */}
+      <button
+        onClick={scrollToTop}
+        className={`flex size-12 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 dark:bg-slate-200 dark:text-slate-900 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
+      >
+        <ArrowUpIcon className="size-5" />
+      </button>
+    </div>
+  );
+}
 
 export default function MainLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -187,8 +244,7 @@ export default function MainLayout() {
                 className="hidden md:flex border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold uppercase tracking-widest px-5 h-10 rounded-xl transition-all active:scale-95"
               >
                 Contact Us
-              </Button>
-
+              </Button> 
               {/* 2. Conditional Logic: If user exists, show Profile. If not, show Login. */}
               {user && user.id ? (
                 <DropdownMenu>
@@ -516,6 +572,7 @@ export default function MainLayout() {
           </div>
         </div>
       </footer>
+      <FloatingWidgets />
     </div>
   );
 }

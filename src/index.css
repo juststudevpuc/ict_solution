@@ -5,7 +5,7 @@
 
 @source "../node_modules/flowbite-datepicker";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer utilities {
   /* 1. Keep your existing no-scrollbar utility */
@@ -231,7 +231,23 @@ body::-webkit-scrollbar {
 }
 }
 
-::view-transition-old(root), ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+::view-transition-group(root) {
+  animation-duration: var(--magicui-theme-toggle-vt-duration, 0ms);
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-new(root) {
+  clip-path: var(--magicui-theme-vt-clip-from);
+}
+::view-transition-old(root) {
+  animation: none;
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
 }

@@ -1,9 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Moon, Sun } from "lucide-react"
-import { flushSync } from "react-dom"
+"use client";
 
-import { cn } from "@/lib/utils"
+import { useCallback, useRef } from "react";
+import { Moon, Sun } from "lucide-react";
+import { flushSync } from "react-dom";
 
+import { cn } from "@/lib/utils";
+// 🔥 Import our custom provider!
+import { useTheme } from "@/components/ThemeProvider";
+
+// --- MAGIC UI MATH FUNCTIONS (Keep these exactly the same) ---
 function polygonCollapsed(cx, cy, vertexCount) {
   const pairs = Array.from({ length: vertexCount }, () => `${cx}px ${cy}px`).join(", ")
   return `polygon(${pairs})`
@@ -39,7 +44,6 @@ function getThemeTransitionClipPaths(variant, cx, cy, maxRadius, viewportWidth, 
       return [polygonCollapsed(cx, cy, 3), `polygon(${verts})`];
     }
     case "diamond": {
-      // Slightly larger than the view-transition circle radius so axis-aligned coverage matches the circle reveal.
       const R = maxRadius * Math.SQRT2
       const end = [
         `${cx}px ${cy - R}px`,
@@ -70,7 +74,6 @@ function getThemeTransitionClipPaths(variant, cx, cy, maxRadius, viewportWidth, 
       return [polygonCollapsed(cx, cy, 4), `polygon(${end})`];
     }
     case "star": {
-      // Small overscan so the last frames never leave a 1px seam before the transition group ends.
       const R = maxRadius * Math.SQRT2 * 1.03
       const innerRatio = 0.42
       const starPolygon = (radius) => {
@@ -96,125 +99,115 @@ function getThemeTransitionClipPaths(variant, cx, cy, maxRadius, viewportWidth, 
   }
 }
 
+// --- OUR UPDATED COMPONENT ---
 export const AnimatedThemeToggler = ({
   className,
   duration = 400,
   variant,
   fromCenter = false,
-  theme,
-  onThemeChange,
   ...props
 }) => {
-  const shape = variant ?? "circle"
-  const isControlled = theme !== undefined
-  const [internalIsDark, setInternalIsDark] = useState(false)
-  const isDark = isControlled ? theme === "dark" : internalIsDark
-  const buttonRef = useRef(null)
-
-  useEffect(() => {
-    if (isControlled) return
-
-    const updateTheme = () => {
-      setInternalIsDark(document.documentElement.classList.contains("dark"))
-    }
-
-    updateTheme()
-
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-
-    return () => observer.disconnect();
-  }, [isControlled])
+  const shape = variant ?? "circle";
+  const buttonRef = useRef(null);
+  
+  // 🔥 Connect to our ThemeProvider memory brain
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   const toggleTheme = useCallback(() => {
-    const button = buttonRef.current
-    if (!button) return
+    const button = buttonRef.current;
+    if (!button) return;
 
-    const viewportWidth = window.visualViewport?.width ?? window.innerWidth
-    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+    const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
 
-    let x
-    let y
+    let x;
+    let y;
     if (fromCenter) {
-      x = viewportWidth / 2
-      y = viewportHeight / 2
+      x = viewportWidth / 2;
+      y = viewportHeight / 2;
     } else {
-      const { top, left, width, height } = button.getBoundingClientRect()
-      x = left + width / 2
-      y = top + height / 2
+      const { top, left, width, height } = button.getBoundingClientRect();
+      x = left + width / 2;
+      y = top + height / 2;
     }
 
-    const maxRadius = Math.hypot(Math.max(x, viewportWidth - x), Math.max(y, viewportHeight - y))
+    const maxRadius = Math.hypot(Math.max(x, viewportWidth - x), Math.max(y, viewportHeight - y));
 
     const applyTheme = () => {
-      const newTheme = !isDark
-      // Always toggle the class synchronously so the View Transitions API
-      // snapshots the new theme inside the startViewTransition callback.
-      document.documentElement.classList.toggle("dark")
-      if (isControlled) {
-        onThemeChange?.(newTheme ? "dark" : "light")
-      } else {
-        setInternalIsDark(newTheme)
-        localStorage.setItem("theme", newTheme ? "dark" : "light")
-      }
-    }
+      const newTheme = isDark ? "light" : "dark";
+      
+      // Force DOM update synchronously for the animation
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(newTheme);
+      
+      // Save it using our provider
+      setTheme(newTheme);
+    };
 
+    // If browser doesn't support the cool animation, just snap instantly
     if (typeof document.startViewTransition !== "function") {
-      applyTheme()
-      return
+      applyTheme();
+      return;
     }
 
-    const clipPath = getThemeTransitionClipPaths(shape, x, y, maxRadius, viewportWidth, viewportHeight)
-
-    const root = document.documentElement
-    root.dataset.magicuiThemeVt = "active"
-    root.style.setProperty("--magicui-theme-toggle-vt-duration", `${duration}ms`)
-    // Pin the collapsed clip-path via CSS so Firefox does not paint the new
-    // theme unclipped between snapshot and the ready.then() JS animation.
-    root.style.setProperty("--magicui-theme-vt-clip-from", clipPath[0])
+    const clipPath = getThemeTransitionClipPaths(shape, x, y, maxRadius, viewportWidth, viewportHeight);
+    const root = document.documentElement;
+    root.dataset.magicuiThemeVt = "active";
+    root.style.setProperty("--magicui-theme-toggle-vt-duration", `${duration}ms`);
+    root.style.setProperty("--magicui-theme-vt-clip-from", clipPath[0]);
+    
     const cleanup = () => {
-      delete root.dataset.magicuiThemeVt
-      root.style.removeProperty("--magicui-theme-toggle-vt-duration")
-      root.style.removeProperty("--magicui-theme-vt-clip-from")
-    }
+      delete root.dataset.magicuiThemeVt;
+      root.style.removeProperty("--magicui-theme-toggle-vt-duration");
+      root.style.removeProperty("--magicui-theme-vt-clip-from");
+    };
 
     const transition = document.startViewTransition(() => {
-      flushSync(applyTheme)
-    })
+      flushSync(applyTheme);
+    });
+
     if (typeof transition?.finished?.finally === "function") {
-      transition.finished.finally(cleanup)
+      transition.finished.finally(cleanup);
     } else {
-      cleanup()
+      cleanup();
     }
 
-    const ready = transition?.ready
+    const ready = transition?.ready;
     if (ready && typeof ready.then === "function") {
       ready.then(() => {
         document.documentElement.animate({
           clipPath,
         }, {
           duration,
-          // Star: linear avoids easing overshoot that fights polygon interpolation at t→1; VT group duration is synced above.
           easing: shape === "star" ? "linear" : "ease-in-out",
           fill: "forwards",
           pseudoElement: "::view-transition-new(root)",
-        })
-      })
+        });
+      });
     }
-  }, [shape, fromCenter, duration, isDark, isControlled, onThemeChange])
+  }, [shape, fromCenter, duration, isDark, setTheme]);
 
   return (
     <button
       type="button"
       ref={buttonRef}
       onClick={toggleTheme}
-      className={cn(className)}
+      className={cn("relative flex size-9 items-center justify-center rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors", className)}
       {...props}>
-      {isDark ? <Sun /> : <Moon />}
+      <div className="relative flex size-5 items-center justify-center overflow-hidden">
+        <Sun
+          className={`absolute size-full transition-all duration-500 ease-in-out ${
+            isDark ? "translate-y-10 opacity-0" : "translate-y-0 opacity-100"
+          }`}
+        />
+        <Moon
+          className={`absolute size-full transition-all duration-500 ease-in-out ${
+            isDark ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
+          }`}
+        />
+      </div>
       <span className="sr-only">Toggle theme</span>
     </button>
   );
-}
+};
