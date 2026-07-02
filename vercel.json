@@ -6,6 +6,10 @@
       "destination": "http://54.179.48.141/api/:path*"
     },
     {
+      "source": "/sanctum/csrf-cookie",
+      "destination": "http://54.179.48.141/sanctum/csrf-cookie"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

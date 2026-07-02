@@ -1,31 +1,31 @@
 import axios from "axios";
 import { configs } from "../config/configs";
-import { store } from "@/store/store";
+// You can remove the Redux store import if you only used it for the token!
 
 export const request = async (url = "", method = "get", data = {}) => {
-    const token = store.getState().token;
-
     let headers = {
         "Accept": "application/json",
-        "Content-Type": "application/json", // FIX 1: Capital 'C' and 'T'
+        "Content-Type": "application/json", 
     };
 
-    // FIX 2: Let Axios handle FormData automatically
     if (data instanceof FormData) {
-        // If we hardcode "multipart/form-data", Axios won't add the required "boundary" tag, 
-        // and Laravel won't be able to read the files or data properly!
         delete headers["Content-Type"]; 
     }
 
     try {
         const res = await axios({
+            // Let Vercel proxy handle the base URL if needed, 
+            // or keep your configs.base_url if it points to '/api'
             url: configs.base_url + url,
             method: method,
             data: data,
-            headers: {
-                ...headers,
-                Authorization: "Bearer " + token,
-            },
+            
+            // FIX 1: Add this magic command for HttpOnly cookies
+            withCredentials: true, 
+            
+            // FIX 2: We removed Authorization: "Bearer " + token. 
+            // The browser handles the secure cookie automatically now!
+            headers: headers, 
         });
         
         console.log("Response Data :", res);
@@ -34,7 +34,6 @@ export const request = async (url = "", method = "get", data = {}) => {
     } catch (error) {
         console.log("Response error :", error);
         
-        // FIX 3: Actually throw the error so your React components know it failed!
         const responseError = error?.response;
         
         if (responseError) {
@@ -45,8 +44,6 @@ export const request = async (url = "", method = "get", data = {}) => {
                 console.log("Validation Errors: ", responseError.data.errors);
             }
             
-            // We MUST reject the promise here. 
-            // If we just 'return', the CheckoutCard thinks the request was successful!
             throw responseError.data; 
         }
         

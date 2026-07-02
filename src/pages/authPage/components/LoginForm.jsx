@@ -26,32 +26,70 @@ export function LoginForm({ className, ...props }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   setValidate({});
+
+  //   try {
+  //     const res = await request("login", "post", form);
+
+  //     if (res?.error) {
+  //       if (res?.errors) setValidate(res.errors);
+  //       setIsLoading(false);
+  //       return;
+  //     }
+
+  //     // Inside your onSubmit function, right after a successful login (if res is true):
+  //     if (res) {
+  //       // 1. Wipe the slate clean BEFORE saving the new user
+  //       dispatch(clearAllCart());
+  //       localStorage.removeItem("persist:root");
+
+  //       // 2. Set the new user data
+  //       dispatch(setUser(res?.user));
+  //       dispatch(setToken(res?.token));
+  //       localStorage.setItem("token", res?.token);
+
+  //       // 3. Navigate
+  //       if (res?.user?.role === "admin") {
+  //         navigate("/admin", { replace: true });
+  //       } else {
+  //         navigate("/user", { replace: true });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setValidate({});
 
     try {
+      // 1. CRITICAL NEW STEP: Ask Laravel for the CSRF Security Cookie FIRST
+      // This initializes the secure session in the browser before we log in.
+      await request("/sanctum/csrf-cookie", "get");
+
+      // 2. Send the login request
       const res = await request("login", "post", form);
 
-      if (res?.error) {
-        if (res?.errors) setValidate(res.errors);
-        setIsLoading(false);
-        return;
-      }
-
-      // Inside your onSubmit function, right after a successful login (if res is true):
       if (res) {
-        // 1. Wipe the slate clean BEFORE saving the new user
+        // 3. Wipe the slate clean BEFORE saving the new user
         dispatch(clearAllCart());
         localStorage.removeItem("persist:root");
+        
+        // 4. Set the new user data in Redux
+        dispatch(setUser(res?.user)); 
+        
+        // ❌ REMOVED: dispatch(setToken(res?.token));
+        // ❌ REMOVED: localStorage.setItem("token", res?.token);
+        // We do not touch tokens anymore! The browser has saved the secure cookie.
 
-        // 2. Set the new user data
-        dispatch(setUser(res?.user));
-        dispatch(setToken(res?.token));
-        localStorage.setItem("token", res?.token);
-
-        // 3. Navigate
+        // 5. Navigate
         if (res?.user?.role === "admin") {
           navigate("/admin", { replace: true });
         } else {
@@ -60,9 +98,16 @@ export function LoginForm({ className, ...props }) {
       }
     } catch (error) {
       console.error("Login error:", error);
+      
+      // Because we updated your axios file to `throw responseError.data`, 
+      // Laravel validation errors (422) will now be caught right here!
+      if (error?.errors) {
+         setValidate(error.errors); 
+      }
+      
       setIsLoading(false);
     }
-  };
+};
 
   return (
     <form
