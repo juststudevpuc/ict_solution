@@ -15,6 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { clearAllCart } from "@/store/cartSlice";
+import axios from "axios";
 
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
@@ -72,7 +73,9 @@ export function LoginForm({ className, ...props }) {
     try {
       // 1. CRITICAL NEW STEP: Ask Laravel for the CSRF Security Cookie FIRST
       // This initializes the secure session in the browser before we log in.
-      await request("/sanctum/csrf-cookie", "get");
+      await axios.get("https://ict-solution-2.vercel.app/sanctum/csrf-cookie", { 
+          withCredentials: true 
+      });
 
       // 2. Send the login request
       const res = await request("login", "post", form);
