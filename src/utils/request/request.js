@@ -1,6 +1,11 @@
 import axios from "axios";
 import { configs } from "../config/configs";
-// You can remove the Redux store import if you only used it for the token!
+
+// 1. THIS IS THE MAGIC HELPER: It digs into the browser to find the CSRF ticket
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+    return (match ? decodeURIComponent(match[3]) : null);
+}
 
 export const request = async (url = "", method = "get", data = {}) => {
     let headers = {
@@ -8,23 +13,26 @@ export const request = async (url = "", method = "get", data = {}) => {
         "Content-Type": "application/json", 
     };
 
+    // 2. TAPE THE TICKET TO THE REQUEST: Grab the token Laravel just gave us
+    const xsrfToken = getCookie("XSRF-TOKEN");
+    if (xsrfToken) {
+        headers["X-XSRF-TOKEN"] = xsrfToken;
+    }
+
     if (data instanceof FormData) {
         delete headers["Content-Type"]; 
     }
 
     try {
         const res = await axios({
-            // Let Vercel proxy handle the base URL if needed, 
-            // or keep your configs.base_url if it points to '/api'
             url: configs.base_url + url,
             method: method,
             data: data,
             
-            // FIX 1: Add this magic command for HttpOnly cookies
+            // 3. THESE TWO LINES PREVENT THE 419 ERROR
             withCredentials: true, 
+            withXSRFToken: true, 
             
-            // FIX 2: We removed Authorization: "Bearer " + token. 
-            // The browser handles the secure cookie automatically now!
             headers: headers, 
         });
         
