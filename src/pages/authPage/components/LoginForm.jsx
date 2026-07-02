@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { request } from "@/utils/request/request";
 import { setUser } from "@/store/userSlice";
-import { setToken } from "@/store/tokenSlice";
+import { clearAllCart } from "@/store/cartSlice"; // Token slice removed, which is correct!
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
   Field,
@@ -14,7 +14,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { clearAllCart } from "@/store/cartSlice";
 import axios from "axios";
 
 export function LoginForm({ className, ...props }) {
@@ -27,73 +26,34 @@ export function LoginForm({ className, ...props }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // const onSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-  //   setValidate({});
-
-  //   try {
-  //     const res = await request("login", "post", form);
-
-  //     if (res?.error) {
-  //       if (res?.errors) setValidate(res.errors);
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     // Inside your onSubmit function, right after a successful login (if res is true):
-  //     if (res) {
-  //       // 1. Wipe the slate clean BEFORE saving the new user
-  //       dispatch(clearAllCart());
-  //       localStorage.removeItem("persist:root");
-
-  //       // 2. Set the new user data
-  //       dispatch(setUser(res?.user));
-  //       dispatch(setToken(res?.token));
-  //       localStorage.setItem("token", res?.token);
-
-  //       // 3. Navigate
-  //       if (res?.user?.role === "admin") {
-  //         navigate("/admin", { replace: true });
-  //       } else {
-  //         navigate("/user", { replace: true });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setValidate({});
 
     try {
-      // 1. CRITICAL NEW STEP: Ask Laravel for the CSRF Security Cookie FIRST
-      // This initializes the secure session in the browser before we log in.
+      // 1. CRITICAL STEP: Get the CSRF Security Cookie
+      // Added Accept: application/json to prevent HTML redirects on failure
       await axios.get("https://ict-solution-2.vercel.app/sanctum/csrf-cookie", { 
-          withCredentials: true 
+          withCredentials: true,
+          headers: {
+              "Accept": "application/json"
+          }
       });
 
-      // 2. Send the login request
+      // 2. Send the login request using your custom wrapper
       const res = await request("login", "post", form);
 
-      if (res) {
+      if (res && res.user) {
         // 3. Wipe the slate clean BEFORE saving the new user
         dispatch(clearAllCart());
         localStorage.removeItem("persist:root");
         
-        // 4. Set the new user data in Redux
-        dispatch(setUser(res?.user)); 
-        
-        // ❌ REMOVED: dispatch(setToken(res?.token));
-        // ❌ REMOVED: localStorage.setItem("token", res?.token);
-        // We do not touch tokens anymore! The browser has saved the secure cookie.
+        // 4. Set the new user data in Redux (No token needed!)
+        dispatch(setUser(res.user)); 
 
-        // 5. Navigate
-        if (res?.user?.role === "admin") {
+        // 5. Navigate based on role
+        if (res.user.role === "admin") {
           navigate("/admin", { replace: true });
         } else {
           navigate("/user", { replace: true });
@@ -102,15 +62,18 @@ export function LoginForm({ className, ...props }) {
     } catch (error) {
       console.error("Login error:", error);
       
-      // Because we updated your axios file to `throw responseError.data`, 
-      // Laravel validation errors (422) will now be caught right here!
-      if (error?.errors) {
-         setValidate(error.errors); 
+      // Safely catch validation errors from either standard Axios or your custom request wrapper
+      const validationErrors = error?.errors || error?.response?.data?.errors;
+      
+      if (validationErrors) {
+         setValidate(validationErrors); 
       }
       
+    } finally {
+      // Always turn off the loading spinner, even if it fails
       setIsLoading(false);
     }
-};
+  };
 
   return (
     <form
