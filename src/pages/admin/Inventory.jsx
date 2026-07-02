@@ -99,8 +99,8 @@ export default function Inventory() {
   const fetchingData = async () => {
     setLoading(true);
     try {
-      const inv = await request("inventory", "get");
-      const res = await request("product", "get");
+      const inv = await request("admin/inventory", "get");
+      const res = await request("admin/product", "get");
 
       if (inv) {
         console.log("Response Product : ", inv);
