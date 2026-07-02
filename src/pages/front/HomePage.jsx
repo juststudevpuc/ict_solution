@@ -262,7 +262,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-blue-400 rounded-full blur-[40px] opacity-20"></div>
               <img
                 src="img/nhim.jpg"
-                alt="Mr. Nhanh Nhim"
+                alt="Mr. Nhem Nhim"
                 className="relative w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-2xl border-4 border-white z-10"
               />
               <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white p-4 rounded-full shadow-xl z-20">
@@ -311,7 +311,7 @@ export default function HomePage() {
               {/* Signature Block */}
               <div className="flex flex-col md:items-start items-center">
                 <p className="text-xl font-bold text-slate-900">
-                  Mr. Nhem Nhim
+                  Mr. Nhanh Nhim
                 </p>
                 <p className="text-blue-600 font-medium tracking-wide text-sm uppercase mt-1">
                   CEO & Founder
