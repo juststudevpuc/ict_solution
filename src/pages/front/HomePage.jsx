@@ -262,7 +262,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-blue-400 rounded-full blur-[40px] opacity-20"></div>
               <img
                 src="img/nhim.jpg"
-                alt="Mr. Nhem Nhim"
+                alt="Mr. Nhanh Nhim"
                 className="relative w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-2xl border-4 border-white z-10"
               />
               <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white p-4 rounded-full shadow-xl z-20">
