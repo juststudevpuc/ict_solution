@@ -3,7 +3,8 @@ import counterReducer from "../store/counterSlice.js";
 import userReducer from "../store/userSlice.js";
 import cartReducer from "../store/cartSlice.js";
 import refreshReducer from "../store/refreshSlice.js";
-import tokenReducer from "../store/tokenSlice.js";
+
+// Redux Persist imports
 import persistReducer from "redux-persist/es/persistReducer";
 import { persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -11,7 +12,8 @@ import storage from "redux-persist/lib/storage";
 const persitConfig = {
   key : "root",
   storage,
-  whitelist : ["user" , "counter", "cart", "refresh", "token"]
+  // 1. Whitelist updated: "user" and "token" are gone!
+  whitelist : ["counter", "cart", "refresh"] 
 };
 
 const rootReducer = combineReducers({
@@ -19,11 +21,10 @@ const rootReducer = combineReducers({
   user : userReducer,
   cart : cartReducer,
   refresh : refreshReducer,
-  token: tokenReducer,
+  // 2. Token reducer completely removed!
 })
 
 const persistedReducer = persistReducer(persitConfig , rootReducer);
-
 
 export const store = configureStore({
   reducer: persistedReducer,
