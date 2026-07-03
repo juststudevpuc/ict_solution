@@ -18,8 +18,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearAllCart } from "@/store/cartSlice";
+import { clearToken } from "@/store/tokenSlice";
+import { logout } from "@/store/userSlice";
 
 export function NavUser({ user }) {
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    // 1. Clear Redux Auth & Cart
+    dispatch(logout());
+    dispatch(clearToken());
+    dispatch(clearAllCart()); // <-- Kills the cart in Redux memory
+
+    // 2. Kill the browser storage completely
+    localStorage.removeItem("token");
+    localStorage.removeItem("persist:root"); // <-- Default redux-persist key (if you use it)
+
+    // Optional: If you explicitly exported your persistor, run this:
+    // persistor.purge();
+
+    // 3. Redirect
+    Navigate("/", { replace: true });
+  };
+
   const { isMobile, state } = useSidebar();
 
   return (
@@ -92,7 +116,9 @@ export function NavUser({ user }) {
 
             <DropdownMenuItem className="py-2.5 cursor-pointer text-destructive focus:bg-destructive/10 transition-colors">
               <LogOut className="mr-3 size-4" />
-              <span className="font-semibold">Log out</span>
+              <span onClick={handleLogout} className="text-red-600 font-medium">
+                Log out
+              </span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
