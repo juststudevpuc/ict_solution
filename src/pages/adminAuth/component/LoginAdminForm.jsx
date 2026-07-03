@@ -21,7 +21,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { request } from "@/utils/request/request";
 import { setUser } from "@/store/userSlice";
-import { setToken } from "@/store/tokenSlice";
+// import { setToken } from "@/store/tokenSlice";
 
 export function LoginAdminForm({ className, ...props }) {
   const dispatch = useDispatch();
@@ -51,13 +51,11 @@ export function LoginAdminForm({ className, ...props }) {
         const userRole = res?.user?.role?.toLowerCase();
 
         if (["admin", "staff"].includes(userRole)) {
-          // ✅ They are an admin! Save data and let them in.
+          // ✅ They are an admin! Save user to Redux (in memory) and let them in.
           dispatch(setUser(res?.user));
-          dispatch(setToken(res?.token));
-          localStorage.setItem("token", res?.token);
 
-          // ADD THIS ONE LINE:
-          localStorage.setItem("user", JSON.stringify(res?.user));
+          // 🛑 DELETED the localStorage.setItem lines!
+          // 🛑 DELETED the setToken line!
 
           navigate("/admin/productPage", { replace: true });
         } else {
