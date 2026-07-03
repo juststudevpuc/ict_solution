@@ -12,7 +12,8 @@ import storage from "redux-persist/lib/storage";
 const persitConfig = {
   key : "root",
   storage,
-  // 1. Whitelist updated: "user" and "token" are gone!
+  // 🔒 IRONCLAD SECURITY: Only these 3 items are allowed in the browser's hard drive.
+  // "user" and "token" are strictly forbidden from entering local storage.
   whitelist : ["counter", "cart", "refresh"] 
 };
 
@@ -21,10 +22,10 @@ const rootReducer = combineReducers({
   user : userReducer,
   cart : cartReducer,
   refresh : refreshReducer,
-  // 2. Token reducer completely removed!
-})
+  // 🧹 Token completely removed!
+});
 
-const persistedReducer = persistReducer(persitConfig , rootReducer);
+const persistedReducer = persistReducer(persitConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
