@@ -1,10 +1,4 @@
-import {
-  ArrowRight,
-  CheckCircle2,
-  PenTool,
-  Rocket,
-  Send,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, PenTool, Rocket, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -27,8 +21,7 @@ export default function ServicePage() {
   ];
 
   return (
-    <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900">
-      
+    <div className="bg-white min-h-screen font-sans selection:bg-blue-200 selection:text-blue-900 dark:bg-slate-900">
       {/* ======================================= */}
       {/* 1. HERO SECTION                         */}
       {/* ======================================= */}
@@ -50,7 +43,11 @@ export default function ServicePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.1,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
               className="flex items-center gap-4 mb-6"
             >
               <div className="h-px w-10 bg-blue-500"></div>
@@ -62,11 +59,17 @@ export default function ServicePage() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.2,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
               className="text-white font-semibold tracking-tight leading-[1.05] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem]"
             >
               Our Services. <br />
-              <span className="text-white/50 font-light">Engineered for scale.</span>
+              <span className="text-white/50 font-light">
+                Engineered for scale.
+              </span>
             </motion.h1>
           </div>
         </div>
@@ -75,14 +78,15 @@ export default function ServicePage() {
       {/* ======================================= */}
       {/* 2. CATEGORIES GRID                      */}
       {/* ======================================= */}
-      <section className="bg-white py-20 lg:py-28">
+      <section className="bg-white py-20 lg:py-28 dark:bg-slate-900">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="mb-16 max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight mb-4">
               Categories
             </h2>
             <p className="text-slate-500 font-normal text-lg leading-relaxed">
-              Targeted expertise to solve your most complex technical challenges and elevate your digital presence.
+              Targeted expertise to solve your most complex technical challenges
+              and elevate your digital presence.
             </p>
           </div>
 
@@ -91,25 +95,32 @@ export default function ServicePage() {
               <Link
                 key={index}
                 to={service.link}
-                className="group flex flex-col items-start p-10 bg-slate-50 rounded-3xl border border-slate-200/60 hover:bg-white hover:border-blue-500/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 transform hover:-translate-y-1"
+                className="relative group flex flex-col items-start p-10 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] dark:shadow-none overflow-hidden transition-all duration-500 hover:-translate-y-1"
               >
-                <div className="mb-8 p-4 bg-white rounded-2xl shadow-sm text-slate-400 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300">
+                {/* Glossy Hover Shine Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                {/* Icon Wrapper (Frosted Glass Pill) */}
+                <div className="relative z-10 mb-8 p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-white/50 dark:border-white/10 shadow-sm backdrop-blur-md text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110 transition-all duration-500">
                   <service.icon size={32} strokeWidth={1.5} />
                 </div>
 
-                <h3 className="text-2xl font-semibold text-slate-900 tracking-tight mb-4">
+                {/* Title */}
+                <h3 className="relative z-10 text-2xl font-semibold text-slate-900 dark:text-white tracking-tight mb-4">
                   {service.title}
                 </h3>
 
-                <p className="text-slate-500 font-light leading-relaxed mb-8 flex-grow text-lg">
+                {/* Description */}
+                <p className="relative z-10 text-slate-600 dark:text-slate-300 font-light leading-relaxed mb-8 flex-grow text-lg">
                   {service.description}
                 </p>
 
-                <div className="mt-auto flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition-colors">
+                {/* Action Link */}
+                <div className="relative z-10 mt-auto flex items-center text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                   Explore category
                   <ArrowRight
                     size={16}
-                    className="ml-2 group-hover:translate-x-1.5 transition-transform"
+                    className="ml-2 group-hover:translate-x-1.5 transition-transform duration-300"
                   />
                 </div>
               </Link>
@@ -121,15 +132,16 @@ export default function ServicePage() {
       {/* ======================================= */}
       {/* 3. FEATURE: SOFTWARE ENGINEERING        */}
       {/* ======================================= */}
-      <section className="py-20 lg:py-28 max-w-[1400px] mx-auto px-6 lg:px-12 bg-white">
+      <section className="py-20 lg:py-28 max-w-[1400px] mx-auto px-6 lg:px-12 bg-white dark:bg-slate-900">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          
           <div className="flex flex-col max-w-xl order-2 lg:order-1">
-            <h2 className="text-3xl md:text-5xl font-semibold text-slate-900 tracking-tight leading-[1.1] mb-6">
+            <h2 className="text-3xl md:text-5xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight leading-[1.1] mb-6">
               Software Engineering.
             </h2>
-            <p className="text-lg text-slate-500 font-light leading-relaxed mb-10">
-              We build scalable, high-performance web applications and enterprise systems tailored to streamline your unique operational workflows.
+            <p className="text-lg text-slate-500 font-light dark:text-slate-100 leading-relaxed mb-10">
+              We build scalable, high-performance web applications and
+              enterprise systems tailored to streamline your unique operational
+              workflows.
             </p>
 
             <ul className="space-y-4 mb-12">
@@ -141,8 +153,15 @@ export default function ServicePage() {
                 "Mobile App Development",
                 "API Development",
               ].map((item, i) => (
-                <li key={i} className="flex items-start gap-4 text-slate-700 font-medium text-lg">
-                  <CheckCircle2 size={24} className="text-blue-500 shrink-0 mt-0.5" strokeWidth={2} />
+                <li
+                  key={i}
+                  className="flex items-start gap-4 text-slate-700 dark:text-slate-100 font-medium text-lg"
+                >
+                  <CheckCircle2
+                    size={24}
+                    className="text-blue-500 shrink-0 mt-0.5"
+                    strokeWidth={2}
+                  />
                   <span>{item}</span>
                 </li>
               ))}
@@ -156,7 +175,10 @@ export default function ServicePage() {
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 Discuss your project
-                <Send size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                <Send
+                  size={18}
+                  className="group-hover:rotate-12 transition-transform duration-300"
+                />
               </a>
             </div>
           </div>
@@ -169,17 +191,15 @@ export default function ServicePage() {
             />
             <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[2.5rem] pointer-events-none"></div>
           </div>
-
         </div>
       </section>
 
       {/* ======================================= */}
       {/* 4. FEATURE: DIGITAL MEDIA               */}
       {/* ======================================= */}
-      <section className="py-20 lg:py-28 bg-slate-50 border-t border-slate-100">
+      <section className="py-20 lg:py-28 bg-slate-50 border-t border-slate-100 dark:border-slate-900 dark:bg-slate-900">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            
             <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden rounded-[2.5rem] bg-slate-200 group order-1 lg:order-1 shadow-2xl shadow-slate-200/50">
               <img
                 src="img/vdo.jpg"
@@ -190,11 +210,13 @@ export default function ServicePage() {
             </div>
 
             <div className="flex flex-col max-w-xl order-2 lg:order-2">
-              <h2 className="text-3xl md:text-5xl font-semibold text-slate-900 tracking-tight leading-[1.1] mb-6">
+              <h2 className="text-3xl md:text-5xl font-semibold text-slate-900 dark:text-slate-100 tracking-tight leading-[1.1] mb-6">
                 Digital Media & Marketing.
               </h2>
-              <p className="text-lg text-slate-500 font-light leading-relaxed mb-10">
-                We craft compelling visual narratives, intuitive user experiences, and data-driven campaigns to elevate your brand identity and engage your target audience.
+              <p className="text-lg text-slate-500 font-light dark:text-slate-100 leading-relaxed mb-10">
+                We craft compelling visual narratives, intuitive user
+                experiences, and data-driven campaigns to elevate your brand
+                identity and engage your target audience.
               </p>
 
               <ul className="space-y-4 mb-12">
@@ -204,8 +226,15 @@ export default function ServicePage() {
                   "Intuitive UI/UX Design",
                   "Performance Marketing Campaigns",
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 text-slate-700 font-medium text-lg">
-                    <CheckCircle2 size={24} className="text-blue-500 shrink-0 mt-0.5" strokeWidth={2} />
+                  <li
+                    key={i}
+                    className="flex items-start gap-4 text-slate-700 dark:text-slate-100 font-medium text-lg"
+                  >
+                    <CheckCircle2
+                      size={24}
+                      className="text-blue-500 shrink-0 mt-0.5"
+                      strokeWidth={2}
+                    />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -219,15 +248,16 @@ export default function ServicePage() {
                   className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
                   Discuss your project
-                  <Send size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                  <Send
+                    size={18}
+                    className="group-hover:rotate-12 transition-transform duration-300"
+                  />
                 </a>
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
     </div>
   );
 }

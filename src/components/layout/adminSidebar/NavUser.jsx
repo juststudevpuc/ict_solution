@@ -21,7 +21,7 @@ import {
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearAllCart } from "@/store/cartSlice";
-import { clearToken } from "@/store/tokenSlice";
+// import { clearToken } from "@/store/tokenSlice";
 import { logout } from "@/store/userSlice";
 
 export function NavUser({ user }) {
@@ -30,7 +30,7 @@ export function NavUser({ user }) {
   const handleLogout = () => {
     // 1. Clear Redux Auth & Cart
     dispatch(logout());
-    dispatch(clearToken());
+    // dispatch(clearToken());
     dispatch(clearAllCart()); // <-- Kills the cart in Redux memory
 
     // 2. Kill the browser storage completely

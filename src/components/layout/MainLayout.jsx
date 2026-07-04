@@ -38,7 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/store/userSlice";
-import { clearToken } from "@/store/tokenSlice";
+// import { clearToken } from "@/store/tokenSlice";
 import { clearAllCart } from "@/store/cartSlice";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 
@@ -106,7 +106,7 @@ export default function MainLayout() {
   const handleLogout = () => {
     // 1. Clear Redux Auth & Cart
     dispatch(logout());
-    dispatch(clearToken());
+    // dispatch(clearToken());
     dispatch(clearAllCart()); // <-- Kills the cart in Redux memory
 
     // 2. Kill the browser storage completely
@@ -146,17 +146,19 @@ export default function MainLayout() {
     : 0;
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900 bg-white">
+    <div className="min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900 bg-white dark:dark:bg-[#050B14]">
       {/* ======================================= */}
       {/* 1. DYNAMIC NAVBAR                       */}
       {/* ======================================= */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b backdrop-blur-md ${
           scrolled
-            ? "bg-white border-slate-200 shadow-sm py-2"
-            : "bg-white/95 border-transparent py-4"
+            ? "bg-white/90 border-slate-200 shadow-sm dark:bg-[#0B1528]/90 dark:border-slate-800 dark:shadow-none py-3"
+            : "bg-white border-transparent dark:bg-[#0B1528] dark:border-transparent py-5"
         }`}
       >
+        {/* Your nav content here */}
+
         <nav className="container mx-auto max-w-7xl px-4 md:px-6 flex items-center justify-between">
           {/* 1. Brand Logo Area */}
           <div className="flex-shrink-0">
@@ -169,7 +171,7 @@ export default function MainLayout() {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-slate-900 text-lg leading-tight tracking-tight">
+                <span className="font-bold text-slate-900 dark:text-white text-lg  leading-tight tracking-tight">
                   ICT Solution
                 </span>
                 <span className="text-[9px] uppercase tracking-wider text-slate-500 font-medium">
@@ -180,14 +182,14 @@ export default function MainLayout() {
           </div>
 
           {/* 2. Desktop Navigation (Classic Spacing) */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1 dark:text-white">
             {nav_item.map((item) => (
               <div key={item.label} className="relative group">
                 {item.children ? (
                   <NavigationMenu>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium text-slate-600 hover:text-blue-600 bg-transparent">
+                        <NavigationMenuTrigger className="h-10 px-4 text-sm font-medium hover:text-blue-600 bg-transparent">
                           {item.label}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
@@ -209,7 +211,7 @@ export default function MainLayout() {
                 ) : (
                   <Link
                     to={item.href}
-                    className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
+                    className="px-4 py-2 text-sm font-medium hover:text-slate-300 transition-colors"
                   >
                     {item.label}
                   </Link>
@@ -223,7 +225,7 @@ export default function MainLayout() {
             {/* Search or Cart - Classic Style */}
             <Link
               to={user ? "/payment" : "/auth"}
-              className="relative p-2 text-slate-500 hover:text-slate-900 transition-colors"
+              className="relative p-2 dark:text-white hover:text-slate-100 transition-colors"
             >
               <ShoppingCart className="w-5 h-5" />
               {totalItem > 0 && (
@@ -241,10 +243,10 @@ export default function MainLayout() {
               <Button
                 onClick={() => navigate("/contact")}
                 variant="outline"
-                className="hidden md:flex border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold uppercase tracking-widest px-5 h-10 rounded-xl transition-all active:scale-95"
+                className="hidden md:flex border-slate-200 dark:text-white hover:text-slate-900 hover:bg-slate-50 text-xs font-bold uppercase tracking-widest px-5 h-10 rounded-xl transition-all active:scale-95"
               >
                 Contact Us
-              </Button> 
+              </Button>
               {/* 2. Conditional Logic: If user exists, show Profile. If not, show Login. */}
               {user && user.id ? (
                 <DropdownMenu>

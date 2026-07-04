@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -12,7 +11,6 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
@@ -21,9 +19,9 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { request } from "@/utils/request/request";
 import { setUser } from "@/store/userSlice";
-// import { setToken } from "@/store/tokenSlice";
 
 export function LoginAdminForm({ className, ...props }) {
+  // --- LOGIC REMAINS COMPLETELY UNCHANGED ---
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -47,121 +45,132 @@ export function LoginAdminForm({ className, ...props }) {
       }
 
       if (res) {
-        // 1. Convert to lowercase just in case the database says "Admin"
         const userRole = res?.user?.role?.toLowerCase();
 
         if (["admin", "staff"].includes(userRole)) {
-          // ✅ They are an admin! Save user to Redux (in memory) and let them in.
           dispatch(setUser(res?.user));
-
-          // 🛑 DELETED the localStorage.setItem lines!
-          // 🛑 DELETED the setToken line!
-
           navigate("/admin/productPage", { replace: true });
         } else {
-          // 🛑 They are a normal user trying to sneak in!
           alert("Access Denied: You do not have Admin privileges.");
           setIsLoading(false);
           return;
         }
       }
     } catch (error) {
-      // 💥 THIS IS WHAT WAS MISSING!
-      // If the server crashes or the internet drops, this catches it.
       console.error("Login failed due to a network or server error:", error);
       alert(
-        "An error occurred while trying to log in. Please check your connection.",
+        "An error occurred while trying to log in. Please check your connection."
       );
     } finally {
-      // This runs no matter what happens (success or fail) to stop the spinning loader
       setIsLoading(false);
     }
   };
+  // ------------------------------------------
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Login</CardTitle>
-          {/* <CardDescription>
-            Login with your Apple or Google account
-          </CardDescription> */}
+      <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
+        <CardHeader className="text-center pb-4">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Admin Login
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldGroup className="space-y-4">
+              
+              {/* Email Field */}
+              <Field className="space-y-1.5">
+                <FieldLabel htmlFor="email" className="text-slate-700 dark:text-slate-300">
+                  Email
+                </FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="admin@example.com"
                   required
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className={validate?.email ? "border-red-500" : ""}
+                  className={cn(
+                    "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500",
+                    validate?.email ? "border-red-500 dark:border-red-500 focus-visible:ring-red-500" : ""
+                  )}
                 />
+                {validate?.email && (
+                  <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                    {validate.email[0]}
+                  </p>
+                )}
               </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  {/* <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
+
+              {/* Password Field */}
+              <Field className="space-y-1.5">
+                <FieldLabel htmlFor="password" className="text-slate-700 dark:text-slate-300">
+                  Password
+                </FieldLabel>
+                
+                {/* UI FIX: Added relative wrapper for the absolute positioned eye icon */}
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={form.password}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
+                    className={cn(
+                      "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-500 pr-10",
+                      validate?.password ? "border-red-500 dark:border-red-500 focus-visible:ring-red-500" : ""
+                    )}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                   >
-                    Forgot your password?
-                  </a> */}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={form.password}
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
-                  className={validate?.password ? "border-red-500" : ""}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
                 {validate?.password && (
-                  <p className="text-xs text-red-500 mt-1">
+                  <p className="text-xs text-red-500 dark:text-red-400 mt-1">
                     {validate.password[0]}
                   </p>
                 )}
               </Field>
-              <Field>
+
+              {/* Submit Button */}
+              <Field className="pt-2">
                 <Button
                   type="submit"
-                  className="w-full bg-[#045a8f] hover:bg-[#00244d]"
+                  className="w-full bg-[#0B1528] hover:bg-slate-800 text-white dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Login in...
+                      Logging in...
                     </>
                   ) : (
                     "Login"
                   )}
                 </Button>
-                <FieldDescription className="text-center">
+                
+                <FieldDescription className="text-center text-sm text-slate-500 dark:text-slate-400 mt-4">
                   Don&apos;t have an account?{" "}
-                  <Link to="/admin/signup">Sign Up</Link>
+                  <Link 
+                    to="/admin/signup" 
+                    className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Sign Up
+                  </Link>
                 </FieldDescription>
               </Field>
+              
             </FieldGroup>
           </form>
         </CardContent>
       </Card>
-      {/* <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription> */}
     </div>
   );
 }

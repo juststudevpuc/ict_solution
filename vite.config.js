@@ -11,5 +11,18 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
+  server: {
+    // THIS IS THE FIX: The Local Middleman
+    proxy: {
+      '/api': {
+        target: 'http://54.179.48.141',
+        changeOrigin: true,
+      },
+      '/sanctum': {
+        target: 'http://54.179.48.141',
+        changeOrigin: true,
+      }
+    }
+  }
 })
 
