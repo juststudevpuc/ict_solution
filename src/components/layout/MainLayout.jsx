@@ -243,7 +243,7 @@ export default function MainLayout() {
               <Button
                 onClick={() => navigate("/contact")}
                 variant="outline"
-                className="hidden md:flex border-slate-200 dark:text-white hover:text-slate-900 hover:bg-slate-50 text-xs font-bold uppercase tracking-widest px-5 h-10 rounded-xl transition-all active:scale-95"
+                className="hidden md:flex border-slate-200 dark:text-white dark:hover:bg-amber-50 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold uppercase tracking-widest px-5 h-10 rounded-xl transition-all active:scale-95"
               >
                 Contact Us
               </Button>

@@ -139,7 +139,7 @@ export function SignUpAdminForm({ className, ...props }) {
                 <FieldDescription className="text-center">
                   Already have an account?{" "}
                   <Link
-                    to="/auth/admin/login"
+                    to="/admin/login"
                     className="text-[#006039] hover:underline"
                   >
                     {" "}
