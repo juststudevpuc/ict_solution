@@ -311,7 +311,7 @@ export default function HomePage() {
               {/* Signature Block */}
               <div className="flex flex-col md:items-start items-center">
                 <p className="text-xl font-bold text-slate-900 dark:text-white">
-                  Mr. Nhem Nhim
+                  Mr. Nhanh Nhim
                 </p>
                 <p className="text-blue-600 dark:text-blue-400 font-medium tracking-wide text-sm uppercase mt-1">
                   CEO & Founder

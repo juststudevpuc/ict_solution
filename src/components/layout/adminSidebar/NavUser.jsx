@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearAllCart } from "@/store/cartSlice";
 // import { clearToken } from "@/store/tokenSlice";
@@ -107,9 +107,14 @@ export function NavUser({ user }) {
 
             <DropdownMenuSeparator className="bg-sidebar-border" />
 
-            <DropdownMenuItem className="py-2.5 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent focus:bg-sidebar-accent">
-              <ShieldCheck className="mr-3 size-4 text-sidebar-primary" />
-              <span className="font-medium">Admin Settings</span>
+            <DropdownMenuItem
+              asChild
+              className="py-2.5 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent focus:bg-sidebar-accent"
+            >
+              <Link to="/admin/setting" className="flex items-center w-full">
+                <ShieldCheck className="mr-3 size-4 text-sidebar-primary" />
+                <span className="font-medium">Admin Settings</span>
+              </Link>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="bg-sidebar-border" />
