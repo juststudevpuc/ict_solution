@@ -13,6 +13,8 @@ import {
   Camera,
   ShieldCheck,
   ShoppingBag,
+  Building2,
+  Briefcase,
 } from "lucide-react";
 import {
   Table,
@@ -38,6 +40,8 @@ const UserProfile = () => {
     address: "",
     currentPassword: "",
     newPassword: "",
+    company_name: "",
+    company_industry: "", 
   });
 
   const [order, setOrder] = useState([]);
@@ -64,6 +68,7 @@ const UserProfile = () => {
     try {
       const res = await request("me", "get");
       if (res?.user) {
+        console.log("Company info:", res.user)
         setMe(res.user);
         setFormData((prev) => ({
           ...prev,
@@ -71,7 +76,10 @@ const UserProfile = () => {
           email: res.user.email || "",
           phone: res.user.phone || "",
           address: res.user.address || "",
+          company_name: res.user.company_name || "",
+          company_industry: res.user.company_industry || "",
         }));
+        if (res.user.avatar) setImagePreview(res.user.avatar);
       }
     } catch (error) {
       console.log("Error fetching user info:", error);
@@ -98,6 +106,8 @@ const UserProfile = () => {
     submitData.append("name", formData.name);
     submitData.append("phone", formData.phone);
     submitData.append("address", formData.address);
+    submitData.append("company_name", formData.company_name);
+    submitData.append("company_industry", formData.company_industry);
 
     if (formData.newPassword) {
       submitData.append("currentPassword", formData.currentPassword);
@@ -191,11 +201,14 @@ const UserProfile = () => {
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
             <div className="relative mb-4">
               <div className="w-32 h-32 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden relative">
-                {/* Show the preview, or the database image, or the fallback icon */}
-                {imagePreview || me?.image ? (
+                {/* 🔥 FIXED: Now checks for me?.avatar (matching backend) or me?.image
+                 */}
+                {imagePreview || me?.avatar || me?.image ? (
                   <img
-                    // If they just picked a new image, show it. Otherwise, show the one from Laravel (add your backend URL if needed!)
-                    src={imagePreview || `http://127.0.0.1:8000${me.image}`}
+                    src={
+                      imagePreview ||
+                      `http://54.179.48.141${me?.avatar || me?.image}`
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -219,7 +232,7 @@ const UserProfile = () => {
                 }}
               />
 
-              {/* The clickable button that triggers the hidden input */}
+              {/* The clickable button that triggers th e hidden input */}
               <label
                 htmlFor="avatar-upload"
                 className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer"
@@ -227,6 +240,23 @@ const UserProfile = () => {
                 <Camera className="w-4 h-4" />
               </label>
             </div>
+            {imageFile && (
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSaving}
+                className="mb-4 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm px-5 py-2 rounded-full font-bold transition-all shadow-sm disabled:opacity-50 active:scale-95"
+              >
+                {isSaving ? (
+                  <>
+                    <div className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Picture"
+                )}
+              </button>
+            )}
 
             <h2 className="text-xl font-bold text-slate-900">
               {me?.name || "Loading..."}
@@ -256,6 +286,7 @@ const UserProfile = () => {
             onSubmit={handleSave}
             className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
           >
+            {/* --- 1. PERSONAL INFORMATION --- */}
             <div className="p-6 md:p-8 border-b border-slate-100">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
                 Personal Information
@@ -328,6 +359,49 @@ const UserProfile = () => {
               </div>
             </div>
 
+            {/* --- 2. BUSINESS INFORMATION (NEW) --- */}
+            <div className="p-6 md:p-8 border-b border-slate-100 bg-slate-50/30">
+              <h2 className="text-lg font-bold text-slate-900 mb-6">
+                Business Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="company_name" className="text-slate-600">
+                    Company Name
+                  </Label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      id="company_name"
+                      name="company_name"
+                      className="pl-9"
+                      placeholder="e.g. Acme Corp"
+                      value={formData.company_name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="company_industry" className="text-slate-600">
+                    Industry
+                  </Label>
+                  <div className="relative">
+                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Input
+                      id="company_industry"
+                      name="company_industry"
+                      className="pl-9"
+                      placeholder="e.g. Retail, Technology"
+                      value={formData.company_industry}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* --- 3. CHANGE PASSWORD --- */}
             <div className="p-6 md:p-8 bg-slate-50">
               <h2 className="text-lg font-bold text-slate-900 mb-6">
                 Change Password
@@ -362,6 +436,7 @@ const UserProfile = () => {
               </div>
             </div>
 
+            {/* --- 4. SUBMIT BUTTONS --- */}
             <div className="p-6 md:p-8 border-t border-slate-200 flex justify-end gap-4 bg-white">
               <Button type="button" variant="outline">
                 Cancel

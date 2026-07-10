@@ -26,17 +26,37 @@ import { Toaster } from "sonner";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import TransactionHistory from "./pages/admin/TransactionHistory";
 import ReportPage from "./pages/admin/ReportPage";
+import Portfolio from "./pages/front/Portfolio";
+import Team from "./pages/front/Team";
+import Careers from "./pages/front/Careers";
+import LegalPage from "./pages/front/LegalPage";
 export default function App() {
   return (
     <BrowserRouter>
       <TooltipProvider>
         <Routes>
           {/* MAIN FRONT-END LAYOUT */}
-          <Route path="/" element={<MainLayout />}>
+         <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="service" element={<ServicePage />} />
             <Route path="service2" element={<ServicePage2 />} />
+            
+            {/* 🔥 NEW PAGES ADDED HERE */}
+            <Route path="portfolio" element={<Portfolio />} />
+            <Route path="team" element={<Team />} />
+            <Route path="careers" element={<Careers />} />
+            
+            {/* 🔥 LEGAL PAGES (Reusing the same LegalPage component with different props) */}
+            <Route 
+              path="privacy-policy" 
+              element={<LegalPage title="Privacy Policy" lastUpdated="July 10, 2026" />} 
+            />
+            <Route 
+              path="terms-conditions" 
+              element={<LegalPage title="Terms & Conditions" lastUpdated="July 10, 2026" />} 
+            />
+
             <Route path="client" element={<ClientPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="payment" element={<PaymentPage />} />

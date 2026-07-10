@@ -22,6 +22,11 @@ import {
   Database,
   Layout,
   Cloud,
+  BrainCircuit,
+  BarChart,
+  Headphones,
+  Network,
+  Shield,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -122,7 +127,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ======================================= */}
+       {/* ======================================= */}
         {/* 3. SERVICES SECTION (Bento Box 2.0)     */}
         {/* ======================================= */}
         <section className="py-24 bg-slate-50 dark:bg-[#050B14] transition-colors duration-300">
@@ -174,7 +179,7 @@ export default function HomePage() {
                   </ul>
                   <Link
                     to="/category/softwarePage"
-                   className="mt-auto flex items-center justify-center gap-2 w-full py-4 px-6 rounded-2xl font-semibold transition-all duration-300 group/btn bg-slate-50 text-slate-700 hover:bg-[#0B1528] hover:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-[#ffddb2]  dark:hover:text-slate-800"
+                    className="mt-auto flex items-center justify-center gap-2 w-full py-4 px-6 rounded-2xl font-semibold transition-all duration-300 group/btn bg-slate-50 text-slate-700 hover:bg-[#0B1528] hover:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-[#ffddb2] dark:hover:text-slate-800"
                   >
                     Explore Services
                     <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
@@ -212,10 +217,6 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                  {/* <button className="mt-auto flex items-center justify-center gap-2 w-full py-4 px-6 bg-slate-50 hover:bg-[#0B1528] dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-700 hover:text-white dark:text-slate-200 rounded-2xl font-semibold transition-all duration-300 group/btn">
-                    View Portfolio
-                    <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                  </button> */}
                 </div>
               </Card>
 
@@ -248,10 +249,84 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                    {/* <button className="mt-auto flex items-center justify-center gap-2 w-full py-4 px-6 bg-slate-50 hover:bg-[#0B1528] dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-700 hover:text-white dark:text-slate-200 rounded-2xl font-semibold transition-all duration-300 group/btn">
-                      Request Quote
-                      <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                    </button> */}
+                </div>
+              </Card>
+
+              {/* ========================================== */}
+              {/* Card 4: Horizontal Enterprise Services Hub */}
+              {/* ========================================== */}
+              <Card className="lg:col-span-3 flex flex-col lg:flex-row w-full bg-white dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] dark:shadow-none backdrop-blur-xl transition-all duration-500 group overflow-hidden">
+                
+                {/* Horizontal Image Section */}
+                <div className="relative w-full lg:w-2/5 h-64 lg:h-auto rounded-[2rem] overflow-hidden mb-6 lg:mb-0 lg:mr-8">
+                  <div className="absolute inset-0 bg-blue-900/20 dark:bg-black/40 z-10 group-hover:bg-blue-900/10 transition-colors duration-500"></div>
+                  <img
+                    src="/img/cloud2.png" /* Add a relevant background image to your public folder */
+                    alt="Enterprise Solutions"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s] ease-out"
+                  />
+                  {/* Overlay text for visual flair */}
+                  <div className="absolute bottom-6 left-6 z-20">
+                    <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm mb-3">
+                      Advanced Infrastructure
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content Section Split into Two Columns */}
+                <div className="w-full lg:w-3/5 px-4 lg:px-6 py-6 flex flex-col justify-center">
+                  <h3 className="text-3xl font-semibold text-slate-900 dark:text-white tracking-tight mb-8">
+                    Cloud, Data & Security
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    {/* Sub-column 1: Infrastructure */}
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-5">
+                        IT Infrastructure
+                      </h4>
+                      <ul className="space-y-4">
+                        {[
+                          { icon: Shield, text: "Cyber Security" },
+                          { icon: Network, text: "Network Solutions" },
+                          { icon: Cloud, text: "Cloud Services" },
+                          { icon: Headphones, text: "IT Support" },
+                        ].map((item, i) => (
+                          <li key={i} className="flex items-center gap-4 text-slate-600 dark:text-slate-300 font-medium group/item cursor-default">
+                            <div className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl group-hover/item:bg-blue-600 group-hover/item:text-white text-blue-600 dark:text-blue-400 transition-colors duration-300">
+                              <item.icon className="w-4 h-4" />
+                            </div>
+                            <span className="group-hover/item:text-slate-900 dark:group-hover/item:text-white transition-colors duration-300">
+                              {item.text}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Sub-column 2: Data & AI */}
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-5">
+                        Data & Innovation
+                      </h4>
+                      <ul className="space-y-4">
+                        {[
+                          { icon: BarChart, text: "Data Analysis" },
+                          { icon: BrainCircuit, text: "AI Solutions" },
+                        ].map((item, i) => (
+                          <li key={i} className="flex items-center gap-4 text-slate-600 dark:text-slate-300 font-medium group/item cursor-default">
+                            <div className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl group-hover/item:bg-purple-600 group-hover/item:text-white text-purple-600 dark:text-purple-400 transition-colors duration-300">
+                              <item.icon className="w-4 h-4" />
+                            </div>
+                            <span className="group-hover/item:text-slate-900 dark:group-hover/item:text-white transition-colors duration-300">
+                              {item.text}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
                 </div>
               </Card>
 

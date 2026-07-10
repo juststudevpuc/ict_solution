@@ -129,14 +129,14 @@ export default function MainLayout() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const nav_item = [
+const nav_item = [
     { label: "Home", href: "/" },
-    // { label: "About Us", href: "/about" },
     { label: "Services", href: "/service" },
-    // { label: "Services2", href: "/service2" },
-    // { label: "Industries", href: "/industries" },
+    { label: "Portfolio", href: "/portfolio" }, // 🔥 NEW
+    { label: "Team", href: "/team" },           // 🔥 NEW
+    { label: "Careers", href: "/careers" },     // 🔥 NEW
     { label: "Clients", href: "/client" },
-  ];
+  ]
   // 1. Grab the cart data from Redux
   const cart = useSelector((state) => state.cart);
 
