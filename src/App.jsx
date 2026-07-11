@@ -30,31 +30,40 @@ import Portfolio from "./pages/front/Portfolio";
 import Team from "./pages/front/Team";
 import Careers from "./pages/front/Careers";
 import LegalPage from "./pages/front/LegalPage";
+import ScrollToTop from "./components/ScrollToTop";
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <TooltipProvider>
         <Routes>
           {/* MAIN FRONT-END LAYOUT */}
-         <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="service" element={<ServicePage />} />
             <Route path="service2" element={<ServicePage2 />} />
-            
+
             {/* 🔥 NEW PAGES ADDED HERE */}
             <Route path="portfolio" element={<Portfolio />} />
             <Route path="team" element={<Team />} />
             <Route path="careers" element={<Careers />} />
-            
+
             {/* 🔥 LEGAL PAGES (Reusing the same LegalPage component with different props) */}
-            <Route 
-              path="privacy-policy" 
-              element={<LegalPage title="Privacy Policy" lastUpdated="July 10, 2026" />} 
+            <Route
+              path="privacy-policy"
+              element={
+                <LegalPage title="Privacy Policy" lastUpdated="July 10, 2026" />
+              }
             />
-            <Route 
-              path="terms-conditions" 
-              element={<LegalPage title="Terms & Conditions" lastUpdated="July 10, 2026" />} 
+            <Route
+              path="terms-conditions"
+              element={
+                <LegalPage
+                  title="Terms & Conditions"
+                  lastUpdated="July 10, 2026"
+                />
+              }
             />
 
             <Route path="client" element={<ClientPage />} />

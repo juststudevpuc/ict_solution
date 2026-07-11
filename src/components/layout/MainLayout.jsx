@@ -560,15 +560,15 @@ const nav_item = [
             <p>
               © {new Date().getFullYear()} ICT Solution. All rights reserved.
             </p>
-            <div className="flex gap-6">
-              <Link to="#" className="hover:text-white transition-colors">
+           <div className="flex gap-6">
+              <Link to="/privacy-policy" className="hover:text-white transition-colors">
                 Privacy Policy
               </Link>
-              <Link to="#" className="hover:text-white transition-colors">
+              <Link to="/terms-conditions" className="hover:text-white transition-colors">
                 Terms of Service
               </Link>
-              <Link to="#" className="hover:text-white transition-colors">
-                Cookie Policy
+              <Link to="/cookie-policy" className="hover:text-white transition-colors">
+               ict solution
               </Link>
             </div>
           </div>
