@@ -121,7 +121,7 @@ const UserProfile = () => {
 
     try {
       // Send the FormData. Your request.js will handle the headers automatically!
-      const res = await request("user/update", "post", submitData);
+      const res = await request("/user/update", "post", submitData);
 
       if (res?.error) {
         alert(res.message);
@@ -195,14 +195,13 @@ const UserProfile = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 font-sans">
         {/* ===== LEFT COLUMN: AVATAR & QUICK INFO ===== */}
         <div className="md:col-span-4 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col items-center text-center">
-            <div className="relative mb-4">
-              <div className="w-32 h-32 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden relative">
-                {/* 🔥 FIXED: Now checks for me?.avatar (matching backend) or me?.image
-                 */}
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm p-8 flex flex-col items-center text-center transition-colors duration-300">
+            <div className="relative mb-6 group">
+              <div className="w-36 h-36 rounded-full bg-slate-100 dark:bg-slate-800 border-4 border-white dark:border-slate-700 shadow-md flex items-center justify-center overflow-hidden relative transition-colors duration-300">
+                {/* 🔥 FIXED: Now checks for me?.avatar (matching backend) or me?.image */}
                 {imagePreview || me?.avatar || me?.image ? (
                   <img
                     src={
@@ -213,7 +212,7 @@ const UserProfile = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User className="w-16 h-16 text-slate-400" />
+                  <User className="w-16 h-16 text-slate-400 dark:text-slate-500" />
                 )}
               </div>
 
@@ -232,24 +231,25 @@ const UserProfile = () => {
                 }}
               />
 
-              {/* The clickable button that triggers th e hidden input */}
+              {/* The clickable button that triggers the hidden input */}
               <label
                 htmlFor="avatar-upload"
-                className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer"
+                className="absolute bottom-1 right-1 bg-blue-600 hover:bg-blue-500 text-white p-2.5 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 cursor-pointer border-2 border-white dark:border-slate-800"
               >
                 <Camera className="w-4 h-4" />
               </label>
             </div>
+
             {imageFile && (
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="mb-4 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm px-5 py-2 rounded-full font-bold transition-all shadow-sm disabled:opacity-50 active:scale-95"
+                className="mb-6 flex items-center justify-center gap-2 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 text-sm px-6 py-2.5 rounded-full font-bold transition-all shadow-sm disabled:opacity-50 active:scale-95"
               >
                 {isSaving ? (
                   <>
-                    <div className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="size-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
                     Saving...
                   </>
                 ) : (
@@ -258,22 +258,23 @@ const UserProfile = () => {
               </button>
             )}
 
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
               {me?.name || "Loading..."}
             </h2>
-            <p className="text-sm text-slate-500 mb-4">{me?.email}</p>
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-5">
+              {me?.email}
+            </p>
 
-            <div className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+            <div className="bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
               Customer Account
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-green-600" /> Account
-              Security
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-[1.5rem] shadow-sm p-6 transition-colors duration-300">
+            <h3 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-green-500" /> Account Security
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
               Your account is secured. We recommend updating your password every
               90 days to keep your data safe.
             </p>
@@ -284,24 +285,24 @@ const UserProfile = () => {
         <div className="md:col-span-8">
           <form
             onSubmit={handleSave}
-            className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
+            className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm overflow-hidden transition-colors duration-300"
           >
             {/* --- 1. PERSONAL INFORMATION --- */}
-            <div className="p-6 md:p-8 border-b border-slate-100">
-              <h2 className="text-lg font-bold text-slate-900 mb-6">
+            <div className="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800/50">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                 Personal Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="name" className="text-slate-600">
+                  <Label htmlFor="name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Full Name
                   </Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="name"
                       name="name"
-                      className="pl-9"
+                      className="pl-10 dark:bg-slate-800/50 dark:border-slate-700 dark:text-white transition-colors"
                       value={formData.name}
                       onChange={handleChange}
                     />
@@ -309,15 +310,15 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="phone" className="text-slate-600">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Phone Number
                   </Label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Phone className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="phone"
                       name="phone"
-                      className="pl-9"
+                      className="pl-10 dark:bg-slate-800/50 dark:border-slate-700 dark:text-white transition-colors"
                       value={formData.phone}
                       onChange={handleChange}
                     />
@@ -325,16 +326,16 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
-                  <Label htmlFor="email" className="text-slate-600">
+                  <Label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Email Address
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="email"
                       name="email"
                       type="email"
-                      className="pl-9 bg-slate-50 text-slate-500"
+                      className="pl-10 bg-slate-50 text-slate-500 dark:bg-slate-800/80 dark:border-slate-700 dark:text-slate-400 cursor-not-allowed transition-colors"
                       value={formData.email}
                       disabled
                     />
@@ -342,15 +343,15 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
-                  <Label htmlFor="address" className="text-slate-600">
+                  <Label htmlFor="address" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Full Address
                   </Label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <MapPin className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Textarea
                       id="address"
                       name="address"
-                      className="pl-9 min-h-[100px]"
+                      className="pl-10 pt-3 min-h-[100px] dark:bg-slate-800/50 dark:border-slate-700 dark:text-white transition-colors"
                       value={formData.address}
                       onChange={handleChange}
                     />
@@ -360,21 +361,21 @@ const UserProfile = () => {
             </div>
 
             {/* --- 2. BUSINESS INFORMATION (NEW) --- */}
-            <div className="p-6 md:p-8 border-b border-slate-100 bg-slate-50/30">
-              <h2 className="text-lg font-bold text-slate-900 mb-6">
+            <div className="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/20">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                 Business Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="company_name" className="text-slate-600">
+                  <Label htmlFor="company_name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Company Name
                   </Label>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Building2 className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="company_name"
                       name="company_name"
-                      className="pl-9"
+                      className="pl-10 dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:placeholder:text-slate-600 transition-colors"
                       placeholder="e.g. Acme Corp"
                       value={formData.company_name}
                       onChange={handleChange}
@@ -383,15 +384,15 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="company_industry" className="text-slate-600">
+                  <Label htmlFor="company_industry" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Industry
                   </Label>
                   <div className="relative">
-                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                    <Briefcase className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       id="company_industry"
                       name="company_industry"
-                      className="pl-9"
+                      className="pl-10 dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:placeholder:text-slate-600 transition-colors"
                       placeholder="e.g. Retail, Technology"
                       value={formData.company_industry}
                       onChange={handleChange}
@@ -402,13 +403,13 @@ const UserProfile = () => {
             </div>
 
             {/* --- 3. CHANGE PASSWORD --- */}
-            <div className="p-6 md:p-8 bg-slate-50">
-              <h2 className="text-lg font-bold text-slate-900 mb-6">
+            <div className="p-6 md:p-8">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                 Change Password
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="currentPassword" className="text-slate-600">
+                  <Label htmlFor="currentPassword" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     Current Password
                   </Label>
                   <Input
@@ -416,12 +417,13 @@ const UserProfile = () => {
                     name="currentPassword"
                     type="password"
                     placeholder="Enter current password"
+                    className="dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:placeholder:text-slate-600 transition-colors"
                     value={formData.currentPassword}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="newPassword" className="text-slate-600">
+                  <Label htmlFor="newPassword" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                     New Password
                   </Label>
                   <Input
@@ -429,6 +431,7 @@ const UserProfile = () => {
                     name="newPassword"
                     type="password"
                     placeholder="Create a new password"
+                    className="dark:bg-slate-800/50 dark:border-slate-700 dark:text-white dark:placeholder:text-slate-600 transition-colors"
                     value={formData.newPassword}
                     onChange={handleChange}
                   />
@@ -437,13 +440,17 @@ const UserProfile = () => {
             </div>
 
             {/* --- 4. SUBMIT BUTTONS --- */}
-            <div className="p-6 md:p-8 border-t border-slate-200 flex justify-end gap-4 bg-white">
-              <Button type="button" variant="outline">
+            <div className="p-6 md:p-8 border-t border-slate-100 dark:border-slate-800/50 flex justify-end gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+              <Button 
+                type="button" 
+                variant="outline"
+                className="dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 rounded-xl"
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-8 shadow-md hover:shadow-lg transition-all"
                 disabled={isSaving}
               >
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -456,8 +463,8 @@ const UserProfile = () => {
       {/* ===== BOTTOM SECTION: ORDER HISTORY ===== */}
       <div className="pt-6 border-t border-slate-200">
         <div className="flex items-center gap-2 mb-6">
-          <ShoppingBag className="w-6 h-6 text-slate-900" />
-          <h2 className="text-2xl font-bold text-slate-900">History</h2>
+          <ShoppingBag className="w-6 h-6 text-slate-900 dark:text-taupe-200" />
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-taupe-200">History</h2>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">

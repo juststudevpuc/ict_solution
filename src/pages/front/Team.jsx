@@ -19,17 +19,19 @@ const orgData = {
         {
           name: "Tha Channy",
           role: "Human Resource",
-          image: "/api/placeholder/150/150",
+          image: "img/people/Channy.jpg",
         },
         {
           name: "Choeun Dalin",
           role: "Human Resource",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Lin.jpg",
         },
         {
           name: "Hout Soriya",
           role: "Human Resource",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Soriya.jpg",
         },
       ],
     },
@@ -39,12 +41,14 @@ const orgData = {
         {
           name: "Vatha Chetkongkea",
           role: "Digital marketing",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Kongkea.jpg",
         },
         {
           name: "Reth annlina",
           role: "Digital marketing",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Channy.jpg",
         },
       ],
     },
@@ -54,7 +58,8 @@ const orgData = {
         {
           name: "Than Chantheary",
           role: "Video editor",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Theary.jpg",
         },
       ],
     },
@@ -64,7 +69,8 @@ const orgData = {
         {
           name: "Savean Raksmey",
           role: "Mobile App Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Rasmey.jpg",
         },
       ],
     },
@@ -74,17 +80,20 @@ const orgData = {
         {
           name: "Phat Sopheaktra",
           role: "UI/UX Designer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Tra.jpg",
         },
         {
           name: "Liv limey",
           role: "UI/UX Designer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Limey.jpg",
         },
         {
           name: "Yin Prasethy Serey",
           role: "UI/UX Designer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/serey.PNG",
         },
       ],
     },
@@ -94,42 +103,50 @@ const orgData = {
         {
           name: "Seth Sopeara",
           role: "Full-Stack Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Ra.jpg",
         },
         {
           name: "Uy sotheary",
           role: "Frontend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Theary.jpg",
         },
         {
           name: "Chhay Lymeng",
           role: "Tester",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Lymeng.jpg",
         },
         {
           name: "Srin Rothana",
           role: "Backend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Rotana.jpg",
         },
         {
           name: "Tep Panhahsak",
           role: "Backend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Sak.jpg",
         },
         {
           name: "Roeun Vathana",
           role: "Backend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Vathana.jpg",
         },
         {
           name: "Yeong Vachekasy sothon",
           role: "Backend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Sothon.jpg",
         },
         {
           name: "Keurn Sothy",
           role: "Backend Developer",
-          image: "/api/placeholder/150/150",
+          // image: "/api/placeholder/150/150",
+          image: "img/people/Sothy.jpg",
         },
       ],
     },
@@ -139,13 +156,13 @@ const orgData = {
 // Reusable component for a single person's card
 const ProfileCard = ({ member, isLeadership = false }) => (
   <Card
-    className={`flex flex-col items-center p-6 transition-all duration-300 hover:shadow-lg ${
+    className={`flex flex-col items-center p-2 transition-all duration-300 hover:shadow-lg ${
       isLeadership
         ? "bg-blue-50/50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-800/50"
         : "bg-white dark:bg-slate-800/60 dark:border-slate-700/50"
     }`}
   >
-    <div className="mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-white dark:border-slate-800 shadow-md">
+    <div className="mb-4 h-30 w-30 overflow-hidden rounded-full border-4 border-white dark:border-slate-800 shadow-md">
       <img
         src={member.image}
         alt={member.name}
@@ -171,12 +188,12 @@ const DepartmentCol = ({ department }) => (
       {department.members.map((member, idx) => (
         <div
           key={idx}
-          className="group flex items-center bg-white dark:bg-slate-800/60 p-3 shadow-sm border border-slate-200 dark:border-slate-700/60 hover:border-blue-300 dark:hover:border-blue-700/50 transition-all duration-300"
+          className="group flex items-center gap-2 bg-white dark:bg-slate-800/60 p-3 shadow-sm border border-slate-200 dark:border-slate-700/60 hover:border-blue-300 dark:hover:border-blue-700/50 transition-all duration-300"
         >
           <img
             src={member.image}
             alt={member.name}
-            className="h-10 w-10 rounded-full object-cover border-2 border-slate-50 dark:border-slate-700 group-hover:scale-105 transition-transform"
+            className="h-14 w-14 rounded-full object-cover border-2 border-slate-50 dark:border-slate-700 group-hover:scale-105 transition-transform"
           />
           <div>
             <h5 className="font-semibold text-sm text-slate-900 dark:text-slate-100">

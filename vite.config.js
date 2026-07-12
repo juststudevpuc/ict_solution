@@ -11,7 +11,7 @@ export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
   },
-  server: {
+  server: { 
     // THIS IS THE FIX: The Local Middleman
     proxy: {
       '/api': {

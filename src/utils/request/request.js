@@ -10,7 +10,7 @@ function getCookie(name) {
 export const request = async (url = "", method = "get", data = {}) => {
     let headers = {
         "Accept": "application/json",
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
     };
 
     // 2. TAPE THE TICKET TO THE REQUEST: Grab the token Laravel just gave us
@@ -20,30 +20,33 @@ export const request = async (url = "", method = "get", data = {}) => {
     }
 
     if (data instanceof FormData) {
-        delete headers["Content-Type"]; 
+        delete headers["Content-Type"];
     }
 
     try {
+        // 🔥 NEW: This instantly fixes any accidental double slashes!
+        const sanitizedUrl = (configs.base_url + url).replace(/\/+/g, '/');
+
         const res = await axios({
-            url: configs.base_url + url,
+            url: sanitizedUrl, // 👈 Use the clean URL here
             method: method,
             data: data,
-            
+
             // 3. THESE TWO LINES PREVENT THE 419 ERROR
-            withCredentials: true, 
-            withXSRFToken: true, 
-            
-            headers: headers, 
+            withCredentials: true,
+            withXSRFToken: true,
+
+            headers: headers,
         });
-        
+
         console.log("Response Data :", res);
         return res.data;
 
     } catch (error) {
         console.log("Response error :", error);
-        
+
         const responseError = error?.response;
-        
+
         if (responseError) {
             if (responseError.status === 500) {
                 console.log("External Server Error.");
@@ -51,10 +54,10 @@ export const request = async (url = "", method = "get", data = {}) => {
             if (responseError.status === 422) {
                 console.log("Validation Errors: ", responseError.data.errors);
             }
-            
-            throw responseError.data; 
+
+            throw responseError.data;
         }
-        
+
         throw error;
     }
 };
