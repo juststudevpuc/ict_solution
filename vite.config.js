@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 export default defineConfig({
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   plugins: [react(), tailwindcss()],
@@ -12,7 +13,6 @@ export default defineConfig({
     drop: ['console', 'debugger'],
   },
   server: { 
-    // THIS IS THE FIX: The Local Middleman
     proxy: {
       '/api': {
         target: 'http://54.179.48.141',
@@ -21,8 +21,11 @@ export default defineConfig({
       '/sanctum': {
         target: 'http://54.179.48.141',
         changeOrigin: true,
+      },
+      '/storage': {
+        target: 'http://54.179.48.141',
+        changeOrigin: true,
       }
     }
   }
 })
-
