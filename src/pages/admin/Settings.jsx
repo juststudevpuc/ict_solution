@@ -19,11 +19,11 @@ export default function Settings() {
 
   // Start with an empty array! It will fill up dynamically.
   const [matrix, setMatrix] = useState([]);
- 
+
   // 1. DYNAMIC FETCH: Load from MongoDB
   const fetchSettings = async () => {
     try {
-      const res = await request("permissions", "get"); 
+      const res = await request("permissions", "get");
       if (res) {
         // Handle Laravel's standard data wrapping if needed (res.data vs res)
         setMatrix(res.data || res);
@@ -84,92 +84,99 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center border-b pb-4">
+    <div className="p-6 md:p-8 space-y-6 bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-300">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-slate-200 dark:border-slate-800 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <ShieldCheck className="text-blue-600 size-6" />
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 transition-colors">
+            <div className="p-2.5 bg-blue-100 dark:bg-blue-500/20 rounded-xl">
+              <ShieldCheck className="text-blue-600 dark:text-blue-400 size-6" />
+            </div>
             System Control Settings
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">
             As Super Admin, you can globally enable or disable dashboard
             features for specific roles.
           </p>
         </div>
+
         <Button
           onClick={handleSaveSettings}
           disabled={loading}
-          className="gap-2 bg-blue-600 hover:bg-blue-700"
+          className="gap-2 bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 rounded-xl shadow-sm transition-all h-11 px-6 disabled:opacity-70"
         >
           <Save className="size-4" />
           {loading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
 
-      <div className="border rounded-xl bg-card overflow-hidden shadow-sm">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="font-semibold text-foreground">
-                Feature Module
-              </TableHead>
-              <TableHead className="text-center font-semibold text-foreground w-40">
-                Staff Access
-              </TableHead>
-              <TableHead className="text-center font-semibold text-foreground w-40">
-                User Access
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {matrix && matrix.length > 0 ? (
-              matrix.map((row) => (
-                <TableRow
-                  key={row._id || row.id}
-                  className="hover:bg-muted/30 transition-colors"
-                >
-                  <TableCell className="font-medium text-base py-4">
-                    {row.module_name}
-                  </TableCell>
+      {/* SETTINGS TABLE */}
+      <div className="bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
+        <div className="overflow-x-auto custom-scrollbar">
+          <Table className="w-full text-sm text-left">
+            <TableHeader>
+              <TableRow className="bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800/50">
+                <TableHead className="py-5 px-6 font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
+                  Feature Module
+                </TableHead>
+                <TableHead className="py-5 px-6 text-center font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap w-48">
+                  Staff Access
+                </TableHead>
+                <TableHead className="py-5 px-6 text-center font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap w-48">
+                  User Access
+                </TableHead>
+              </TableRow>
+            </TableHeader>
 
-                  <TableCell className="text-center py-4">
-                    <div className="flex justify-center items-center">
-                      <Switch
-                        checked={row.staff}
-                        onCheckedChange={() =>
-                          handleToggle(row._id || row.id, "staff")
-                        }
-                        className="transition-colors duration-300 data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-slate-300"
-                      />
-                    </div>
-                  </TableCell>
+            <TableBody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+              {matrix && matrix.length > 0 ? (
+                matrix.map((row) => (
+                  <TableRow
+                    key={row._id || row.id}
+                    className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors group"
+                  >
+                    <TableCell className="py-5 px-6 font-bold text-slate-900 dark:text-white align-middle">
+                      {row.module_name}
+                    </TableCell>
 
-                  <TableCell className="text-center py-4">
-                    <div className="flex justify-center items-center">
-                      <Switch
-                        checked={row.user}
-                        // 3. Update the Toggle trigger
-                        onCheckedChange={() =>
-                          handleToggle(row._id || row.id, "user")
-                        }
-                        className="transition-colors duration-300 data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-slate-300"
-                      />
-                    </div>
+                    <TableCell className="py-5 px-6 align-middle">
+                      <div className="flex justify-center items-center">
+                        <Switch
+                          checked={row.staff}
+                          onCheckedChange={() =>
+                            handleToggle(row._id || row.id, "staff")
+                          }
+                          className="transition-colors duration-300 data-[state=checked]:bg-blue-600 dark:data-[state=checked]:bg-orange-500 data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-slate-700"
+                        />
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="py-5 px-6 align-middle">
+                      <div className="flex justify-center items-center">
+                        <Switch
+                          checked={row.user}
+                          onCheckedChange={() =>
+                            handleToggle(row._id || row.id, "user")
+                          }
+                          className="transition-colors duration-300 data-[state=checked]:bg-blue-600 dark:data-[state=checked]:bg-orange-500 data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-slate-700"
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={3}
+                    className="text-center py-12 text-slate-400 dark:text-slate-500 font-medium text-sm align-middle"
+                  >
+                    Loading permissions...
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={3}
-                  className="text-center py-6 text-muted-foreground"
-                >
-                  Loading permissions...
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

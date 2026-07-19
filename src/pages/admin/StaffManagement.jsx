@@ -122,17 +122,19 @@ export default function StaffManagement() {
     }
   };
 
-  return (
-    <div className="p-6 space-y-6">
+ return (
+    <div className="p-6 space-y-6 transition-colors duration-300">
       {/* Header section */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Staff Management</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white transition-colors">
+          Staff Management
+        </h1>
         <Button 
           onClick={() => {
             setForm({ id: "", name: "", email: "", password: "", phone: "" });
             setIsOpen(true);
           }} 
-          className="gap-2 bg-blue-500" 
+          className="gap-2 bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-sm" 
         >
           <PlusIcon className="size-4" />
           Add New Staff
@@ -140,40 +142,40 @@ export default function StaffManagement() {
       </div>
 
       {/* Staff Table */}
-      <div className="w-full overflow-x-auto custom-scrollbar bg-white rounded-3xl border border-slate-100 shadow-sm">
+      <div className="w-full overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
         <Table className="w-full min-w-[600px] text-sm text-left">
           
           <TableHeader>
-            <TableRow className="bg-slate-50/80 border-b border-slate-100">
-              <TableHead className="py-5 pl-6 pr-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+            <TableRow className="bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800/50">
+              <TableHead className="py-5 pl-6 pr-4 font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
                 Name
               </TableHead>
-              <TableHead className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+              <TableHead className="py-5 px-4 font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
                 Email
               </TableHead>
-              <TableHead className="py-5 px-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
+              <TableHead className="py-5 px-4 font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle">
                 Phone
               </TableHead>
-              <TableHead className="py-5 pr-6 pl-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle text-right w-24">
+              <TableHead className="py-5 pr-6 pl-4 font-bold text-slate-500 dark:text-slate-400 uppercase text-[11px] tracking-wider whitespace-nowrap align-middle text-right w-24">
                 Actions
               </TableHead>
             </TableRow>
           </TableHeader>
 
-          <TableBody className="divide-y divide-slate-50">
+          <TableBody className="divide-y divide-slate-100 dark:divide-slate-800/50">
             {staff && staff.length > 0 ? (
               staff.map((item, index) => (
-                <TableRow key={item.id || index} className="hover:bg-slate-50/50 transition-colors group">
+                <TableRow key={item.id || index} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors group">
                   
-                  <TableCell className="py-4 pl-6 pr-4 font-bold text-slate-900 align-middle">
+                  <TableCell className="py-4 pl-6 pr-4 font-bold text-slate-900 dark:text-white align-middle">
                     {item.name}
                   </TableCell>
                   
-                  <TableCell className="py-4 px-4 font-medium text-slate-500 align-middle">
+                  <TableCell className="py-4 px-4 font-medium text-slate-500 dark:text-slate-400 align-middle">
                     {item.email}
                   </TableCell>
                   
-                  <TableCell className="py-4 px-4 font-medium text-slate-500 align-middle">
+                  <TableCell className="py-4 px-4 font-medium text-slate-500 dark:text-slate-400 align-middle">
                     {item.phone || "N/A"}
                   </TableCell>
                   
@@ -184,27 +186,27 @@ export default function StaffManagement() {
                         <Button 
                           variant="outline" 
                           size="icon" 
-                          className="size-9 rounded-xl border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-sm ml-auto flex items-center justify-center"
+                          className="size-9 rounded-xl border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition-colors shadow-sm ml-auto flex items-center justify-center"
                         >
                           <Menu className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       
-                      <DropdownMenuContent align="end" className="w-40 p-2 rounded-2xl shadow-xl border-slate-100">
+                      <DropdownMenuContent align="end" className="w-40 p-2 rounded-2xl shadow-xl border-slate-100 dark:border-slate-800 dark:bg-slate-900">
                         <DropdownMenuGroup>
                           <DropdownMenuItem 
                             onClick={() => onEdit(item)} 
-                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 focus:bg-blue-50 font-medium transition-colors"
+                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 focus:bg-blue-50 dark:focus:bg-blue-500/10 font-medium transition-colors"
                           >
                             <EditIcon className="size-4" />
                             <span>Edit</span>
                           </DropdownMenuItem>
                           
-                          <DropdownMenuSeparator className="my-1.5 bg-slate-100" />
+                          <DropdownMenuSeparator className="my-1.5 bg-slate-100 dark:bg-slate-800" />
                           
                           <DropdownMenuItem 
                             onClick={() => onDelete(item)} 
-                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 focus:bg-red-50 font-medium transition-colors"
+                            className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-500/10 focus:bg-red-50 dark:focus:bg-red-500/10 font-medium transition-colors"
                           >
                             <TrashIcon className="size-4" />
                             <span>Delete</span>
@@ -217,7 +219,7 @@ export default function StaffManagement() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-12 text-slate-400 font-medium text-sm align-middle">
+                <TableCell colSpan={4} className="text-center py-12 text-slate-400 dark:text-slate-500 font-medium text-sm align-middle">
                   No staff members found.
                 </TableCell>
               </TableRow>
@@ -228,51 +230,63 @@ export default function StaffManagement() {
 
       {/* Create/Edit Modal */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-colors">
           <DialogHeader>
-            <DialogTitle>{form.id ? "Edit Staff Member" : "Add New Staff"}</DialogTitle>
+            <DialogTitle className="text-slate-900 dark:text-white font-bold">
+              {form.id ? "Edit Staff Member" : "Add New Staff"}
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit} className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label>Name</Label>
+              <Label className="text-slate-700 dark:text-slate-300 font-bold">Name</Label>
               <Input 
                 required 
                 value={form.name} 
                 onChange={(e) => setForm({ ...form, name: e.target.value })} 
                 placeholder="John Doe"
+                className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 text-slate-900 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label className="text-slate-700 dark:text-slate-300 font-bold">Email</Label>
               <Input 
                 type="email" 
                 required 
                 value={form.email} 
                 onChange={(e) => setForm({ ...form, email: e.target.value })} 
                 placeholder="john@example.com"
+                className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 text-slate-900 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label>{form.id ? "New Password (leave blank to keep current)" : "Password"}</Label>
+              <Label className="text-slate-700 dark:text-slate-300 font-bold">
+                {form.id ? "New Password (leave blank to keep current)" : "Password"}
+              </Label>
               <Input 
                 type="password" 
                 required={!form.id} 
                 value={form.password} 
                 onChange={(e) => setForm({ ...form, password: e.target.value })} 
                 placeholder={form.id ? "••••••••" : "Create a password"}
+                className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 text-slate-900 dark:text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label>Phone</Label>
+              <Label className="text-slate-700 dark:text-slate-300 font-bold">Phone</Label>
               <Input 
                 value={form.phone} 
                 onChange={(e) => setForm({ ...form, phone: e.target.value })} 
                 placeholder="+1 234 567 890"
+                className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 text-slate-900 dark:text-white"
               />
             </div>
-            <div className="flex justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-              <Button type="submit">{form.id ? "Update Staff" : "Save Staff"}</Button>
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
+              <Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="rounded-lg font-medium">
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 rounded-lg shadow-sm transition-all">
+                {form.id ? "Update Staff" : "Save Staff"}
+              </Button>
             </div>
           </form>
         </DialogContent>
@@ -280,16 +294,20 @@ export default function StaffManagement() {
 
       {/* Delete Confirmation Modal */}
       <Dialog open={isDelete} onOpenChange={setIsDelete}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-colors">
           <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogTitle className="text-slate-900 dark:text-white font-bold">Are you absolutely sure?</DialogTitle>
           </DialogHeader>
-          <p className="py-4 text-muted-foreground">
-            This will permanently delete the staff member <strong>{deleteData?.name}</strong>. This action cannot be undone and they will lose access to the system.
+          <p className="py-4 text-slate-500 dark:text-slate-400">
+            This will permanently delete the staff member <strong className="text-slate-900 dark:text-white">{deleteData?.name}</strong>. This action cannot be undone and they will lose access to the system.
           </p>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsDelete(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleConfirmDelete}>Yes, Delete</Button>
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <Button variant="outline" onClick={() => setIsDelete(false)} className="rounded-lg font-medium">
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete} className="rounded-lg shadow-sm">
+              Yes, Delete
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

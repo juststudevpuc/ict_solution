@@ -3,7 +3,8 @@ import logo from "@/assets/logo.png";
 import { useSelector } from "react-redux";
 import { request } from "@/utils/request/request";
 
-const InvoiceCard = forwardRef((props, ref) => {
+// 🔥 ADDED: Accept paidAmount as a prop
+const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
   const cart = useSelector((state) => state.cart) || [];
 
   const subtotal = cart.reduce((acc, item) => acc + Number(item?.price || 0) * Number(item?.qty || 0), 0);
@@ -15,34 +16,37 @@ const InvoiceCard = forwardRef((props, ref) => {
   }, 0);
 
   const grandTotal = subtotal - totalDiscount;
+  const paid = Number(paidAmount) || 0;
+  
+  // Calculate if they still owe money or if they get change back
+  const balanceDue = Math.max(0, grandTotal - paid);
+  const changeDue = Math.max(0, paid - grandTotal);
 
-  const [order, setOrder] = useState([]);
   const [me, setMe] = useState(null);
 
-
   const fetchingData = async () => {
-    const order = await request("order" , "get")
-    const res = await request("me", "get");
-    if (res) {
-      setMe(res?.user);
+    try {
+      const res = await request("me", "get");
+      if (res) {
+        setMe(res?.user);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data for invoice");
     }
-
   }
+
   useEffect(() => {
     fetchingData();
   }, []);
 
   return (
-    // Reduced outer padding (p-8 instead of p-12)
-    <div ref={ref} className="bg-white text-slate-900 w-full max-w-4xl mx-auto p-8">
-      {/* Reduced inner padding (p-6 instead of p-8) */}
+    <div ref={ref} className="bg-white text-slate-900 w-full max-w-4xl mx-auto p-8 font-sans">
       <div className="border-2 border-slate-800 p-6">
         
         {/* ===== 1. HEADER ===== */}
         <div className="flex justify-between items-start border-b-2 border-slate-800 pb-6 mb-6">
           <div className="flex items-center gap-3">
-            {/* Reduced Logo Size (w-14 h-14 instead of w-20) */}
-            <div className="w-14 h-14 border border-slate-300 flex items-center justify-center p-1">
+            <div className="w-14 h-14 border border-slate-300 flex items-center justify-center p-1 bg-white">
               <img
                 className="w-full h-full object-contain"
                 src={logo}
@@ -51,16 +55,11 @@ const InvoiceCard = forwardRef((props, ref) => {
               />
             </div>
             <div>
-              {/* Reduced title text */}
               <h2 className="text-xl font-black uppercase tracking-widest text-slate-900">ICT Solution</h2>
-              {/* <p className="text-xs text-slate-600 mt-0.5">Bekchan, Anksnoul</p>
-              <p className="text-xs text-slate-600">Kandal, Cambodia</p>
-              <p className="text-xs text-slate-600 mt-0.5">Tel: +855 XX XXX XXX</p> */}
             </div>
           </div>
 
           <div className="text-right">
-            {/* Reduced Invoice Title (text-4xl instead of 5xl) */}
             <h1 className="text-4xl font-black tracking-widest text-slate-900 uppercase mb-3">Invoice</h1>
             <div className="grid grid-cols-2 gap-x-4 text-xs bg-slate-100 p-2 border border-slate-800">
               <p className="font-bold text-slate-700 text-left">INVOICE NO:</p>
@@ -73,32 +72,31 @@ const InvoiceCard = forwardRef((props, ref) => {
         </div>
 
         {/* ===== 2. BILLING INFO ===== */}
-        {}
         <div className="grid grid-cols-2 gap-10 mb-6">
           <div>              
             <div className="bg-slate-800 text-white uppercase text-[10px] font-bold py-1 px-2 mb-1.5 inline-block">
               Bill To
             </div>
             <h3 className="text-base font-bold text-slate-900 uppercase">Walk-in Customer</h3>
-            <p className="text-xs text-slate-600">Customer:{me?.name}</p>
-            <p className="text-xs text-slate-600">Phone:N/A</p>
-            
+            <p className="text-xs text-slate-600">Customer: {me?.name || "N/A"}</p>
+            <p className="text-xs text-slate-600">Phone: {me?.phone || "N/A"}</p>
           </div>
           <div className="text-right">
              <div className="bg-slate-800 text-white uppercase text-[10px] font-bold py-1 px-2 mb-1.5 inline-block">
               Status
             </div>
-            <h3 className="text-base font-bold uppercase text-slate-900">Paid</h3>
+            <h3 className={`text-base font-bold uppercase ${balanceDue > 0 ? "text-amber-600" : "text-slate-900"}`}>
+              {balanceDue > 0 ? "Partial / Unpaid" : "Paid"}
+            </h3>
           </div>
         </div>
 
-        {/* ===== 3. PURE HTML TABLE (Fixes the print scrollbar!) ===== */}
+        {/* ===== 3. PURE HTML TABLE ===== */}
         <div className="mb-8">
           <table className="w-full table-fixed border-collapse border border-slate-800">
             <thead className="bg-slate-200 border-b-2 border-slate-800">
               <tr>
                 <th className="w-10 border-r border-slate-400 py-2 text-center text-[10px] font-bold uppercase text-slate-900">Item</th>
-                {/* Description takes remaining space */}
                 <th className="border-r border-slate-400 py-2 px-3 text-left text-[10px] font-bold uppercase text-slate-900">Description</th>
                 <th className="w-16 border-r border-slate-400 py-2 text-center text-[10px] font-bold uppercase text-slate-900">Qty</th>
                 <th className="w-24 border-r border-slate-400 py-2 px-2 text-right text-[10px] font-bold uppercase text-slate-900">Unit Price</th>
@@ -114,7 +112,6 @@ const InvoiceCard = forwardRef((props, ref) => {
                     <tr key={index} className="border-b border-slate-300 align-top">
                       <td className="border-r border-slate-300 py-3 text-center font-mono text-xs text-slate-900">{index + 1}</td>
                       
-                      {/* Description Cell */}
                       <td className="border-r border-slate-300 py-3 px-3">
                         <p className="font-bold text-xs text-slate-900 uppercase">{item?.name || "Unknown Item"}</p>
                         
@@ -174,15 +171,37 @@ const InvoiceCard = forwardRef((props, ref) => {
               </div>
             )}
             
-            <div className="flex justify-between p-2 border-b-2 border-slate-800 text-xs">
+            <div className="flex justify-between p-2 border-b border-slate-300 text-xs">
               <span className="font-bold uppercase text-slate-700">Tax (0%)</span>
               <span className="font-mono text-slate-900">$0.00</span>
             </div>
             
-            <div className="flex justify-between p-2.5 bg-slate-200">
+            <div className="flex justify-between p-2.5 border-b-2 border-slate-800 bg-slate-100">
               <span className="text-base font-black uppercase text-slate-900">Total Due</span>
               <span className="text-lg font-black font-mono text-slate-900">${grandTotal.toFixed(2)}</span>
             </div>
+
+            {/* 🔥 NEW: Customer Paid Row */}
+            <div className="flex justify-between p-2.5 border-b border-slate-300 bg-white">
+              <span className="font-bold uppercase text-slate-700">Customer Paid</span>
+              <span className="font-mono font-bold text-blue-700">${paid.toFixed(2)}</span>
+            </div>
+
+            {/* 🔥 NEW: Balance or Change Row */}
+            {changeDue > 0 ? (
+              <div className="flex justify-between p-2.5 bg-slate-200">
+                <span className="font-black uppercase text-slate-900">Change Due</span>
+                <span className="font-mono font-black text-slate-900">${changeDue.toFixed(2)}</span>
+              </div>
+            ) : (
+              <div className="flex justify-between p-2.5 bg-slate-200">
+                <span className="font-black uppercase text-slate-900">Balance Due</span>
+                <span className={`font-mono font-black ${balanceDue > 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                  ${balanceDue.toFixed(2)}
+                </span>
+              </div>
+            )}
+
           </div>
         </div>
 
