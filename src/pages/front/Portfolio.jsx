@@ -4,45 +4,59 @@ import { ArrowRight, Code2, Cpu, Smartphone, Globe } from "lucide-react";
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const categories = ["All", "Web Development", "AI & IoT", "Mobile Apps"];
+  const categories = [
+    "All",
+    "Web Development",
+    // "AI & IoT",
+    //  "Mobile Apps"
+  ];
 
   const projects = [
+    // {
+    //   title: "Smart Classroom Command Center",
+    //   category: "AI & IoT",
+    //   image: "/img/portfolio-smart-class.jpg",
+    //   description:
+    //     "Automated environment control combining a web interface with microcontroller hardware for automated door locks and lighting.",
+    //   techStack: ["Laravel", "Arduino", "MySQL"],
+    //   icon: <Cpu className="w-4 h-4" />,
+    // },
     {
-      title: "Smart Classroom Command Center",
-      category: "AI & IoT",
-      image: "/img/portfolio-smart-class.jpg",
-      description:
-        "Automated environment control combining a web interface with microcontroller hardware for automated door locks and lighting.",
-      techStack: ["Laravel", "Arduino", "MySQL"],
-      icon: <Cpu className="w-4 h-4" />,
-    },
-    {
-      title: "Enterprise Retail POS",
+      title: "ICT Center",
       category: "Web Development",
-      image: "/img/portfolio-pos.jpg",
-      description:
-        "Full-stack point of sale and e-commerce storefront featuring multi-role authentication and transaction capabilities.",
-      techStack: ["React", "Laravel", "REST API"],
+      image: "/img/software/ict-center.png",
+      description: "",
+      techStack: ["Laravel", "REST API"],
       icon: <Globe className="w-4 h-4" />,
     },
     {
-      title: "Face Recognition Attendance",
-      category: "AI & IoT",
-      image: "/img/portfolio-face-rec.jpg",
-      description:
-        "Local face tracking application engineered with deep learning libraries to optimize camera detection feeds and logging.",
-      techStack: ["Python", "OpenCV", "Raspberry Pi 5"],
-      icon: <Cpu className="w-4 h-4" />,
+      title: "ICT Solution ",
+      category: "Web Development",
+
+      image: "/img/software/ict-solut.png",
+
+      description: "",
+      techStack: ["React", "Laravel", "REST API"],
+      icon: <Globe className="w-4 h-4" />,
     },
-    {
-      title: "E-Commerce Mobile Store",
-      category: "Mobile Apps",
-      image: "/img/portfolio-mobile.jpg",
-      description:
-        "Native mobile application featuring modern visual designs, custom layout components, and secure authentication flows.",
-      techStack: ["Kotlin", "Jetpack Compose", "Firebase"],
-      icon: <Smartphone className="w-4 h-4" />,
-    },
+    // {
+    //   title: "Face Recognition Attendance",
+    //   category: "AI & IoT",
+    //   image: "/img/portfolio-face-rec.jpg",
+    //   description:
+    //     "Local face tracking application engineered with deep learning libraries to optimize camera detection feeds and logging.",
+    //   techStack: ["Python", "OpenCV", "Raspberry Pi 5"],
+    //   icon: <Cpu className="w-4 h-4" />,
+    // },
+    // {
+    //   title: "E-Commerce Mobile Store",
+    //   category: "Mobile Apps",
+    //   image: "/img/portfolio-mobile.jpg",
+    //   description:
+    //     "Native mobile application featuring modern visual designs, custom layout components, and secure authentication flows.",
+    //   techStack: ["Kotlin", "Jetpack Compose", "Firebase"],
+    //   icon: <Smartphone className="w-4 h-4" />,
+    // },
   ];
 
   const filteredProjects =

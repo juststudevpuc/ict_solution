@@ -9,16 +9,16 @@ const orgData = {
     name: "Mr. Nhanh Nhim",
     role: "CEO & Founder",
     image: "img/people/nhim.jpg",
-    email: "nhanh.nhim@ictsolutions.com",
-    phone: "+855 12 345 678",
+    // email: "nhanh.nhim@ictsolutions.com",
+    phone: "+855 70 295 027",
     bio: "Visionary leader with over 15 years of experience in the tech industry, driving ICT Solutions to new heights."
   },
   deputy: {
     name: "Mrs. Va SOTHEAVY",
     role: "Deputy Director",
-    image: "/api/placeholder/150/150",
-    email: "va.sotheavy@ictsolutions.com",
-    phone: "+855 12 987 654",
+    image: "/img/people/sotheavy.png",
+    // email: "va.sotheavy@ictsolutions.com",
+    // phone: "+855 12 987 654",
   },
   departments: [
     {
@@ -33,7 +33,7 @@ const orgData = {
       title: "Digital Marketing",
       members: [
         { name: "Vatha Chetkongkea", role: "Digital marketing", image: "img/people/Kongkea.jpg" },
-        { name: "Reth annlina", role: "Digital marketing", image: "img/people/Channy.jpg" },
+        { name: "Reth Annlina", role: "Digital marketing", image: "img/people/Lyna.jpg" },
       ],
     },
     {
@@ -100,8 +100,8 @@ const ProfileCard = ({ member, onClick }) => (
     {/* Smooth Expanding Details on Hover */}
     <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out w-full">
       <div className="overflow-hidden flex flex-col items-center gap-1.5 opacity-0 group-hover:opacity-100 group-hover:pt-4 transition-opacity duration-300 delay-100 text-xs text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-1.5"><Mail className="size-3.5" /> {member.email || "contact@ict.com"}</div>
-        <div className="flex items-center gap-1.5"><Phone className="size-3.5" /> {member.phone || "+855 000 000"}</div>
+        {/* <div className="flex items-center gap-1.5"><Mail className="size-3.5" /> {member.email || "contact@ict.com"}</div>
+        <div className="flex items-center gap-1.5"><Phone className="size-3.5" /> {member.phone || "+855 000 000"}</div> */}
       </div>
     </div>
   </Card>
@@ -127,11 +127,11 @@ const DepartmentCol = ({ department, onMemberClick }) => {
           className="group flex flex-col items-center mb-4 cursor-pointer"
           onClick={() => onMemberClick(lead)}
         >
-          <div className="relative h-20 w-20 rounded-full border-4 border-white dark:border-slate-700 shadow-sm mb-3 overflow-hidden">
+          <div className="relative h-20 w-20 rounded-full border-white dark:border-slate-700 shadow-sm mb-3 overflow-hidden">
             <img
               src={lead.image}
               alt={lead.name}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="h-30 w-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
               <Eye className="text-white size-5" />
@@ -148,8 +148,8 @@ const DepartmentCol = ({ department, onMemberClick }) => {
           {/* Smooth Expanding Details */}
           <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out w-full">
             <div className="overflow-hidden flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 group-hover:pt-2 text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-              <div>{lead.email || "contact@ict.com"}</div>
-              <div>{lead.phone || "+855 000 000"}</div>
+              {/* <div>{lead.email || "contact@ict.com"}</div> */}
+              {/* <div>{lead.phone || "+855 000 000"}</div> */}
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@ const DepartmentCol = ({ department, onMemberClick }) => {
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="h-15 w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <Eye className="text-white size-3" />
@@ -292,7 +292,7 @@ export default function OrganizationChart() {
                   <img
                     src={selectedMember.image}
                     alt={selectedMember.name}
-                    className="w-full h-full object-cover"
+                    className="w-full  object-cover"
                   />
                 </div>
               </div>
@@ -306,7 +306,7 @@ export default function OrganizationChart() {
                   {selectedMember.role}
                 </p>
 
-                <div className="space-y-4 text-sm">
+                {/* <div className="space-y-4 text-sm">
                   <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">
                     <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500"><Mail className="size-4" /></div>
                     <span className="font-medium">{selectedMember.email || "contact@ictsolutions.com"}</span>
@@ -315,7 +315,7 @@ export default function OrganizationChart() {
                     <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500"><Phone className="size-4" /></div>
                     <span className="font-medium">{selectedMember.phone || "+855 (0) 23 000 000"}</span>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/60">
                   <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">About</h4>
