@@ -16,7 +16,7 @@ export default function ServicePage() {
       description:
         "Professional motion graphics, branding, and high-end digital media.",
       icon: PenTool,
-      link: "/services/video-editing",
+      link: "/category/softwarePage",
     },
   ];
 

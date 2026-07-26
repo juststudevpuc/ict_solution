@@ -39,12 +39,12 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-10 md:py-16 font-sans transition-colors duration-300">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+      <div className="max-w-[1200px] mx-auto px-6 py-8 lg:px-8">
         
         {/* --- SLEEK BACK BUTTON --- */}
         <button 
           onClick={backClick} 
-          className="group flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-8 transition-colors bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full shadow-sm hover:shadow-md"
+          className=" group flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-8 transition-colors bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full shadow-sm hover:shadow-md"
         > 
           <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /> 
           Back to Software 
