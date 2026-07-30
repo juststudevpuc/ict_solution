@@ -160,7 +160,7 @@ export default function Portfolio() {
               integration, our team is ready to build it.
             </p>
             <a
-              href="https://t.me/ictinfo1"
+              href="https://t.me/nhanhnhim"
               className="bg-white text-blue-600 font-bold px-8 py-4 rounded-full hover:bg-slate-50 transition-colors hover:shadow-xl inline-flex items-center gap-2"
             >
               Start a Conversation <ArrowRight className="w-5 h-5" />

@@ -41,7 +41,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050B14] text-slate-900 dark:text-slate-50 font-sans antialiased selection:bg-blue-200 selection:text-blue-900 dark:selection:bg-blue-500/30 dark:selection:text-white overflow-x-hidden transition-colors duration-300 no-scrollbar">
-      
       {/* ======================================= */}
       {/* 1. HERO SECTION                         */}
       {/* ======================================= */}
@@ -95,12 +94,14 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.4 }}
             >
-              <button
-                onClick={navClick}
-                className="flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-semibold text-lg transition-all duration-300 shadow-[0_8px_30px_rgb(37,99,235,0.3)] hover:shadow-[0_12px_40px_rgb(37,99,235,0.4)] hover:-translate-y-1 focus:ring-4 focus:ring-blue-600/30"
+              <a
+                href="https://t.me/nhanhnhim"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-semibold text-lg transition-all duration-300 shadow-[0_8px_30px_rgb(37,99,235,0.3)] hover:shadow-[0_12px_40px_rgb(37,99,235,0.4)] hover:-translate-y-1 focus:ring-4 focus:ring-blue-600/30"
               >
                 Start Your Transformation <ArrowRight className="w-5 h-5" />
-              </button>
+              </a>
             </motion.div>
           </div>
         </div>
@@ -117,10 +118,11 @@ export default function HomePage() {
                 Trusted by industry leaders
               </h2>
               <p className="text-slate-500 dark:text-slate-400 font-medium">
-                We help our clients optimize business spend and maximize their revenues.
+                We help our clients optimize business spend and maximize their
+                revenues.
               </p>
             </div>
-            
+
             <div className="w-full">
               {/* Ensure your <Slider /> component also has dark mode classes inside it! */}
               <Slider />
@@ -128,16 +130,15 @@ export default function HomePage() {
           </div>
         </section>
 
-       <div className="">
-        <ServicesSection/>
-       </div>
+        <div className="">
+          <ServicesSection />
+        </div>
 
         {/* ======================================= */}
         {/* 4. FOUNDER SECTION                      */}
         {/* ======================================= */}
         <section className="py-24 bg-slate-100 dark:bg-[#050B14] border-y border-slate-100 dark:border-slate-800/50 transition-colors duration-300">
           <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-16 md:gap-24">
-            
             {/* Image & Icon Wrapper */}
             <div className="relative shrink-0">
               <div className="absolute inset-0 bg-blue-500 rounded-full blur-[60px] opacity-20 dark:opacity-40"></div>
@@ -204,7 +205,8 @@ export default function HomePage() {
           <div className="max-w-[1400px] mx-auto px-6">
             <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-20">
               <h2 className="text-4xl md:text-5xl font-semibold text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
-                Why businesses choose ICT Solution <br className="hidden md:block" />
+                Why businesses choose ICT Solution{" "}
+                <br className="hidden md:block" />
                 as their technology partner.
               </h2>
               <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-light leading-relaxed max-w-3xl">
@@ -263,4 +265,3 @@ export default function HomePage() {
     </div>
   );
 }
-

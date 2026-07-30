@@ -68,24 +68,13 @@ function FloatingWidgets() {
 
       {/* Telegram Button */}
       <a
-        href="https://t.me/ictinfo1"
+        href="https://t.me/nhanhnhim"
         target="_blank"
         rel="noreferrer"
         className="flex size-12 items-center justify-center rounded-full bg-[#0088cc] text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
       >
         <Send className="size-5 -ml-1" />
       </a>
-
-      {/* Messenger Button */}
-      {/* <a
-        href="https://m.me/your_facebook_page"
-        target="_blank"
-        rel="noreferrer"
-        className="flex size-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#00c6ff] to-[#0072ff] text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
-      >
-        <MessageCircle className="size-6" />
-      </a> */}
-
       {/* Scroll to Top Button (Fades in/out smoothly) */}
       <button
         onClick={scrollToTop}
@@ -129,14 +118,14 @@ export default function MainLayout() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-const nav_item = [
+  const nav_item = [
     { label: "Home", href: "/" },
     { label: "Services", href: "/service" },
     { label: "Portfolio", href: "/portfolio" }, // 🔥 NEW
-    { label: "Team", href: "/team" },           // 🔥 NEW
-    { label: "Careers", href: "/careers" },     // 🔥 NEW
+    { label: "Team", href: "/team" }, // 🔥 NEW
+    { label: "Careers", href: "/careers" }, // 🔥 NEW
     { label: "Clients", href: "/client" },
-  ]
+  ];
   // 1. Grab the cart data from Redux
   const cart = useSelector((state) => state.cart);
 
@@ -377,7 +366,7 @@ const nav_item = [
             {/* Column 1: Company Info */}
             <div className="flex flex-col gap-6">
               <Link to="/" className="flex items-center gap-3">
-                <div className="w-13 h-13  rounded-3xl flex items-center justify-center text-white font-black text-xl">
+                <div className="w-13 h-13 rounded-3xl flex items-center justify-center text-white font-black text-xl">
                   <img
                     src="/image.png"
                     alt="User Avatar"
@@ -400,23 +389,13 @@ const nav_item = [
                   <Facebook size={18} />
                 </a>
                 <a
-                  href="#"
+                  href="https://t.me/nhanhnhim"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
                 >
                   <Send size={18} />
                 </a>
-                {/* <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
-                >
-                  <Linkedin size={18} />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors duration-300"
-                >
-                  <Instagram size={18} />
-                </a> */}
               </div>
             </div>
 
@@ -428,7 +407,7 @@ const nav_item = [
               <ul className="flex flex-col gap-4 text-sm font-medium">
                 <li>
                   <Link
-                    to="service"
+                    to="/service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Software Engineering
@@ -436,23 +415,15 @@ const nav_item = [
                 </li>
                 <li>
                   <Link
-                    to="service"
+                    to="/service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Mobile App Development
                   </Link>
                 </li>
-                {/* <li>
-                  <Link
-                    to="#"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    AI & Machine Learning
-                  </Link>
-                </li> */}
                 <li>
                   <Link
-                    to="service"
+                    to="/service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Digital Marketing
@@ -460,7 +431,7 @@ const nav_item = [
                 </li>
                 <li>
                   <Link
-                    to="service"
+                    to="/service"
                     className="hover:text-blue-400 transition-colors"
                   >
                     IT Consulting
@@ -469,44 +440,44 @@ const nav_item = [
               </ul>
             </div>
 
-            {/* Column 3: Company */}
+            {/* Column 3: Company (🔥 UPDATED WITH NEW PAGES) */}
             <div>
               <h3 className="text-white font-bold uppercase tracking-widest text-sm mb-6">
                 Company
               </h3>
               <ul className="flex flex-col gap-4 text-sm font-medium">
-                <li>
+                {/* <li>
                   <Link
                     to="/about"
                     className="hover:text-blue-400 transition-colors"
                   >
                     About Us
                   </Link>
-                </li>
-                {/* <li>
+                </li> */}
+                <li>
                   <Link
-                    to="#"
+                    to="/portfolio"
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    Portfolio
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/team"
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    Team
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/careers"
                     className="hover:text-blue-400 transition-colors"
                   >
                     Careers
                   </Link>
-                </li> */}
-                {/* <li>
-                  <Link
-                    to="#"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    Case Studies
-                  </Link>
-                </li> */}
-                {/* <li>
-                  <Link
-                    to="#"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    Blog
-                  </Link>
-                </li> */}
+                </li>
                 <li>
                   <Link
                     to="/contact"
@@ -536,7 +507,7 @@ const nav_item = [
                 <li className="flex items-center gap-3">
                   <Phone size={18} className="text-blue-500 shrink-0" />
                   <a
-                    href="tel:+85512345678"
+                    href="tel:+85592702175"
                     className="hover:text-blue-400 transition-colors"
                   >
                     092 702 175 / 096 287 5270
@@ -545,7 +516,7 @@ const nav_item = [
                 <li className="flex items-center gap-3">
                   <Mail size={18} className="text-blue-500 shrink-0" />
                   <a
-                    href="mailto:hello@ictsolution.com"
+                    href="mailto:ictsolution3@gmail.com"
                     className="hover:text-blue-400 transition-colors"
                   >
                     ictsolution3@gmail.com
@@ -560,15 +531,24 @@ const nav_item = [
             <p>
               © {new Date().getFullYear()} ICT Solution. All rights reserved.
             </p>
-           <div className="flex gap-6">
-              <Link to="/privacy-policy" className="hover:text-white transition-colors">
+            <div className="flex gap-6">
+              <Link
+                to="/privacy-policy"
+                className="hover:text-white transition-colors"
+              >
                 Privacy Policy
               </Link>
-              <Link to="/terms-conditions" className="hover:text-white transition-colors">
+              <Link
+                to="/terms-conditions"
+                className="hover:text-white transition-colors"
+              >
                 Terms of Service
               </Link>
-              <Link to="/cookie-policy" className="hover:text-white transition-colors">
-               ict solution
+              <Link
+                to="/cookie-policy"
+                className="hover:text-white transition-colors"
+              >
+                ICT Solution
               </Link>
             </div>
           </div>
