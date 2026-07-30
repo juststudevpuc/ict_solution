@@ -169,7 +169,7 @@ export default function ServicePage() {
 
             <div>
               <a
-                href="https://t.me/ictinfo1"
+                href="https://t.me/nhanhnhim"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
@@ -242,7 +242,7 @@ export default function ServicePage() {
 
               <div>
                 <a
-                  href="https://t.me/ictinfo1"
+                  href="https://t.me/nhanhnhim"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
