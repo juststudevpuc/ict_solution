@@ -31,6 +31,10 @@ import Team from "./pages/front/Team";
 import Careers from "./pages/front/Careers";
 import LegalPage from "./pages/front/LegalPage";
 import ScrollToTop from "./components/ScrollToTop";
+import CareerPage from "./pages/admin/CareerPage";
+import JobApplicationAdmin from "./pages/admin/JobApplicationAdmin";
+import ApplyJob from "./pages/front/ApplyJob";
+import JobInfo from "./pages/front/JobInfo";
 export default function App() {
   return (
     <BrowserRouter>
@@ -40,7 +44,7 @@ export default function App() {
           {/* MAIN FRONT-END LAYOUT */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="about" element={<AboutPage />} />
+            {/* <Route path="about" element={<AboutPage />} /> */}
             <Route path="service" element={<ServicePage />} />
             <Route path="service2" element={<ServicePage2 />} />
 
@@ -71,6 +75,8 @@ export default function App() {
             <Route path="payment" element={<PaymentPage />} />
             <Route path="category/softwarePage" element={<SoftwareCard />} />
             <Route path="userProfile" element={<UserProfile />} />
+            <Route path="careers/info/:id" element={<JobInfo />} />
+            <Route path="careers/apply/:id" element={<ApplyJob />} />
 
             {/* Added a fallback user dashboard route so it doesn't crash */}
             <Route path="user" element={<HomePage />} />
@@ -153,6 +159,22 @@ export default function App() {
               element={
                 <ProtectedRoute moduleKey="report">
                   <ReportPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="career"
+              element={
+                <ProtectedRoute moduleKey="career">
+                  <CareerPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="job-applications"
+              element={
+                <ProtectedRoute moduleKey="job-applications">
+                  <JobApplicationAdmin />
                 </ProtectedRoute>
               }
             />

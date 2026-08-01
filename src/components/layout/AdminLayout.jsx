@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./adminSidebar/AppSidebar";
 import {
@@ -12,51 +12,15 @@ import {
 import { Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-// WebSocket & Toast Imports
-import Echo from "laravel-echo";
-import Pusher from "pusher-js";
+// Toast Imports
 import { toast, Toaster } from "sonner";
 import { Bell } from "lucide-react";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 
 // 🌙 IMPORT THE THEME TOGGLER
 
-window.Pusher = Pusher;
-
 export default function AdminLayout() {
   const user = useSelector((state) => state.user);
-  const alertAudioRef = useRef(new Audio("/audio/alert.mp3"));
-
-  useEffect(() => {
-    const echo = new Echo({
-      broadcaster: "reverb",
-      key: import.meta.env.VITE_REVERB_APP_KEY,
-      wsHost: import.meta.env.VITE_REVERB_HOST,
-      wsPort: import.meta.env.VITE_REVERB_PORT,
-      wssPort: import.meta.env.VITE_REVERB_PORT,
-      forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
-      enabledTransports: ["ws", "wss"],
-    });
-
-    echo.channel("admin-notifications").listen("OrderAlert", (e) => {
-      console.log("🔥 NEW ORDER RECEIVED VIA WEBSOCKET:", e);
-
-      alertAudioRef.current.currentTime = 0;
-      alertAudioRef.current.play().catch((err) => {
-        console.log("Audio blocked by browser:", err);
-        toast.error("Click anywhere on the dashboard to enable order sounds!");
-      });
-
-      toast.success(`New Order Received!`, {
-        description: `${e.customer_name} just placed an order for $${e.total_amount}.`,
-        duration: 8000,
-      });
-    });
-
-    return () => {
-      echo.leaveChannel("admin-notifications");
-    };
-  }, []);
 
   if (!user) {
     return <Navigate to="/admin/login" replace />;

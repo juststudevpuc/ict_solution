@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import {
   Box,
+  BriefcaseBusiness,
   History,
   LucideLayoutDashboard,
   Mail,
@@ -32,6 +33,9 @@ const BASE_NAV_MAIN = [
   { title: "Request Checkout", url: "/admin/request_order", icon: Mail },
   { title: "Inventory", url: "/admin/inventory", icon: Warehouse },
   { title: "Staff", url: "/admin/staff_management", icon: PersonStandingIcon },
+  { title: "Careers", url: "/admin/career", icon: BriefcaseBusiness },
+  { title: "Job Applications", url: "/admin/job-applications", icon: BriefcaseBusiness },
+
   {
     title: "Transaction History",
     url: "/admin/transaction_history",
@@ -39,6 +43,7 @@ const BASE_NAV_MAIN = [
   },
   { title: "Report", url: "/admin/report", icon: Paperclip },
   { title: "Setting", url: "/admin/setting", icon: Settings2 },
+  
 ];
 
 export function AppSidebar({ ...props }) {

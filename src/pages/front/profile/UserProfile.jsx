@@ -27,6 +27,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { request } from "@/utils/request/request";
 import { Spinner } from "@/components/ui/spinner";
+import Swal from "sweetalert2";
 
 const UserProfile = () => {
   // 1. Redux Setup
@@ -41,7 +42,7 @@ const UserProfile = () => {
     currentPassword: "",
     newPassword: "",
     company_name: "",
-    company_industry: "", 
+    company_industry: "",
   });
 
   const [order, setOrder] = useState([]);
@@ -68,7 +69,7 @@ const UserProfile = () => {
     try {
       const res = await request("me", "get");
       if (res?.user) {
-        console.log("Company info:", res.user)
+        console.log("Company info:", res.user);
         setMe(res.user);
         setFormData((prev) => ({
           ...prev,
@@ -130,7 +131,14 @@ const UserProfile = () => {
       }
 
       if (res?.user) {
-        alert("Profile updated successfully!");
+        // 🔥 Replaced standard alert with SweetAlert2 Success
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Profile updated successfully!",
+          confirmButtonColor: "#2563eb",
+        });
+
         dispatch(setUser(res.user));
         setFormData((prev) => ({
           ...prev,
@@ -142,7 +150,14 @@ const UserProfile = () => {
       }
     } catch (error) {
       console.error("Failed to update profile", error);
-      alert("Something went wrong updating your profile.");
+
+      // 🔥 Replaced standard alert with SweetAlert2 Error
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Something went wrong updating your profile.",
+        confirmButtonColor: "#2563eb",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -187,7 +202,7 @@ const UserProfile = () => {
     <div className="w-full max-w-6xl mx-auto p-6 mt-10 md:p-10 space-y-10">
       {/* ===== PAGE HEADER ===== */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 ">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white ">
           My Profile
         </h1>
         <p className="text-slate-500 mt-1">
@@ -195,7 +210,7 @@ const UserProfile = () => {
         </p>
       </div>
 
-     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 font-sans">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 font-sans">
         {/* ===== LEFT COLUMN: AVATAR & QUICK INFO ===== */}
         <div className="md:col-span-4 space-y-6">
           <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm p-8 flex flex-col items-center text-center transition-colors duration-300">
@@ -206,7 +221,9 @@ const UserProfile = () => {
                   <img
                     src={
                       imagePreview ||
-                      `http://54.179.48.141${me?.avatar || me?.image}`
+                      (me?.image?.startsWith("http")
+                        ? me.image
+                        : `http://54.179.48.141${me?.avatar || me?.image}`)
                     }
                     alt="Profile"
                     className="w-full h-full object-cover"
@@ -272,7 +289,8 @@ const UserProfile = () => {
 
           <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-[1.5rem] shadow-sm p-6 transition-colors duration-300">
             <h3 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-green-500" /> Account Security
+              <ShieldCheck className="w-5 h-5 text-green-500" /> Account
+              Security
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
               Your account is secured. We recommend updating your password every
@@ -294,7 +312,10 @@ const UserProfile = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="name"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Full Name
                   </Label>
                   <div className="relative">
@@ -310,7 +331,10 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="phone" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="phone"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Phone Number
                   </Label>
                   <div className="relative">
@@ -326,7 +350,10 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
-                  <Label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Email Address
                   </Label>
                   <div className="relative">
@@ -343,7 +370,10 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
-                  <Label htmlFor="address" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="address"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Full Address
                   </Label>
                   <div className="relative">
@@ -367,7 +397,10 @@ const UserProfile = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="company_name" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="company_name"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Company Name
                   </Label>
                   <div className="relative">
@@ -384,7 +417,10 @@ const UserProfile = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="company_industry" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="company_industry"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Industry
                   </Label>
                   <div className="relative">
@@ -409,7 +445,10 @@ const UserProfile = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="currentPassword" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="currentPassword"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     Current Password
                   </Label>
                   <Input
@@ -423,7 +462,10 @@ const UserProfile = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="newPassword" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <Label
+                    htmlFor="newPassword"
+                    className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                  >
                     New Password
                   </Label>
                   <Input
@@ -441,8 +483,8 @@ const UserProfile = () => {
 
             {/* --- 4. SUBMIT BUTTONS --- */}
             <div className="p-6 md:p-8 border-t border-slate-100 dark:border-slate-800/50 flex justify-end gap-4 bg-slate-50/50 dark:bg-slate-800/30">
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 variant="outline"
                 className="dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 rounded-xl"
               >
@@ -464,7 +506,9 @@ const UserProfile = () => {
       <div className="pt-6 border-t border-slate-200">
         <div className="flex items-center gap-2 mb-6">
           <ShoppingBag className="w-6 h-6 text-slate-900 dark:text-taupe-200" />
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-taupe-200">History</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-taupe-200">
+            History
+          </h2>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">

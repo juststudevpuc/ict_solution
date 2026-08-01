@@ -34,9 +34,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import InvoiceCard from "./InvoiceCard";
 import CartCard from "./CartCard";
 import RemarkInput from "@/components/cards/RemarkInput";
+import InvoiceCard from "./InvoiceCard";
 
 export default function CheckoutCard({ formData }) {
   const [qrCurrency, setQrCurrency] = useState("USD");

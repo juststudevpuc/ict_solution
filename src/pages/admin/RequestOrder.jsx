@@ -423,6 +423,11 @@ export default function RequestOrder() {
                     minute: "2-digit",
                   });
 
+                  const details = item.order_details || item.orderDetails || [];
+                  const productNames = details
+                    .map((d) => d.product?.name || "Unknown Product")
+                    .join(", ");
+
                   return (
                     <TableRow
                       key={index}
@@ -447,12 +452,18 @@ export default function RequestOrder() {
                       </TableCell>
 
                       <TableCell>
-                        <p className="font-bold text-slate-700 dark:text-slate-300">
-                          {item.orderDetails?.length || 0} Items
+                        <p
+                          className="font-bold text-slate-700 dark:text-slate-300 truncate max-w-[200px]"
+                          title={productNames}
+                        >
+                          {productNames || "No items"}
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-400 font-bold mt-0.5">
+                          {details.length} Items
                         </p>
                         {item.remark && (
-                          <p className="text-xs text-slate-400 dark:text-slate-500 truncate max-w-[150px]">
-                            {item.remark}
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[200px] mt-1 border-t border-slate-100 dark:border-slate-800/50 pt-1">
+                            Note: {item.remark}
                           </p>
                         )}
                       </TableCell>

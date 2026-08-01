@@ -3,22 +3,26 @@ import logo from "@/assets/logo.png";
 import { useSelector } from "react-redux";
 import { request } from "@/utils/request/request";
 
-// 🔥 ADDED: Accept paidAmount as a prop
-const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
-  const cart = useSelector((state) => state.cart) || [];
-
-  const subtotal = cart.reduce((acc, item) => acc + Number(item?.price || 0) * Number(item?.qty || 0), 0);
+// 🔥 ADDED: Accept pastOrder prop
+const InvoiceCard = forwardRef(({ paidAmount = 0, pastOrder = null }, ref) => {
+  const activeCart = useSelector((state) => state.cart) || [];
   
-  const totalDiscount = cart.reduce((acc, item) => {
+  // 🔥 IF pastOrder exists, use its orderDetails. Otherwise, use the active cart.
+  const displayItems = pastOrder 
+    ? (pastOrder.orderDetails || pastOrder.order_details || []) 
+    : activeCart;
+
+  const subtotal = displayItems.reduce((acc, item) => acc + Number(item?.price || 0) * Number(item?.qty || 0), 0);
+  
+  const totalDiscount = displayItems.reduce((acc, item) => {
     const itemTotal = Number(item?.price || 0) * Number(item?.qty || 0);
     const itemDiscount = Number(item?.discount || 0);
     return acc + (itemTotal * (itemDiscount / 100));
   }, 0);
 
-  const grandTotal = subtotal - totalDiscount;
+  const grandTotal = pastOrder ? Number(pastOrder.total_amount) : (subtotal - totalDiscount);
   const paid = Number(paidAmount) || 0;
   
-  // Calculate if they still owe money or if they get change back
   const balanceDue = Math.max(0, grandTotal - paid);
   const changeDue = Math.max(0, paid - grandTotal);
 
@@ -38,6 +42,12 @@ const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
   useEffect(() => {
     fetchingData();
   }, []);
+
+  // Determine Invoice No and Date based on pastOrder or current time
+  const invoiceNo = pastOrder ? pastOrder.order_no : `INV-${Date.now().toString().slice(-6)}`;
+  const invoiceDate = pastOrder 
+    ? new Date(pastOrder.created_at).toLocaleDateString('en-GB') 
+    : new Date().toLocaleDateString('en-GB');
 
   return (
     <div ref={ref} className="bg-white text-slate-900 w-full max-w-4xl mx-auto p-8 font-sans">
@@ -60,13 +70,15 @@ const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
           </div>
 
           <div className="text-right">
-            <h1 className="text-4xl font-black tracking-widest text-slate-900 uppercase mb-3">Invoice</h1>
+            <h1 className="text-4xl font-black tracking-widest text-slate-900 uppercase mb-3">
+              {pastOrder ? "Receipt" : "Invoice"}
+            </h1>
             <div className="grid grid-cols-2 gap-x-4 text-xs bg-slate-100 p-2 border border-slate-800">
               <p className="font-bold text-slate-700 text-left">INVOICE NO:</p>
-              <p className="font-mono text-slate-900 text-right">INV-{Date.now().toString().slice(-6)}</p>
+              <p className="font-mono text-slate-900 text-right">{invoiceNo}</p>
               
               <p className="font-bold text-slate-700 text-left mt-1">DATE:</p>
-              <p className="font-mono text-slate-900 text-right mt-1">{new Date().toLocaleDateString('en-GB')}</p>
+              <p className="font-mono text-slate-900 text-right mt-1">{invoiceDate}</p>
             </div>
           </div>
         </div>
@@ -77,9 +89,11 @@ const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
             <div className="bg-slate-800 text-white uppercase text-[10px] font-bold py-1 px-2 mb-1.5 inline-block">
               Bill To
             </div>
-            <h3 className="text-base font-bold text-slate-900 uppercase">Walk-in Customer</h3>
+            <h3 className="text-base font-bold text-slate-900 uppercase">
+              {pastOrder ? pastOrder.customer_name : "Walk-in Customer"}
+            </h3>
             <p className="text-xs text-slate-600">Customer: {me?.name || "N/A"}</p>
-            <p className="text-xs text-slate-600">Phone: {me?.phone || "N/A"}</p>
+            <p className="text-xs text-slate-600">Phone: {pastOrder?.phone || me?.phone || "N/A"}</p>
           </div>
           <div className="text-right">
              <div className="bg-slate-800 text-white uppercase text-[10px] font-bold py-1 px-2 mb-1.5 inline-block">
@@ -105,19 +119,23 @@ const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
             </thead>
             
             <tbody>
-              {cart.length > 0 ? (
-                cart.map((item, index) => {
+              {displayItems.length > 0 ? (
+                displayItems.map((item, index) => {
                   const itemTotal = Number(item?.qty || 0) * Number(item?.price || 0);
+                  // Handle different product structures based on if it's the active cart vs database relation
+                  const productName = item.product?.name || item.name || "Unknown Item";
+                  const productDesc = item.product?.description || item.description;
+
                   return (
                     <tr key={index} className="border-b border-slate-300 align-top">
                       <td className="border-r border-slate-300 py-3 text-center font-mono text-xs text-slate-900">{index + 1}</td>
                       
                       <td className="border-r border-slate-300 py-3 px-3">
-                        <p className="font-bold text-xs text-slate-900 uppercase">{item?.name || "Unknown Item"}</p>
+                        <p className="font-bold text-xs text-slate-900 uppercase">{productName}</p>
                         
-                        {item?.description && (
+                        {productDesc && (
                           <div className="text-[10px] text-slate-700 mt-1.5 space-y-0.5 whitespace-pre-wrap break-words pr-2">
-                            {item.description.split('\n').map((line, i) => {
+                            {productDesc.split('\n').map((line, i) => {
                               const trimmedLine = line.trim();
                               if (!trimmedLine) return <div key={i} className="h-1"></div>;
                               
@@ -181,13 +199,11 @@ const InvoiceCard = forwardRef(({ paidAmount = 0 }, ref) => {
               <span className="text-lg font-black font-mono text-slate-900">${grandTotal.toFixed(2)}</span>
             </div>
 
-            {/* 🔥 NEW: Customer Paid Row */}
             <div className="flex justify-between p-2.5 border-b border-slate-300 bg-white">
               <span className="font-bold uppercase text-slate-700">Customer Paid</span>
               <span className="font-mono font-bold text-blue-700">${paid.toFixed(2)}</span>
             </div>
 
-            {/* 🔥 NEW: Balance or Change Row */}
             {changeDue > 0 ? (
               <div className="flex justify-between p-2.5 bg-slate-200">
                 <span className="font-black uppercase text-slate-900">Change Due</span>

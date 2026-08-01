@@ -27,6 +27,7 @@ export const request = async (url = "", method = "get", data = {}) => {
     }
 
     try {
+        
         const baseUrl = configs.base_url.replace(/\/+$/, '');
         const endpoint = url.replace(/^\/+/, '');
         const sanitizedUrl = `${baseUrl}/${endpoint}`;

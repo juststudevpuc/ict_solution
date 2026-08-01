@@ -10,22 +10,22 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   plugins: [react(), tailwindcss()],
   esbuild: {
-    drop: ['console', 'debugger'],
+    // drop: ['console', 'debugger'],
   },
-  server: { 
-    proxy: {
-      '/api': {
-        target: 'http://54.179.48.141',
-        changeOrigin: true,
-      },
-      '/sanctum': {
-        target: 'http://54.179.48.141',
-        changeOrigin: true,
-      },
-      '/storage': {
-        target: 'http://54.179.48.141',
-        changeOrigin: true,
-      }
-    }
-  }
+  // server: { 
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://54.179.48.141',
+  //       changeOrigin: true,
+  //     },
+  //     '/sanctum': {
+  //       target: 'http://54.179.48.141',
+  //       changeOrigin: true,
+  //     },
+  //     '/storage': {
+  //       target: 'http://54.179.48.141',
+  //       changeOrigin: true,
+  //     }
+  //   }
+  // }
 })
