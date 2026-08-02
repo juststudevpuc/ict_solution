@@ -31,6 +31,7 @@ import {
   CheckCircle,
   Edit,
   Image,
+  Loader2,
   Plus,
   Search,
   SearchSlash,
@@ -309,65 +310,87 @@ export default function OrderPage() {
     <div className="">
       <div className="flex flex-col sm:flex-row justify-between items-center w-full mb-6 gap-4">
         {/* LEFT SIDE: Search Group */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <Input
-            value={query}
-            onChange={(e) => {
-              const value = e.target.value;
-              setQuery(value);
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          {/* Relative wrapper for the inner Search Icon */}
+          <div className="relative w-full sm:w-auto">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-slate-400" />
+            </div>
+            <Input
+              value={query}
+              onChange={(e) => {
+                const value = e.target.value;
+                setQuery(value);
 
-              // 🔥 ADDED THIS: If the user deletes all text, reload defaults immediately
-              if (value.trim() === "") {
-                fetchingData();
-              }
-            }}
-            placeholder="Search order..."
-            className="max-w-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-md shadow-sm transition-colors"
-          />
-          <Button
-            onClick={async () => {
-              // 🔥 ADDED THIS: If the search box is empty when clicked, reload defaults and stop!
-              if (query.trim() === "") {
-                fetchingData();
-                return;
-              }
-
-              setLoading(true);
-              try {
-                const res = await request(
-                  `admin/order/search/?q=${query}`,
-                  "get",
-                );
-                if (res) {
-                  const allSearchResults = res?.data || [];
-
-                  // Keeps your status filtering perfectly!
-                  const filteredResults = allSearchResults.filter(
-                    (item) => item.status === status,
-                  );
-
-                  SetOrder(filteredResults);
+                // If the user deletes all text, reload defaults immediately
+                if (value.trim() === "") {
+                  fetchingData();
                 }
-              } catch (error) {
-                console.error("Search failed", error);
-              } finally {
-                setLoading(false);
-              }
-            }}
-            className="bg-slate-500 hover:bg-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold rounded-md shadow-sm transition-colors"
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => {
-              fetchingData();
-              setQuery("");
-            }}
-            variant="outline"
-            className="border-rose-200 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 dark:border-rose-500/20 rounded-md shadow-sm transition-colors px-3"
-          >
-            <SearchSlash className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-          </Button>
+              }}
+              onKeyDown={(e) => {
+                // UX Upgrade: Trigger search when pressing Enter
+                if (e.key === "Enter" && query.trim() !== "") {
+                  document.getElementById("search-order-btn").click();
+                }
+              }}
+              placeholder="Search orders by ID or Name..."
+              className="pl-10 w-full sm:max-w-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 transition-all"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              id="search-order-btn"
+              onClick={async () => {
+                // If the search box is empty when clicked, reload defaults and stop!
+                if (query.trim() === "") {
+                  fetchingData();
+                  return;
+                }
+
+                setLoading(true);
+                try {
+                  const res = await request(
+                    `admin/order/search/?q=${query}`,
+                    "get",
+                  );
+                  if (res) {
+                    const allSearchResults = res?.data || [];
+
+                    // 🔥 FIX: Removed the status filter so it shows the exact order found
+                    SetOrder(allSearchResults);
+                  }
+                } catch (error) {
+                  console.error("Search failed", error);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+              className="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium rounded-xl shadow-sm transition-all px-6"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Search"
+              )}
+            </Button>
+
+            {/* Only show the clear button if there is actually text in the query */}
+            {query && (
+              <Button
+                onClick={() => {
+                  fetchingData();
+                  setQuery("");
+                }}
+                variant="outline"
+                className="shrink-0 border-rose-200 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 dark:border-rose-500/20 rounded-xl shadow-sm transition-colors px-3"
+                title="Clear Search"
+              >
+                <SearchSlash className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              </Button>
+            )}
+          </div>
         </div>
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -662,7 +685,7 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="w-full min-w-0 border rounded-3xl bg-card shadow-sm overflow-hidden">
+      <div className="w-full min-w-0 border rounded-[0.5rem] bg-card shadow-sm overflow-hidden">
         <div className="w-full min-w-0 border border-slate-100 dark:border-slate-800 rounded-3xl bg-white dark:bg-slate-900 shadow-sm overflow-hidden transition-colors duration-300">
           <div className="w-full overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900 rounded-3xl transition-colors duration-300">
             <Table className="w-full min-w-[800px] text-sm text-left">

@@ -380,7 +380,7 @@ export default function RequestOrder() {
 
       {/* --- ORDERS TABLE --- */}
       {/* --- ORDERS TABLE --- */}
-      <div className="bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300 flex flex-col">
+      <div className="bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300 flex flex-col">
         <div className="overflow-x-auto custom-scrollbar flex-1">
           <Table className="w-full text-sm text-left">
             <TableHeader>

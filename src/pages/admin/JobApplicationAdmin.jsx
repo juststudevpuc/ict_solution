@@ -98,7 +98,7 @@ export default function JobApplicationAdmin() {
         </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-slate-50/50 dark:bg-slate-800/20">

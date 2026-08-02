@@ -320,7 +320,7 @@ export default function Inventory() {
         </div>
 
         {/* --- INVENTORY TABLE --- */}
-        <div className="w-full flex flex-col overflow-hidden bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
+        <div className="w-full flex flex-col overflow-hidden bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
           <div className="overflow-x-auto custom-scrollbar flex-1">
             <Table className="w-full min-w-[800px] text-sm text-left">
               <TableHeader>

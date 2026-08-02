@@ -194,16 +194,9 @@ const CareerPage = () => {
           <Plus className="size-5" /> Add New Job
         </button>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          {/* <DialogTrigger asChild>
-            <button
-              onClick={() => openModal()}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl shadow-sm shadow-blue-200 dark:shadow-none transition-all w-full sm:w-auto"
-            >
-              <Plus className="size-5" /> Add New Job
-            </button>
-          </DialogTrigger> */}
-
-          <DialogContent className="max-w-5xl w-[95vw] bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-2xl sm:rounded-2xl p-0 flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
+          {/* <DialogContent className="small-w-5xl w-[95vw] bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-2xl sm:rounded-2xl p-0 flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300"> */}
+          {/* Use this if you want it massively wide on big screens */}
+          <DialogContent className="sm:max-w-7xl w-[95vw] bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-2xl sm:rounded-2xl p-0 flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
             {/* HEADER */}
             <div className="px-6 md:px-8 py-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 shrink-0 transition-colors">
               <DialogTitle className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
@@ -428,7 +421,7 @@ const CareerPage = () => {
         </DialogContent>
       </Dialog>
       {/* Data Table */}
-      <div className="bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">

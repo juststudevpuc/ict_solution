@@ -142,7 +142,7 @@ export default function StaffManagement() {
       </div>
 
       {/* Staff Table */}
-      <div className="w-full overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900/60 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
+      <div className="w-full overflow-x-auto custom-scrollbar bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
         <Table className="w-full min-w-[600px] text-sm text-left">
           
           <TableHeader>

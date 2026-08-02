@@ -136,7 +136,6 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Render the dynamically filtered links instead of the hardcoded ones */}
         <NavMain items={navItems} />
       </SidebarContent>
 

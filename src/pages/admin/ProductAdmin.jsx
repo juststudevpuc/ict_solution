@@ -138,36 +138,57 @@ export default function ProductAdmin() {
           formData,
         );
         if (res) {
-          console.log("Updated Product : ", res);
+          // Success Alert for Updating
+          Swal.fire({
+            icon: "success",
+            title: "Updated!",
+            text: "Product has been updated successfully.",
+            timer: 1500,
+            showConfirmButton: false,
+          });
           fetchingData();
         }
         setIsEdit(false);
       } else {
         const res = await request("admin/product", "post", formData);
         if (res) {
-          console.log("Created Product : ", res);
+          // Success Alert for Creating
+          Swal.fire({
+            icon: "success",
+            title: "Created!",
+            text: "New product has been added successfully.",
+            timer: 1500,
+            showConfirmButton: false,
+          });
           fetchingData();
         }
       }
+
+      // Close modal and reset form ONLY if the request succeeds
+      setIsOpen(false);
+      setForm({
+        id: "",
+        name: "",
+        description: "",
+        category_id: "",
+        price: 0,
+        discount: 0,
+        image: null,
+        status: true,
+      });
     } catch (error) {
       console.log(error);
+
+      // Error Alert
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text:
+          error?.message ||
+          "Something went wrong while saving the product. Please try again.",
+      });
     }
-
-    console.log("Form Data : ", form);
-    setIsOpen(false);
-
-    setForm({
-      id: "",
-      name: "",
-      description: "",
-      category_id: "",
-      price: 0,
-      discount: 0,
-      image: null,
-      status: true,
-    });
   };
-
   const onEdit = (itemEdit) => {
     console.log("Item Edit", itemEdit);
     setIsOpen(true);
@@ -240,19 +261,29 @@ export default function ProductAdmin() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={async (e) => {
+                // UX Upgrade: Allow user to press "Enter" to trigger the search
+                if (e.key === "Enter" && query) {
+                  document.getElementById("search-btn").click();
+                }
+              }}
               placeholder="Search products..."
               className="max-w-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-xl transition-colors"
             />
             <Button
+              id="search-btn"
               onClick={async () => {
+                if (!query) return; // Prevent empty searches
                 setLoading(true);
                 try {
+                  // BUG FIX: Changed from order to product
                   const res = await request(
-                    `admin/order/search/?q=${query}`,
+                    `admin/product/search?q=${query}`,
                     "get",
                   );
                   if (res) {
-                    SetOrder(res?.data || []);
+                   
+                    setProduct(res?.data?.data || []);
                   }
                 } catch (error) {
                   console.error("Search failed", error);
@@ -272,7 +303,7 @@ export default function ProductAdmin() {
             {query && (
               <Button
                 onClick={() => {
-                  fetchingData();
+                  fetchingData(); // Resets back to default paginated list
                   setQuery("");
                 }}
                 variant="destructive"
@@ -293,7 +324,7 @@ export default function ProductAdmin() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="max-w-5xl w-[95vw] bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-2xl sm:rounded-2xl p-0 flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
+          <DialogContent className="sm:max-w-4xl w-[95vw] bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-2xl sm:rounded-2xl p-0 flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
             {/* HEADER */}
             <div className="px-6 md:px-8 py-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 shrink-0 transition-colors">
               <DialogTitle className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
@@ -312,7 +343,7 @@ export default function ProductAdmin() {
               className="flex flex-col overflow-hidden min-h-0"
             >
               <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                   {/* Name */}
                   <div className="col-span-1 md:col-span-2 space-y-2.5">
                     <Label className="text-slate-700 dark:text-slate-300 font-semibold text-sm">
@@ -544,7 +575,7 @@ export default function ProductAdmin() {
         </DialogContent>
       </Dialog>
 
-      <div className="mt-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
+      <div className="mt-7 bg-white dark:bg-slate-900 rounded-[0.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
         <div className="overflow-x-auto custom-scrollbar">
           <Table className="w-full text-sm text-left">
             <TableHeader>

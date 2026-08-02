@@ -18,60 +18,54 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link, Navigate } from "react-router-dom";
+// 🔥 UPGRADE 1: Import useNavigate instead of Navigate
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearAllCart } from "@/store/cartSlice";
-// import { clearToken } from "@/store/tokenSlice";
 import { logout } from "@/store/userSlice";
 
 export function NavUser({ user }) {
   const dispatch = useDispatch();
+  // 🔥 UPGRADE 1: Initialize the navigate hook
+  const navigate = useNavigate();
+  const { isMobile, state } = useSidebar();
 
   const handleLogout = () => {
     // 1. Clear Redux Auth & Cart
     dispatch(logout());
-    // dispatch(clearToken());
-    dispatch(clearAllCart()); // <-- Kills the cart in Redux memory
+    dispatch(clearAllCart());
 
     // 2. Kill the browser storage completely
     localStorage.removeItem("token");
-    localStorage.removeItem("persist:root"); // <-- Default redux-persist key (if you use it)
+    localStorage.removeItem("persist:root");
 
-    // Optional: If you explicitly exported your persistor, run this:
-    // persistor.purge();
-
-    // 3. Redirect
-    Navigate("/", { replace: true });
+    // 3. Redirect using the hook
+    navigate("/", { replace: true });
   };
-
-  const { isMobile, state } = useSidebar();
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {/* Added transition and updated hover state to use our new blue-900 accent */}
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent hover:bg-sidebar-accent/80 transition-all duration-200 rounded-xl mb-2"
             >
               <div className="">
                 <Avatar className="h-8 w-8 rounded-lg border border-sidebar-border shadow-sm">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  {/* Changed to yellow background with dark text */}
+                  <AvatarImage src={user?.avatar} alt={user?.name} />
                   <AvatarFallback className="rounded-lg bg-yellow-600 text-white font-bold">
                     AD
                   </AvatarFallback>
                 </Avatar>
               </div>
 
-              {/* Only show text if sidebar is fully expanded */}
               {state === "expanded" && (
                 <div className="grid flex-1 text-left text-sm leading-tight text-sidebar-foreground">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">{user?.name || "Admin"}</span>
                   <span className="truncate text-xs text-sidebar-foreground/60">
-                    {user.email}
+                    {user?.email || "admin@system.com"}
                   </span>
                 </div>
               )}
@@ -91,15 +85,15 @@ export function NavUser({ user }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-3 py-2.5 text-left text-sm text-sidebar-foreground">
                 <Avatar className="h-9 w-9 rounded-lg border border-sidebar-border">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={user?.avatar} alt={user?.name} />
                   <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     AD
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 leading-tight">
-                  <span className="truncate font-bold">{user.name}</span>
+                  <span className="truncate font-bold">{user?.name || "Admin"}</span>
                   <span className="truncate text-xs text-sidebar-foreground/60">
-                    {user.email}
+                    {user?.email || "admin@system.com"}
                   </span>
                 </div>
               </div>
@@ -119,9 +113,13 @@ export function NavUser({ user }) {
 
             <DropdownMenuSeparator className="bg-sidebar-border" />
 
-            <DropdownMenuItem className="py-2.5 cursor-pointer text-destructive focus:bg-destructive/10 transition-colors">
+            {/* 🔥 UPGRADE 2 & 3: Moved onClick to the wrapper and added better hover colors */}
+            <DropdownMenuItem 
+              onClick={handleLogout}
+              className="py-2.5 cursor-pointer text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50 focus:text-red-700 transition-colors"
+            >
               <LogOut className="mr-3 size-4" />
-              <span onClick={handleLogout} className="text-red-600 font-medium">
+              <span className="font-medium">
                 Log out
               </span>
             </DropdownMenuItem>

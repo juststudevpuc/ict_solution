@@ -232,7 +232,7 @@ export default function TransactionHistory() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/60 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
+      <div className="bg-white dark:bg-slate-900/60 rounded-[0.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
         <div className="p-5 md:p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-center">
           <div className="relative w-72">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
