@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { Trash2, X, UploadCloud, CheckCircle2 } from "lucide-react";
+import { Trash2, X, UploadCloud, CheckCircle2, ArrowLeft } from "lucide-react";
 
 // Store & Utils
 import { clearAllCart } from "@/store/cartSlice";
@@ -43,7 +43,7 @@ export default function CheckoutCard({ formData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  
+
   // Refs
   const ref = useRef();
   const isCheckoutCompleteRef = useRef(false); // 🔥 NEW: Tracks if we should clear the cart after printing
@@ -58,18 +58,47 @@ export default function CheckoutCard({ formData }) {
   const [receiptFile, setReceiptFile] = useState(null);
   const [receiptPreview, setReceiptPreview] = useState(null);
 
+  const location = useLocation();
+
+  const plan = location.state?.subscriptionPlan || {
+    duration_days: 30,
+    multiplier: 1,
+    discountPercentage: 0,
+  };
+
   const totalItem = data.reduce((acc, item) => acc + Number(item?.qty || 0), 0);
+  // const totalOriginal = data.reduce(
+  //   (acc, item) => acc + Number(item?.qty || 0) * Number(item?.price || 0),
+  //   0,
+  // );
+
   const totalOriginal = data.reduce(
-    (acc, item) => acc + Number(item?.qty || 0) * Number(item?.price || 0),
-    0,
-  );
-  const totalDiscount = data.reduce(
     (acc, item) =>
-      acc +
-      ((Number(item?.price || 0) * Number(item?.discount || 0)) / 100) *
-        Number(item?.qty || 0),
+      acc + Number(item?.qty || 0) * Number(item?.price || 0) * plan.multiplier,
     0,
   );
+
+  // const totalDiscount = data.reduce(
+  //   (acc, item) =>
+  //     acc +
+  //     ((Number(item?.price || 0) * Number(item?.discount || 0)) / 100) *
+  //       Number(item?.qty || 0),
+  //   0,
+  // );
+  // const total = totalOriginal - totalDiscount;
+  const totalDiscount = data.reduce((acc, item) => {
+    const basePrice = Number(item?.price || 0) * plan.multiplier;
+    const baseItemDiscount = (basePrice * Number(item?.discount || 0)) / 100;
+
+    const priceAfterBaseDiscount = basePrice - baseItemDiscount;
+    const subscriptionDiscount =
+      (priceAfterBaseDiscount * plan.discountPercentage) / 100;
+
+    return (
+      acc + (baseItemDiscount + subscriptionDiscount) * Number(item?.qty || 0)
+    );
+  }, 0);
+
   const total = totalOriginal - totalDiscount;
 
   useEffect(() => {
@@ -90,7 +119,7 @@ export default function CheckoutCard({ formData }) {
   };
 
   // 🔥 UPDATED: Print function now listens for when the print dialog closes
-  const onPrint = useReactToPrint({ 
+  const onPrint = useReactToPrint({
     contentRef: ref,
     onAfterPrint: () => {
       // If they just paid, clear the cart. If they just clicked "Print Invoice" manually, do nothing!
@@ -98,7 +127,7 @@ export default function CheckoutCard({ formData }) {
         clearFormAndCart();
         isCheckoutCompleteRef.current = false; // Reset the tracker
       }
-    }
+    },
   });
 
   const onClearAll = () => {
@@ -127,20 +156,38 @@ export default function CheckoutCard({ formData }) {
       payload.append("remark", remark || "");
       payload.append("payment_method", payment_method);
 
+      payload.append("duration_days", plan.duration_days);
+
       if (receiptFile) {
         payload.append("payment_slip", receiptFile);
       }
 
       data.forEach((item, index) => {
-        const price = Number(item?.price || 0);
+        // 1. Multiply the base price by the months chosen (e.g. 1 month = 1x, 6 months = 6x)
+        const basePrice = Number(item?.price || 0) * plan.multiplier;
         const qty = Number(item?.qty || 0);
-        const discount = Number(item?.discount || 0);
-        const itemTotal = price * qty - ((price * discount) / 100) * qty;
+
+        // 2. Combine the product's regular discount with the new subscription plan discount
+        const productDiscountPercent = Number(item?.discount || 0);
+        const subDiscountPercent = plan.discountPercentage;
+
+        // Math magic to combine percentages correctly (e.g., 10% product discount + 20% plan discount = 28% total effective discount)
+        const effectiveDiscountPercent =
+          (1 -
+            (1 - productDiscountPercent / 100) *
+              (1 - subDiscountPercent / 100)) *
+          100;
+
+        // 3. Calculate final item total
+        const itemTotal =
+          (basePrice - (basePrice * effectiveDiscountPercent) / 100) * qty;
 
         payload.append(`detail[${index}][product_id]`, item?._id || item?.id);
-        payload.append(`detail[${index}][price]`, price);
+
+        // 🔥 Send the properly multiplied price and combined discount!
+        payload.append(`detail[${index}][price]`, basePrice);
         payload.append(`detail[${index}][qty]`, qty);
-        payload.append(`detail[${index}][discount]`, discount);
+        payload.append(`detail[${index}][discount]`, effectiveDiscountPercent);
         payload.append(`detail[${index}][total]`, itemTotal);
       });
 
@@ -149,10 +196,9 @@ export default function CheckoutCard({ formData }) {
       // 🔥 UPDATED FLOW: Success -> Auto Print -> Clear Cart (Handled by onAfterPrint)
       setIsDialogOpen(false); // Close the payment modal immediately
       alert("Order successfully placed!");
-      
+
       isCheckoutCompleteRef.current = true; // Tell the printer to clear the cart when done
       onPrint(); // Trigger the auto-print!
-
     } catch (error) {
       console.error("Checkout Process Error:", error);
       alert(error?.message || "Failed to process checkout. Check network log.");
@@ -173,16 +219,29 @@ export default function CheckoutCard({ formData }) {
       <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm transition-colors duration-300">
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 flex flex-col items-center gap-4 shadow-2xl border border-slate-100 dark:border-slate-800">
           <Spinner className="size-10 text-blue-600 dark:text-blue-500" />
-          <p className="font-bold text-slate-800 dark:text-slate-100">Processing Order...</p>
+          <p className="font-bold text-slate-800 dark:text-slate-100">
+            Processing Order...
+          </p>
         </div>
       </div>
     );
 
+  // new 08-08
+
   return (
     <Card className="max-w-lg mx-auto p-6 bg-white dark:bg-slate-900 shadow-xl rounded-3xl border-slate-100 dark:border-slate-800 transition-colors duration-300">
       <CardHeader className="px-0">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-start">
           <div>
+            {/* 🔥 NEW: Back Button */}
+            <button
+              onClick={() => navigate("/subscription")}
+              className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors mb-2"
+            >
+              <ArrowLeft size={16} />
+              Change Subscription Plan
+            </button>
+
             <CardTitle className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Checkout
             </CardTitle>
@@ -190,6 +249,7 @@ export default function CheckoutCard({ formData }) {
               Confirm your payment and order details
             </CardDescription>
           </div>
+
           <Button
             variant="ghost"
             size="icon"
@@ -205,21 +265,27 @@ export default function CheckoutCard({ formData }) {
         {data.length > 0 ? (
           data.map((item) => <CartCard key={item.id || item._id} data={item} />)
         ) : (
-          <p className="text-center py-10 text-slate-400 dark:text-slate-500">Your cart is empty</p>
+          <p className="text-center py-10 text-slate-400 dark:text-slate-500">
+            Your cart is empty
+          </p>
         )}
       </div>
 
       <div className="space-y-2 bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl mb-6 border border-slate-100 dark:border-slate-700/50 shadow-inner transition-colors">
         <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400">
           <span>Items:</span>{" "}
-          <span className="font-semibold text-slate-900 dark:text-slate-100">{totalItem}</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-100">
+            {totalItem}
+          </span>
         </div>
         <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400">
           <span>Original:</span> <span>${totalOriginal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400">
           <span>Discount:</span>{" "}
-          <span className="text-red-500 dark:text-red-400">-${totalDiscount.toFixed(2)}</span>
+          <span className="text-red-500 dark:text-red-400">
+            -${totalDiscount.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between text-lg font-bold border-t border-slate-200 dark:border-slate-700 pt-3 mt-2 text-slate-900 dark:text-white transition-colors">
           <span>Final Total:</span> <span>${total.toFixed(2)}</span>
@@ -286,7 +352,6 @@ export default function CheckoutCard({ formData }) {
             </DialogHeader>
 
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar flex flex-col items-center space-y-8 bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
-              
               <div className="w-full flex flex-col items-center">
                 <div className="bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-6 shadow-sm">
                   Step 1: Scan & Pay
@@ -408,9 +473,7 @@ export default function CheckoutCard({ formData }) {
                 {receiptFile ? (
                   <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                 ) : null}
-                {receiptFile
-                  ? "Complete Order"
-                  : "Upload Receipt to Finish"}
+                {receiptFile ? "Complete Order" : "Upload Receipt to Finish"}
               </Button>
             </div>
           </DialogContent>

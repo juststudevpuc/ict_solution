@@ -213,7 +213,7 @@ export default function MainLayout() {
           <div className="flex items-center gap-3">
             {/* Search or Cart - Classic Style */}
             <Link
-              to={user ? "/payment" : "/auth"}
+              to={user ? "/subscription" : "/auth"}
               className="relative p-2 dark:text-white hover:text-slate-100 transition-colors"
             >
               <ShoppingCart className="w-5 h-5" />

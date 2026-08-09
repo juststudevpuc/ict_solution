@@ -3,11 +3,13 @@ import { request } from "@/utils/request/request";
 import { ArrowRight, Maximize2, ShoppingCart, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function SoftwareCard() {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true); // Added missing loading state
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   const fetchingData = async () => {
     setLoading(true);
@@ -34,6 +36,9 @@ export default function SoftwareCard() {
   const handleAddToCart = (item) => {
     // We send the item from your Laravel API directly to Redux
     dispatch(addItemCart(item));
+
+    navigate("/subscription");
+
   };
 
   return (

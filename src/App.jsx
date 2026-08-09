@@ -35,6 +35,7 @@ import CareerPage from "./pages/admin/CareerPage";
 import JobApplicationAdmin from "./pages/admin/JobApplicationAdmin";
 import ApplyJob from "./pages/front/ApplyJob";
 import JobInfo from "./pages/front/JobInfo";
+import SubscriptionPage from "./pages/front/SubscriptionPage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -72,6 +73,7 @@ export default function App() {
 
             <Route path="client" element={<ClientPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="subscription" element={<SubscriptionPage />} />
             <Route path="payment" element={<PaymentPage />} />
             <Route path="category/softwarePage" element={<SoftwareCard />} />
             <Route path="userProfile" element={<UserProfile />} />
